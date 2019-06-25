@@ -1,5 +1,6 @@
 version: '3.6'
 services:
+
     node:
         build: docker/
         volumes:
@@ -10,12 +11,15 @@ services:
             - /bin/sh
             - -c
             - npm install && npm start
+
     mariadb:
         image: 'mariadb:10.3'
+        volumes:
+            - ./sql/emotion.sql:/docker-entrypoint-initdb.d/emotion.sql
         ports:
             - '3306:3306'
         environment:
+            - MYSQL_ROOT_PASSWORD=root
             - MYSQL_DATABASE=emotion
-            - MYSQL_USER=root
-            - MYSQL_PASSWORD=root
-            - MYSQL_RANDOM_ROOT_PASSWORD=yes
+            - MYSQL_USER=admin
+            - MYSQL_PASSWORD=admin
