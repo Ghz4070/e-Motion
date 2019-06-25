@@ -14,8 +14,8 @@ services:
 
     mariadb:
         image: 'mariadb:10.3'
-        volumes: 
-            - './docker/database:/var/lib/mysql'
+        volumes:
+            - ./sql/emotion.sql:/docker-entrypoint-initdb.d/emotion.sql
         ports:
             - '3306:3306'
         environment:
@@ -23,13 +23,3 @@ services:
             - MYSQL_DATABASE=emotion
             - MYSQL_USER=admin
             - MYSQL_PASSWORD=admin
-    phpmyadmin:
-        image: phpmyadmin/phpmyadmin
-        environment:
-            - PMA_HOST=mariadb
-        ports:
-            - 8080:80
-        volumes:
-            - docker/sessions
-        links:
-            - mariadb
