@@ -1,5 +1,6 @@
 version: '3.6'
 services:
+
     node:
         build: docker/
         volumes:
@@ -10,12 +11,25 @@ services:
             - /bin/sh
             - -c
             - npm install && npm start
+
     mariadb:
         image: 'mariadb:10.3'
+        volumes: 
+            - './docker/database:/var/lib/mysql'
         ports:
             - '3306:3306'
         environment:
+            - MYSQL_ROOT_PASSWORD=root
             - MYSQL_DATABASE=emotion
-            - MYSQL_USER=root
-            - MYSQL_PASSWORD=root
-            - MYSQL_RANDOM_ROOT_PASSWORD=yes
+            - MYSQL_USER=admin
+            - MYSQL_PASSWORD=admin
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        environment:
+            - PMA_HOST=mariadb
+        ports:
+            - 8080:80
+        volumes:
+            - docker/sessions
+        links:
+            - mariadb
