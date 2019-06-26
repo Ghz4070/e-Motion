@@ -8,29 +8,35 @@ import { rootApi, port, secret } from '../src/config';
 import { success, error } from '../src/returnjson';
 import { Host, User, Password, Database } from '../src/database';
 
-const pool = mariadb.createConnection({
+const pool = mariadb.createPool({
     host: Host,
     user: User,
     password: Password,
     database: Database,
-
 })
-.then((conn) => {
-    console.log('a')
-})
-.catch((err) => console.log(err))
 
-const app = express();
+async function asyncConnection() {
+    let conn;
+    try{
+        conn = await pool.getConnection();
+        console.log('hello')
 
-//Middleware
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+        const app = express();
 
-app.use(morgan('dev'));
+        //Middleware
+        app.use(bodyParser.json());
+        app.use(bodyParser.urlencoded({extended: true}));
 
+        app.use(morgan('dev'));
 
+        //Routes
 
-//Routes
+        app.listen(port, () => console.log(`Server running in port ${port}`))
+    }catch(err){
+        console.log(err);
+    }finally{
+        if(conn) return conn.end();
+    }
+}
 
-
-app.listen(port, () => console.log(`Server running in port ${port}`))
+asyncConnection()
