@@ -12,7 +12,7 @@ import mariadb from 'mariadb';
 const app = express();
 //const mariadb = require('mariadb');
 
-const pool = mariadb.createPool({host: '192.168.99.100', database:'emotion', user: 'root', password: 'root'});
+const pool = mariadb.createPool({host: 'mariadb', database:'emotion', user: 'root', password: 'root'});
  
 async function asyncFunction() {
     let conn;
