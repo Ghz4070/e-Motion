@@ -47,6 +47,7 @@ CREATE TABLE `offers` (
   `description` varchar(255) DEFAULT NULL,
   `penality` varchar(45) DEFAULT NULL,
   `nbKm` int(11) DEFAULT NULL,
+  `pointFidelityOffers` int(11) NOT NULL,
   `location_idlocation` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
