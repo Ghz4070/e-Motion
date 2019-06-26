@@ -1,6 +1,5 @@
 version: '3.6'
 services:
-
     node:
         build: docker/
         volumes:
@@ -11,7 +10,8 @@ services:
             - /bin/sh
             - -c
             - npm install && npm start
-
+        depends_on:
+            - mariadb
     mariadb:
         image: 'mariadb:10.3'
         volumes:

@@ -1,6 +1,5 @@
 FROM node:alpine
 
-WORKDIR '/var/www/app'
-
+COPY ./app/package.json /var/www/app 
 
 
