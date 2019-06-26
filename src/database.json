@@ -1,5 +1,5 @@
 {
-  "Host": "localhost",
+  "Host": "mariadb",
   "User": "root",
   "Password": "root",
   "Database": "emotion"
