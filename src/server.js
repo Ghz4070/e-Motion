@@ -2,7 +2,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
-
+import mariadb from 'mariadb';
 //Module créer par nous
 import { rootApi, port, secret } from '../src/config';
 import { success, error } from '../src/returnjson';
