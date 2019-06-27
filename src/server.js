@@ -9,6 +9,10 @@ import {rootApi, port, secret} from '../src/config';
 import {success, error} from '../src/returnjson';
 import {Host, User, Password, Database} from '../src/database';
 
+//Routes import
+import { routesUsers } from '../src/Routes/Users'
+
+
 const pool = mariadb.createPool({
     host: Host,
     user: User,
@@ -31,6 +35,8 @@ async function asyncConnection() {
         app.use(morgan('dev'));
 
         //Routes
+        routesUsers(app,conn)
+
 
         app.listen(port, () => console.log(`Server running in port ${port}`))
     } catch (err) {
