@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `emotion`.`users` (
   `firstname` VARCHAR(45) NOT NULL,
   `lastname` VARCHAR(45) NOT NULL,
   `birthday` DATETIME NOT NULL,
-  `adress` VARCHAR(45) NOT NULL,
+  `address` VARCHAR(45) NOT NULL,
   `phoneNumber` INT NOT NULL,
   `driverLicence` VARCHAR(45) NOT NULL,
   `roles` VARCHAR(45) NOT NULL,
