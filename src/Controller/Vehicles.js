@@ -5,9 +5,10 @@ export function allListVehicles(conn){ // getAllVehicles
                 res.json(result);
                 console.log(result)
             })
-            .catch((err) => res.json(err.message))
+            .catch((err) => res.json(err.message));
     }
 }
+                 
 
 export function allListVehiclesAvailable(conn){ // getAllVehiclesAvailable
     return (req, res) => {
@@ -15,8 +16,9 @@ export function allListVehiclesAvailable(conn){ // getAllVehiclesAvailable
             .then((result) => {
                 res.json(result);
                 console.log(result)
+
             })
-            .catch((err) => res.json(err.message))
+            .catch((err) => res.json(err.message));
     }
 }
 
@@ -27,6 +29,22 @@ export function getVehicleById(conn){ // get vehicle by id
                 res.json(result);
                 console.log(result)
             })
-            .catch((err) => res.json(err.message))
+            .catch((err) => res.json(err.message));
+    }
+}
+
+export function editVehicles(conn){ //
+    return (req, res) => {
+        conn.query("UPDATE vehicle SET brand = ?, model = ?, serialNumber = ?,color = ?"+
+                " licensePlate = ?, nbKm = ? , datePurchase = ?, price = ?"+
+                " available = ?, lising = ?, offers_idoffers = ? WHERE idvehicle = ?",
+                [req.body.brand, req.body.model, req.body.serialNumber,req.body.color, req.body.licencePlate,
+                req.body.nbKm, req.body.datePurchase, req.body.price, req.body.available,
+                req.body.lising,req.body.offers_idoffers,req.param.id])
+            .then((result) => {
+                console.log(req.body)
+                res.json(result)
+        })
+       .catch((err) => res.json(err.message));
     }
 }
