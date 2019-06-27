@@ -10,8 +10,10 @@ import {success, error} from '../src/returnjson';
 import {Host, User, Password, Database} from '../src/database';
 
 //Routes import
-import { routesUsers } from '../src/Routes/Users'
+import {routesUsers} from '../src/Routes/Users'
+import {routesVehicles} from "./Routes/Vehicles";
 import { routesOffers } from './Routes/Offers';
+
 
 
 const pool = mariadb.createPool({
@@ -36,7 +38,8 @@ async function asyncConnection() {
         app.use(morgan('dev'));
 
         //Routes
-        routesUsers(app,conn)
+        routesUsers(app, conn);
+        routesVehicles(app, conn);
         routesOffers(app,conn)
 
 
@@ -48,4 +51,4 @@ async function asyncConnection() {
     }
 }
 
-asyncConnection()
+asyncConnection();

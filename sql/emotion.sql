@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `emotion`.`vehicle` (
   `price` INT NOT NULL,
   `available` INT NOT NULL,
   `lising` INT NOT NULL,
-  `offers_idoffers` INT NOT NULL,
+  `offers_idoffers` INT,
   PRIMARY KEY (`idvehicle`),
   CONSTRAINT `fk_vehicle_offers1`
     FOREIGN KEY (`offers_idoffers`)
