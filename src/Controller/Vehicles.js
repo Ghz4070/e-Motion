@@ -38,11 +38,25 @@ export function editVehicles(conn) { //
         conn.query("UPDATE vehicle SET brand = ?, model = ?, serialNumber = ?,color = ?" +
             " licensePlate = ?, nbKm = ? , datePurchase = ?, price = ?" +
             " available = ?, lising = ?, offers_idoffers = ? WHERE idvehicle = ?",
-            [req.body.brand, req.body.model, req.body.serialNumber, req.body.color, req.body.licencePlate,
+            [req.body.brand, req.body.model, req.body.serialNumber, req.body.color, req.body.licensePlate,
                 req.body.nbKm, req.body.datePurchase, req.body.price, req.body.available,
                 req.body.lising, req.body.offers_idoffers, req.param.id])
             .then((result) => {
                 console.log(req.body)
+                res.json(result)
+            })
+            .catch((err) => res.json(err.message));
+    }
+}
+export function addVehicles(conn) { //
+    return (req, res) => {
+        conn.query("INSERT INTO vehicle (brand, model, serialNumber, color, licensePlate, nbKm, "+
+        " datePurchase, price, available,lising) VALUES (? , ?, ?, ?, ? ,? ,? ,? ,? ,?) "
+        ,[req.body.brand, req.body.model, req.body.serialNumber, req.body.color, req.body.licensePlate,
+                req.body.nbKm, req.body.datePurchase, req.body.price, req.body.available,
+                req.body.lising, req.body.offers_idoffers])
+            .then((result) => {
+                console.log('antoine')
                 res.json(result)
             })
             .catch((err) => res.json(err.message));

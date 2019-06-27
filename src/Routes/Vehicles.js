@@ -1,4 +1,4 @@
-import {allListVehicles, allListVehiclesAvailable, getVehicleById, editVehicles} from '../Controller/Vehicles';
+import {allListVehicles, allListVehiclesAvailable, getVehicleById, editVehicles,addVehicles} from '../Controller/Vehicles';
 import {rootApi} from '../config'
 
 export function routesVehicles(app, conn) {
@@ -13,5 +13,8 @@ export function routesVehicles(app, conn) {
   
     app.route(rootApi + '/vehicles/edit/:id')
         .patch(editVehicles(conn));
+
+    app.route(rootApi + '/vehicles/add')
+        .post(addVehicles(conn));
 }
 
