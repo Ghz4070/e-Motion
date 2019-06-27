@@ -1,10 +1,6 @@
 import { success, error } from '../returnjson';
 import bcrypt from 'bcryptjs';
 
-//const salt = bcrypt.genSaltSync(10);
-//const hash = bcrypt.hashSync("R4PH43/\/",salt);
-
-
 export function addUser(conn){
     return (req, res) => {
         conn.query('SELECT * FROM users WHERE username = ? UNION SELECT * FROM users WHERE email = ?', [req.body.username, req.body.email])
