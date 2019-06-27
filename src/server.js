@@ -11,6 +11,7 @@ import {Host, User, Password, Database} from '../src/database';
 
 //Routes import
 import { routesUsers } from '../src/Routes/Users'
+import { routesOffers } from './Routes/Offers';
 
 
 const pool = mariadb.createPool({
@@ -36,6 +37,7 @@ async function asyncConnection() {
 
         //Routes
         routesUsers(app,conn)
+        routesOffers(app,conn)
 
 
         app.listen(port, () => console.log(`Server running in port ${port}`))

@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `emotion`.`offers` (
   `penality` VARCHAR(45) NOT NULL,
   `nbKm` INT NOT NULL,
   `pointFidelityOffers` INT NOT NULL,
-  `location_idlocation` INT NOT NULL,
+  `location_idlocation` INT NULL,
   PRIMARY KEY (`idoffers`),
   CONSTRAINT `fk_offers_location1`
     FOREIGN KEY (`location_idlocation`)
