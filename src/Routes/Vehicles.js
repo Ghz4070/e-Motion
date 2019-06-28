@@ -8,7 +8,7 @@ import {
 } from '../Controller/Vehicles';
 import {rootApi} from '../config'
 
-export function routesVehicles(app, conn) {
+export function routesVehicles(app, conn, ProtectedRoutes) {
     app.route(rootApi + '/vehicles/all')
         .get(allListVehicles(conn));
 
@@ -18,13 +18,16 @@ export function routesVehicles(app, conn) {
     app.route(rootApi + '/vehicles/:id')
         .get(getVehicleById(conn));
 
-    app.route(rootApi + '/vehicles/edit/:id')
+    ProtectedRoutes.route(rootApi + '/vehicles/edit/:id')
         .patch(editVehicles(conn));
+    app.use(rootApi, ProtectedRoutes);
 
-    app.route(rootApi + '/vehicles/add')
+    ProtectedRoutes.route(rootApi + '/vehicles/add')
         .post(addVehicles(conn));
+    app.use(rootApi, ProtectedRoutes);
 
-    app.route(rootApi + '/vehicles/delete/:id')
+    ProtectedRoutes.route(rootApi + '/vehicles/delete/:id')
         .delete(outVehiclesOfList(conn));
+    app.use(rootApi, ProtectedRoutes);
 }
 
