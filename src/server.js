@@ -26,11 +26,11 @@ async function asyncConnection() {
     let conn;
     try {
         conn = await pool.getConnection();
-        console.log('hello')
+        console.log('hello');
 
         const app = express();
         const ProtectedRoutes = express.Router();
-        
+
         //Middleware
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: true}));
@@ -39,11 +39,10 @@ async function asyncConnection() {
 
         //Routes
         routesUsers(app, conn, ProtectedRoutes);
-        routesVehicles(app, conn);
-        routesOffers(app, conn);
-        routesLocation(app, conn);
+        routesVehicles(app, conn, ProtectedRoutes);
+        routesOffers(app, conn, ProtectedRoutes);
+        routesLocation(app, conn, ProtectedRoutes);
 
-        
 
         app.listen(port, () => console.log(`Server running in port ${port}`))
     } catch (err) {
