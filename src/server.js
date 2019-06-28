@@ -29,7 +29,8 @@ async function asyncConnection() {
         console.log('hello')
 
         const app = express();
-
+        const ProtectedRoutes = express.Router();
+        
         //Middleware
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: true}));
@@ -37,10 +38,12 @@ async function asyncConnection() {
         app.use(morgan('dev'));
 
         //Routes
-        routesUsers(app, conn);
+        routesUsers(app, conn, ProtectedRoutes);
         routesVehicles(app, conn);
         routesOffers(app, conn);
         routesLocation(app, conn);
+
+        
 
         app.listen(port, () => console.log(`Server running in port ${port}`))
     } catch (err) {
