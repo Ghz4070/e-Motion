@@ -1,18 +1,22 @@
 import { addUser, login, allUsers, logout } from '../Controller/Users';
 import { rootApi } from '../config'
 import { checkToken } from '../middleware'
+import express from 'express';
 
-export function routesUsers(app, conn, ProtectedRoutes) {
-    ProtectedRoutes.use(checkToken)
+module.exports = (_db) => {
+    const db = _db;
+
+    const anonymeRoute = express.Router();
+    const adminRoute = express.Router();
     
-    app.route(rootApi+'/user/add')
-        .post(addUser(conn))
-    app.route(rootApi+'/user/login')
-        .get(login(conn))
-        
-    ProtectedRoutes.route('/user/all')
-        .get(allUsers(conn))
-    //ProtectedRoutes.get('/user/logout', logout())
+    adminRoute.use(checkToken);
 
-    app.use(rootApi, ProtectedRoutes)
+    anonymeRoute.route('/add')
+        .post(addUser(db))
+    anonymeRoute.route('/login')
+        .get(login(db))
+    adminRoute.route('/all')
+        .get(allUsers(db))
+
+    return [anonymeRoute, adminRoute]
 }

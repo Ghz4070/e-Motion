@@ -5,23 +5,27 @@ import {
     removeOffer,
     updateOffer
 } from '../Controller/Offers';
-import {rootApi} from '../config';
 import { checkToken } from '../middleware';
+import express from 'express';
 
-export function routesOffers(app, conn, ProtectedRoutes) {
-    ProtectedRoutes.use(checkToken)
+
+module.exports = (_db) => {
+    const db = _db;
+
+    const anonymeRoute = express.Router();
+    const adminRoute = express.Router();
     
-    app.route(rootApi + '/offer')
-        .get(getAllOffers(conn));
+    adminRoute.use(checkToken);
 
-    app.route(rootApi + '/offer/:id')
-        .get(getOfferById(conn));
+    anonymeRoute.route('/')
+        .get(getAllOffers(db))
+    anonymeRoute.route('/:id')
+        .get(getOfferById(db));
+    adminRoute.route('/')
+        .post(postOffer(db));
+    adminRoute.route('/:id')
+        .delete(removeOffer(db))
+        .patch(updateOffer(db));
 
-    ProtectedRoutes.route(rootApi + '/admin/offer')
-        .post(postOffer(conn));
-
-    ProtectedRoutes.route(rootApi + '/admin/offer/:id')
-        .delete(removeOffer(conn))
-        .patch(updateOffer(conn));
-    app.use(rootApi, ProtectedRoutes);
+    return [anonymeRoute,adminRoute]; 
 }

@@ -6,31 +6,29 @@ import {
     addVehicles,
     outVehiclesOfList
 } from '../Controller/Vehicles';
-import { rootApi } from '../config'
 import { checkToken } from '../middleware';
+import express from 'express';
 
-export function routesVehicles(app, conn, ProtectedRoutes) {
-    ProtectedRoutes.use(checkToken)
+module.exports = (_db) => {
+    const db = _db;
 
-    app.route(rootApi + '/vehicles/all')
-        .get(allListVehicles(conn));
-
-    app.route(rootApi + '/vehicles/available')
-        .get(allListVehiclesAvailable(conn));
-
-    app.route(rootApi + '/vehicles/:id')
-        .get(getVehicleById(conn));
-
-    ProtectedRoutes.route(rootApi + '/vehicles/edit/:id')
-        .patch(editVehicles(conn));
+    const anonymeRoute = express.Router();
+    const adminRoute = express.Router();
     
+    adminRoute.use(checkToken);
 
-    ProtectedRoutes.route(rootApi + '/vehicles/add')
-        .post(addVehicles(conn));
-    
-    ProtectedRoutes.route(rootApi + '/vehicles/delete/:id')
-        .delete(outVehiclesOfList(conn));
-
-    app.use(rootApi, ProtectedRoutes);
+    anonymeRoute.route('/all')
+        .get(allListVehicles(db));
+    anonymeRoute.route('/available')
+        .get(allListVehiclesAvailable(db));
+    anonymeRoute.route('/:id')
+        .get(getVehicleById(db))
+    adminRoute.route('/edit/:id')
+        .patch(editVehicles(db));
+    adminRoute.route('/add')
+        .post(addVehicles(db));
+    adminRoute.route('/delete/:id')
+        .delete(outVehiclesOfList(db));
+        
+    return [anonymeRoute, adminRoute]
 }
-
