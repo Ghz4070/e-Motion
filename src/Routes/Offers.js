@@ -1,5 +1,5 @@
-import {getOfferById, getAllOffers, postOffer, removeOffer, updateOffer } from '../Controller/Offers';
-import { rootApi } from '../config';
+import {getOfferById, getAllOffers, postOffer, removeOffer, updateOffer} from '../Controller/Offers';
+import {rootApi} from '../config';
 
 export function routesOffers(app, conn) {
     app.route(rootApi + '/offer')
@@ -8,10 +8,12 @@ export function routesOffers(app, conn) {
     app.route(rootApi + '/offer/:id')
         .get(getOfferById(conn));
 
-    app.route(rootApi+'/admin/offer')
-    .post(postOffer(conn))
+    ProtectedRoutes.route(rootApi + '/admin/offer')
+        .post(postOffer(conn));
+    app.use(rootApi, ProtectedRoutes);
 
-    app.route(rootApi+'/admin/offer/:id')
-    .delete(removeOffer(conn))
-    .patch(updateOffer(conn))
+    ProtectedRoutes.route(rootApi + '/admin/offer/:id')
+        .delete(removeOffer(conn))
+        .patch(updateOffer(conn));
+    app.use(rootApi, ProtectedRoutes);
 }
