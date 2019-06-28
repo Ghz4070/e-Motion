@@ -6,8 +6,11 @@ import {
     updateOffer
 } from '../Controller/Offers';
 import {rootApi} from '../config';
+import { checkToken } from '../middleware';
 
 export function routesOffers(app, conn, ProtectedRoutes) {
+    ProtectedRoutes.use(checkToken)
+    
     app.route(rootApi + '/offer')
         .get(getAllOffers(conn));
 
@@ -16,7 +19,6 @@ export function routesOffers(app, conn, ProtectedRoutes) {
 
     ProtectedRoutes.route(rootApi + '/admin/offer')
         .post(postOffer(conn));
-    app.use(rootApi, ProtectedRoutes);
 
     ProtectedRoutes.route(rootApi + '/admin/offer/:id')
         .delete(removeOffer(conn))

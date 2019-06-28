@@ -49,6 +49,7 @@ export function editVehicles(conn) { //
 }
 
 export function addVehicles(conn) { //
+    
     return (req, res) => {
         let brand = req.body.brand;
         let model = req.body.model;
