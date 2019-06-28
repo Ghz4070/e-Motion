@@ -26,7 +26,7 @@ module.exports = (_db) => {
         .post(postOffer(db));
   
     adminRoute.route('/:id')
-        .delete(removeOffer(db));
+        .delete(removeOffer(db))
         .patch(updateOffer(db));
 
     return [anonymeRoute,adminRoute]; 
