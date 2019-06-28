@@ -1,4 +1,4 @@
-import {allListVehicles, allListVehiclesAvailable, getVehicleById, editVehicles,addVehicles} from '../Controller/Vehicles';
+import {allListVehicles, allListVehiclesAvailable, getVehicleById, editVehicles,addVehicles, outVehiclesOfList} from '../Controller/Vehicles';
 import {rootApi} from '../config'
 
 export function routesVehicles(app, conn) {
@@ -16,5 +16,10 @@ export function routesVehicles(app, conn) {
 
     app.route(rootApi + '/vehicles/add')
         .post(addVehicles(conn));
+
+    app.route(rootApi + '/vehicles/delete/:id')
+        .delete(outVehiclesOfList(conn));
+
+    
 }
 

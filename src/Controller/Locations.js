@@ -1,7 +1,7 @@
 export function allLocations(conn) {
     return (req, res) => {
-        conn.query('SELECT * FROM offers' +
-            'LEFT JOIN location ON offers.idoffers = location.location_idlocation')
+        conn.query(' SELECT * FROM offers ' +
+            ' LEFT JOIN location ON offers.location_idlocation = location.idlocation ')
             .then((result) => {
                 res.json(result);
                 console.log(result)
