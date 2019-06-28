@@ -1,8 +1,9 @@
 import {
-    allLocations
+    allLocations,
+    getOneLocation,
 } from '../Controller/Locations';
-import { rootApi } from '../config';
-import { checkToken } from '../middleware';
+import {rootApi} from '../config';
+import {checkToken} from '../middleware';
 import express from 'express';
 
 module.exports = (_db) => {
@@ -13,7 +14,7 @@ module.exports = (_db) => {
     adminRoute.use(checkToken);
     
     adminRoute.route('/all')
-        .get(allLocations(db))
+        .get(allLocations(db));
 
     return adminRoute;
 }

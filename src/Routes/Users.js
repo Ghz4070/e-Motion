@@ -1,6 +1,11 @@
-import { addUser, login, allUsers, logout } from '../Controller/Users';
-import { rootApi } from '../config'
-import { checkToken } from '../middleware'
+import { 
+  addUser, 
+  login, 
+  allUsers, 
+  logout 
+} from '../Controller/Users';
+import {rootApi} from '../config';
+import {checkToken} from '../middleware';
 import express from 'express';
 
 module.exports = (_db) => {
@@ -12,11 +17,13 @@ module.exports = (_db) => {
     adminRoute.use(checkToken);
 
     anonymeRoute.route('/add')
-        .post(addUser(db))
+        .post(addUser(db));
+  
     anonymeRoute.route('/login')
-        .get(login(db))
+        .get(login(db));
+  
     adminRoute.route('/all')
-        .get(allUsers(db))
+        .get(allUsers(db));
 
     return [anonymeRoute, adminRoute]
 }

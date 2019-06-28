@@ -5,9 +5,8 @@ import {
     removeOffer,
     updateOffer
 } from '../Controller/Offers';
-import { checkToken } from '../middleware';
+import {checkToken} from '../middleware';
 import express from 'express';
-
 
 module.exports = (_db) => {
     const db = _db;
@@ -16,15 +15,18 @@ module.exports = (_db) => {
     const adminRoute = express.Router();
     
     adminRoute.use(checkToken);
-
+  
     anonymeRoute.route('/')
-        .get(getAllOffers(db))
+        .get(getAllOffers(db));
+  
     anonymeRoute.route('/:id')
         .get(getOfferById(db));
+  
     adminRoute.route('/')
         .post(postOffer(db));
+  
     adminRoute.route('/:id')
-        .delete(removeOffer(db))
+        .delete(removeOffer(db));
         .patch(updateOffer(db));
 
     return [anonymeRoute,adminRoute]; 
