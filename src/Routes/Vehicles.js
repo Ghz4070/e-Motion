@@ -1,4 +1,11 @@
-import {allListVehicles, allListVehiclesAvailable, getVehicleById, editVehicles,addVehicles, outVehiclesOfList} from '../Controller/Vehicles';
+import {
+    allListVehicles,
+    allListVehiclesAvailable,
+    getVehicleById,
+    editVehicles,
+    addVehicles,
+    outVehiclesOfList
+} from '../Controller/Vehicles';
 import {rootApi} from '../config'
 
 export function routesVehicles(app, conn) {
@@ -10,7 +17,7 @@ export function routesVehicles(app, conn) {
 
     app.route(rootApi + '/vehicles/:id')
         .get(getVehicleById(conn));
-  
+
     app.route(rootApi + '/vehicles/edit/:id')
         .patch(editVehicles(conn));
 
@@ -19,7 +26,5 @@ export function routesVehicles(app, conn) {
 
     app.route(rootApi + '/vehicles/delete/:id')
         .delete(outVehiclesOfList(conn));
-
-    
 }
 
