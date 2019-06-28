@@ -1,7 +1,13 @@
-import {getOfferById, getAllOffers, postOffer, removeOffer, updateOffer} from '../Controller/Offers';
+import {
+    getOfferById,
+    getAllOffers,
+    postOffer,
+    removeOffer,
+    updateOffer
+} from '../Controller/Offers';
 import {rootApi} from '../config';
 
-export function routesOffers(app, conn) {
+export function routesOffers(app, conn, ProtectedRoutes) {
     app.route(rootApi + '/offer')
         .get(getAllOffers(conn));
 

@@ -18,8 +18,8 @@ let checkToken = (req, res, next) => {
     } else {
         return res.json(error('Auth token is not supplied'));
     }
-}
+};
 
 module.exports = {
     checkToken: checkToken
-}
+};

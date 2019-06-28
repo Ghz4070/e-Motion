@@ -8,7 +8,7 @@ import {
 } from '../Controller/Vehicles';
 import {rootApi} from '../config'
 
-export function routesVehicles(app, conn) {
+export function routesVehicles(app, conn, ProtectedRoutes) {
     app.route(rootApi + '/vehicles/all')
         .get(allListVehicles(conn));
 
