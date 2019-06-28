@@ -1,5 +1,10 @@
-import { success, error } from '../returnjson';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
+import { success, error } from '../returnjson';
+import { secret } from '../config';
+import middleware from '../middleware';
+
 
 export function addUser(conn){
     return (req, res) => {
@@ -39,5 +44,34 @@ export function addUser(conn){
             }
         })
         .catch((errSelect) => res.json(error(errSelect.message)))
+    }
+}
+
+export function login(conn) {
+    return (req, res)=> {        
+        conn.query('SELECT username, password FROM users WHERE username = ?', req.body.username)
+        .then((result) => {
+            if(result.length < 1){
+                res.json(error('Unknown username'));
+            }else{
+                bcrypt.compare(req.body.password, result[0].password)
+                .then((passwordDecrypted) => {
+                    if(passwordDecrypted && req.body.username === result[0].username){
+                        let token = jwt.sign({username: req.body.username }, secret, {
+                            algorithm: 'HS256',
+                            expiresIn: '24h'
+                        }, (err, encoded) => {
+                            if(err){
+                                res.json(error(err.message))
+                            }
+                            res.json(success(encoded));
+                        })
+                        
+                    }
+                })
+                .catch((err) => res.json(error(err.message)))
+            }
+        })
+        .catch((err) => res.json(error(err.message)))
     }
 }
