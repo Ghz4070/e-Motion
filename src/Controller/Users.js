@@ -1,10 +1,9 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
+
 import { success, error } from '../returnjson';
 import { secret } from '../config';
-import middleware from '../middleware';
-
 
 export function addUser(conn){
     return (req, res) => {
@@ -65,8 +64,7 @@ export function login(conn) {
                                 res.json(error(err.message))
                             }
                             res.json(success(encoded));
-                        })
-                        
+                        })   
                     }
                 })
                 .catch((err) => res.json(error(err.message)))
@@ -75,3 +73,14 @@ export function login(conn) {
         .catch((err) => res.json(error(err.message)))
     }
 }
+
+export function allUsers(conn){
+    return (req,res) => {
+        conn.query('SELECT * FROM users')
+        .then((result) => {
+            res.json(success(result))
+        })  
+        .catch((err) => res.json(error(err)))
+    }
+}
+
