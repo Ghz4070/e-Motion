@@ -6,9 +6,12 @@ import {
     addVehicles,
     outVehiclesOfList
 } from '../Controller/Vehicles';
-import {rootApi} from '../config'
+import { rootApi } from '../config'
+import { checkToken } from '../middleware';
 
 export function routesVehicles(app, conn, ProtectedRoutes) {
+    ProtectedRoutes.use(checkToken)
+
     app.route(rootApi + '/vehicles/all')
         .get(allListVehicles(conn));
 
@@ -20,14 +23,14 @@ export function routesVehicles(app, conn, ProtectedRoutes) {
 
     ProtectedRoutes.route(rootApi + '/vehicles/edit/:id')
         .patch(editVehicles(conn));
-    app.use(rootApi, ProtectedRoutes);
+    
 
     ProtectedRoutes.route(rootApi + '/vehicles/add')
         .post(addVehicles(conn));
-    app.use(rootApi, ProtectedRoutes);
-
+    
     ProtectedRoutes.route(rootApi + '/vehicles/delete/:id')
         .delete(outVehiclesOfList(conn));
+
     app.use(rootApi, ProtectedRoutes);
 }
 
