@@ -2,33 +2,31 @@ import {
     allListVehicles,
     allListVehiclesAvailable,
     getVehicleById,
-    editVehicles,
     addVehicles,
+    editVehicles,
     outVehiclesOfList
 } from '../Controller/Vehicles';
-import { checkToken } from '../middleware';
 import express from 'express';
+import {checkToken} from './../middleware'
 
-module.exports = (_db) => {
-    const db = _db;
 
-    const anonymeRoute = express.Router();
-    const adminRoute = express.Router();
-    
-    adminRoute.use(checkToken);
+export const adminRouteVehicles = express.Router();
+export const anonymeRouteVehicles = express.Router();
 
-    anonymeRoute.route('/all')
-        .get(allListVehicles(db));
-    anonymeRoute.route('/available')
-        .get(allListVehiclesAvailable(db));
-    anonymeRoute.route('/:id')
-        .get(getVehicleById(db))
-    adminRoute.route('/edit/:id')
-        .patch(editVehicles(db));
-    adminRoute.route('/add')
-        .post(addVehicles(db));
-    adminRoute.route('/delete/:id')
-        .delete(outVehiclesOfList(db));
-        
-    return [anonymeRoute, adminRoute]
+let db = (req, res, next) => {
+    req.sql= req.conn
+    next()
 }
+
+anonymeRouteVehicles.route('/all')
+    .get(db,allListVehicles())
+anonymeRouteVehicles.route('/available')
+    .get(db,allListVehiclesAvailable());
+anonymeRouteVehicles.route('/:id')
+    .get(db,getVehicleById())
+adminRouteVehicles.route('/add')
+    .post(checkToken,db,addVehicles());
+adminRouteVehicles.route('/edit/:id')
+    .patch(checkToken,db,editVehicles());
+adminRouteVehicles.route('/delete/:id')
+    .delete(checkToken,db,outVehiclesOfList());

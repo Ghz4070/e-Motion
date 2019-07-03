@@ -1,11 +1,12 @@
-export function allLocations(conn) {
+import {success, error} from '../returnjson';
+
+export function allLocations() {
     return (req, res) => {
-        conn.query(' SELECT * FROM offers ' +
+        req.sql.query(' SELECT * FROM offers ' +
             ' LEFT JOIN location ON offers.location_idlocation = location.idlocation ')
             .then((result) => {
-                res.json(result);
-                console.log(result)
+                res.json(success(result));
             })
-            .catch((err) => res.json(err.message));
+            .catch((err) => res.json(error(err.message)));
     }
 }

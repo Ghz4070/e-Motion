@@ -1,54 +1,52 @@
-export function allListVehicles(conn) { // getAllVehicles
+import {success, error} from '../returnjson';
+
+export function allListVehicles() { // getAllVehicles
     return (req, res) => {
-        conn.query('SELECT * FROM vehicle')
+        req.sql.query('SELECT * FROM vehicle')
             .then((result) => {
-                res.json(result);
-                console.log(result)
+                res.json(success(result));
             })
-            .catch((err) => res.json(err.message));
+            .catch((err) => res.json(error(err.message)));
     }
 }
 
 
-export function allListVehiclesAvailable(conn) { // getAllVehiclesAvailable
+export function allListVehiclesAvailable() { // getAllVehiclesAvailable
     return (req, res) => {
-        conn.query('SELECT * FROM vehicle WHERE available = 1') // available = 1, unavailable = 0
+        req.sql.query('SELECT * FROM vehicle WHERE available = 1') // available = 1, unavailable = 0
             .then((result) => {
-                res.json(result);
-                console.log(result)
-
+                res.json(success(result));
             })
-            .catch((err) => res.json(err.message));
+            .catch((err) => res.json(error(err.message)));
     }
 }
 
-export function getVehicleById(conn) { // get vehicle by id
+export function getVehicleById() { // get vehicle by id
     return (req, res) => {
-        conn.query('SELECT * FROM vehicle WHERE idvehicle = ?', req.params.id)
+        req.sql.query('SELECT * FROM vehicle WHERE idvehicle = ?', req.params.id)
             .then((result) => {
-                res.json(result);
-                console.log(result)
+                res.json(success(result));
             })
-            .catch((err) => res.json(err.message));
+            .catch((err) => res.json(error(err.message)));
     }
 }
 
-export function editVehicles(conn) { //
+export function editVehicles() { //
     return (req, res) => {
-        conn.query("UPDATE vehicle SET brand = ?, model = ?, serialNumber = ?,color = ?" +
+        req.sql.query("UPDATE vehicle SET brand = ?, model = ?, serialNumber = ?,color = ?" +
             " ,licensePlate = ?, nbKm = ? , datePurchase = ?, price = ?" +
             " ,available = ?, lising = ?, offers_idoffers = ? WHERE idvehicle = ?",
             [req.body.brand, req.body.model, req.body.serialNumber, req.body.color, req.body.licensePlate,
                 req.body.nbKm, req.body.datePurchase, req.body.price, req.body.available,
                 req.body.lising, req.body.offers_idoffers, req.params.id])
             .then((result) => {
-                res.json(result)
+                res.json(success(result))
             })
-            .catch((err) => res.json(err.message));
+            .catch((err) => res.json(error(err.message)));
     }
 }
 
-export function addVehicles(conn) { //
+export function addVehicles() { //
     
     return (req, res) => {
         let brand = req.body.brand;
@@ -63,22 +61,22 @@ export function addVehicles(conn) { //
         let listing = req.body.lising;
         let offers_idoffers = req.body.offers_idoffers;
 
-        conn.query("INSERT INTO vehicle (brand, model, serialNumber, color, licensePlate, nbKm, " +
+        req.sql.query("INSERT INTO vehicle (brand, model, serialNumber, color, licensePlate, nbKm, " +
             " datePurchase, price, available,lising) VALUES (? , ?, ?, ?, ? ,? ,? ,? ,? ,?) "
             , [brand, model, serialNumber, color, licensePlate, nbKm, datePurchase, price, available, listing, offers_idoffers])
             .then((result) => {
-                res.json(result)
+                res.json(success(result))
             })
-            .catch((err) => res.json(err.message));
+            .catch((err) => res.json(error(err.message)));
     }
 }
 
 export function outVehiclesOfList(conn) { //Mettre un soft Delete et sauvergarder les modifications (historique) des actions effectuer
     return (req, res) => {
-        conn.query("DELETE FROM `vehicle` WHERE idvehicle = ?", req.params.id)
+        req.sql.query("DELETE FROM `vehicle` WHERE idvehicle = ?", req.params.id)
             .then((result) => {
-                res.json(result)
+                res.json(success(result))
             })
-            .catch((err) => res.json(err.message));
+            .catch((err) => res.json(error(err.message)));
     }
 }

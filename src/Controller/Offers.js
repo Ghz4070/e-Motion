@@ -1,8 +1,8 @@
 import {success, error} from '../returnjson';
 
-export function getAllOffers(conn) {
+export function getAllOffers() {
     return (req, res) => {
-        conn.query('SELECT * FROM offers')
+        req.sql.query('SELECT * FROM offers')
         .then((result) => {
             res.json(success(result));
         })
@@ -10,9 +10,9 @@ export function getAllOffers(conn) {
     }
 }
 
-export function getOfferById(conn) {
+export function getOfferById() {
     return (req, res) => {
-        conn.query('SELECT * FROM offers WHERE idoffers = ?', req.params.id)
+        req.sql.query('SELECT * FROM offers WHERE idoffers = ?', req.params.id)
         .then((result) => {
             res.json(success(result));
         })
@@ -20,9 +20,9 @@ export function getOfferById(conn) {
     }
 }
 
-export function postOffer(conn) {
+export function postOffer() {
     return (req, res) => {
-        conn.query('INSERT INTO offers (title, price, description, penality, nbKm, pointFidelityOffers) VALUES (?,?,?,?,?,?)',
+        req.sql.query('INSERT INTO offers (title, price, description, penality, nbKm, pointFidelityOffers) VALUES (?,?,?,?,?,?)',
         [req.body.title,req.body.price,req.body.description,req.body.penality,req.body.nbKm,req.body.pointFidelityOffers])
         .then((result) => {
             res.json(success(result));
@@ -31,9 +31,9 @@ export function postOffer(conn) {
     }
 }
 
-export function removeOffer(conn) {
+export function removeOffer() {
     return (req, res) => {
-        conn.query('DELETE FROM offers WHERE idoffers = ?', req.params.id)
+        req.sql.query('DELETE FROM offers WHERE idoffers = ?', req.params.id)
         .then((result) => {
             res.json(success(result));
         })
@@ -41,9 +41,9 @@ export function removeOffer(conn) {
     }
 }
 
-export function updateOffer(conn) {
+export function updateOffer() {
     return (req, res) => {
-        conn.query('SELECT * FROM offers WHERE idoffers= ?', req.params.id)
+        req.sql.query('SELECT * FROM offers WHERE idoffers= ?', req.params.id)
         .then((result2) => {
             let title = result2[0].title;
             let price = result2[0].price;
@@ -70,7 +70,7 @@ export function updateOffer(conn) {
             if(req.body.pointFidelityOffers != undefined) {
                 pointFidelityOffers = req.body.pointFidelityOffers
             }
-            conn.query('UPDATE offers SET title=?, price=?, description=?, penality=?, nbKm=?, pointFidelityOffers=? WHERE idoffers = ?',
+            req.sql.query('UPDATE offers SET title=?, price=?, description=?, penality=?, nbKm=?, pointFidelityOffers=? WHERE idoffers = ?',
             [title, price, description, penality, nbKm, pointFidelityOffers,req.params.id])
             .then((result) => {
                 res.json(success(result));
