@@ -1,4 +1,7 @@
-import {success, error} from '../returnjson';
+import {
+    success,
+    error
+} from '../returnjson';
 
 export function getAllOffers() {
     return (req, res) => {
@@ -75,7 +78,6 @@ export function updateOffer() {
             .then((result) => {
                 res.json(success(result));
             })
-        })
-        .catch((err) => res.json(error(err.message)))
+            .catch((err) => res.json(error(err.message)))
     }
 }

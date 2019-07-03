@@ -46,8 +46,13 @@ export function editVehicles() { //
     }
 }
 
+<<<<<<< HEAD
 export function addVehicles() { //
     
+=======
+export function addVehicles(conn) { //
+
+>>>>>>> 4fe9b396121f03027042dd66db5388a28ecc123d
     return (req, res) => {
         let brand = req.body.brand;
         let model = req.body.model;

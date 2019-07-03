@@ -1,16 +1,16 @@
 import jwt from 'jsonwebtoken';
-import { secret } from '../src/config';
-import { error } from '../src/returnjson';
+import {secret} from '../src/config';
+import {error} from '../src/returnjson';
 
 //Variable qui contient un callback express
 let checkToken = (req, res, next) => {
     let token = req.headers['x-access-token'];
 
-    if(token){
+    if (token) {
         jwt.verify(token, secret, (err, decoded) => {
-            if(err) {
+            if (err) {
                 return res.json(error('Token is not valid'));
-            } else{
+            } else {
                 req.decoded = decoded;
                 next();
             }

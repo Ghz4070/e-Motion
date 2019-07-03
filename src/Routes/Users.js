@@ -9,11 +9,11 @@ const db = (req, res, next) => {
 
 export const anonymeRouteUsers = express.Router();
 export const adminRouteUsers = express.Router();
-    
-    
+
 anonymeRouteUsers.route('/add')
     .post(db,addUser())
 anonymeRouteUsers.route('/login')
     .get(db,login())
 adminRouteUsers.route('/all')
     .get(db,checkToken,allUsers())
+

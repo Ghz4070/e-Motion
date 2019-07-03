@@ -5,9 +5,9 @@ import {
     removeOffer,
     updateOffer
 } from '../Controller/Offers';
+
 import express from 'express';
 import { checkToken } from './../middleware';
-
 
 const db = (req,res,next) => {
     req.sql = req.conn;
