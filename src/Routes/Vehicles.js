@@ -6,10 +6,6 @@ import {
     editVehicles,
     outVehiclesOfList
 } from '../Controller/Vehicles';
-<<<<<<< HEAD
-=======
-import {checkToken} from '../middleware';
->>>>>>> 4fe9b396121f03027042dd66db5388a28ecc123d
 import express from 'express';
 import {checkToken} from './../middleware'
 
