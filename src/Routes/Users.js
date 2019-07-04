@@ -1,29 +1,19 @@
-import { 
-  addUser, 
-  login, 
-  allUsers, 
-  logout 
-} from '../Controller/Users';
-import {rootApi} from '../config';
-import {checkToken} from '../middleware';
+import { addUser, login, allUsers, logout } from '../Controller/Users';
+import { checkToken } from '../middleware'
 import express from 'express';
 
-module.exports = (_db) => {
-    const db = _db;
-
-    const anonymeRoute = express.Router();
-    const adminRoute = express.Router();
-    
-    adminRoute.use(checkToken);
-
-    anonymeRoute.route('/add')
-        .post(addUser(db));
-  
-    anonymeRoute.route('/login')
-        .get(login(db));
-  
-    adminRoute.route('/all')
-        .get(allUsers(db));
-
-    return [anonymeRoute, adminRoute]
+const db = (req, res, next) => {
+    req.sql = req.conn;
+    next();
 }
+
+export const anonymeRouteUsers = express.Router();
+export const adminRouteUsers = express.Router();
+
+anonymeRouteUsers.route('/add')
+    .post(db,addUser())
+anonymeRouteUsers.route('/login')
+    .get(db,login())
+adminRouteUsers.route('/all')
+    .get(db,checkToken,allUsers())
+

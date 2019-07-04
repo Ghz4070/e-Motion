@@ -5,29 +5,24 @@ import {
     removeOffer,
     updateOffer
 } from '../Controller/Offers';
-import {checkToken} from '../middleware';
+
 import express from 'express';
+import { checkToken } from './../middleware';
 
-module.exports = (_db) => {
-    const db = _db;
-
-    const anonymeRoute = express.Router();
-    const adminRoute = express.Router();
-    
-    adminRoute.use(checkToken);
-  
-    anonymeRoute.route('/')
-        .get(getAllOffers(db));
-  
-    anonymeRoute.route('/:id')
-        .get(getOfferById(db));
-  
-    adminRoute.route('/')
-        .post(postOffer(db));
-  
-    adminRoute.route('/:id')
-        .delete(removeOffer(db))
-        .patch(updateOffer(db));
-
-    return [anonymeRoute,adminRoute]; 
+const db = (req,res,next) => {
+    req.sql = req.conn;
+    next();
 }
+    
+export const anonymeRouteOffers = express.Router();
+export const adminRouteOffers = express.Router();
+
+anonymeRouteOffers.route('/')
+    .get(db,getAllOffers())
+anonymeRouteOffers.route('/:id')
+    .get(db,getOfferById());
+adminRouteOffers.route('/')
+    .post(db,checkToken,postOffer());
+adminRouteOffers.route('/:id')
+    .delete(db,checkToken,removeOffer())
+    .patch(db,checkToken,updateOffer());

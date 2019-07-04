@@ -6,7 +6,7 @@ import {secret} from '../config';
 
 export function addUser(conn) {
     return (req, res) => {
-        conn.query('SELECT * FROM users WHERE username = ? UNION SELECT * FROM users WHERE email = ?', [req.body.username, req.body.email])
+        req.sql.query('SELECT * FROM users WHERE username = ? UNION SELECT * FROM users WHERE email = ?', [req.body.username, req.body.email])
             .then((resultSelectUsername) => {
                 if (resultSelectUsername.length > 0) {
                     res.json(error('This username is used'));
@@ -26,7 +26,7 @@ export function addUser(conn) {
                             .then((salt) => {
                                 bcrypt.hash(req.body.password, salt)
                                     .then((hash) => {
-                                        conn.query('INSERT INTO users (firstname, lastname, birthday, address, phoneNumber, driverLicence, roles,' +
+                                        req.sql.query('INSERT INTO users (firstname, lastname, birthday, address, phoneNumber, driverLicence, roles,' +
                                             'password, email, username) VALUES (?,?,?,?,?,?,?,?,?,?)',
                                             [req.body.firstname, req.body.lastname, req.body.birthday, req.body.address, req.body.phoneNumber, req.body.driverLicence,
                                                 '[ROLE_USER]', hash, req.body.email, req.body.username])
@@ -47,7 +47,7 @@ export function addUser(conn) {
 
 export function login(conn) {
     return (req, res) => {
-        conn.query('SELECT username, password FROM users WHERE username = ?', req.body.username)
+        req.sql.query('SELECT username, password FROM users WHERE username = ?', req.body.username)
             .then((result) => {
                 if (result.length < 1) {
                     res.json(error('Unknown username'));
@@ -75,7 +75,7 @@ export function login(conn) {
 
 export function allUsers(conn) {
     return (req, res) => {
-        conn.query('SELECT * FROM users')
+        req.sql.query('SELECT * FROM users')
             .then((result) => {
                 res.json(success(result))
             })
