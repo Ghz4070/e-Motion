@@ -79,5 +79,6 @@ export function updateOffer() {
                 res.json(success(result));
             })
             .catch((err) => res.json(error(err.message)))
+    })
     }
 }
