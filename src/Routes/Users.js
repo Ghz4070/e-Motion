@@ -1,4 +1,4 @@
-import { addUser, login, allUsers, logout } from '../Controller/Users';
+import { addUser, login, allUsers, logout, seeInformationAccount, updateInformationAccount } from '../Controller/Users';
 import { checkToken } from '../middleware'
 import express from 'express';
 
@@ -16,4 +16,8 @@ anonymeRouteUsers.route('/login')
     .get(db,login())
 adminRouteUsers.route('/all')
     .get(db,checkToken,allUsers())
+adminRouteUsers.route('/')
+    .get(db, checkToken, seeInformationAccount())
+adminRouteUsers.route('/modify')
+    .patch(db, checkToken, updateInformationAccount())
 

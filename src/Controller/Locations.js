@@ -11,9 +11,9 @@ export function allLocations() {
     }
 }
 
-export function getOneLocation(conn) {
+export function getOneLocation() {
     return (req, res) => {
-        conn.query(' SELECT * FROM offers ' +
+        req.sql.query(' SELECT * FROM offers ' +
             ' LEFT JOIN location ON offers.location_idlocation = location.idlocation ' +
             ' WHERE offers.idoffers = ?', req.params.id)
             .then((result) => {
