@@ -163,11 +163,49 @@ export function userById() {
 
 export function allUsers() {
     return (req, res) => {
-        req.sql.query('SELECT * FROM users')
+        const decodeToken = jwt.decode(req.headers['x-access-token']);
+        if(decodeToken.role == 'ROLE_ADMIN'){
+            req.sql.query('SELECT * FROM users')
             .then((result) => {
-                res.json(success(result))
+                res.json(success(result));
             })
             .catch((err) => res.json(error(err)))
+        }else{
+            res.json(error(new Error('You cant use this method, you are not admin')));
+        }
+       
     }
 }
+
+export function updateInformationAccountForAdmin() {
+    return (req, res) => {
+        const decodeToken = jwt.decode(req.headers['x-access-token']);
+        if(decodeToken.role == "ROLE_ADMIN"){
+            req.sql.query('SELECT firstname, lastname, birthday, address, phoneNumber, driverLicence FROM users WHERE idusers = ?', [req.params.id])
+            .then((resultSelect) => {
+                if(resultSelect.length < 1){
+                    res.json(error(new Error('ID Unknown').message))
+                }else{
+                    let firstname = req.body.firstname == '' || req.body.firstname == undefined ?  resultSelect[0].firstname : req.body.firstname ;
+                let lastname = req.body.lastname == '' || req.body.lastname == undefined ?  resultSelect[0].lastname : req.body.lastname ;
+                let birthday = req.body.birthday == '' || req.body.birthday == undefined ?  resultSelect[0].birthday : req.body.birthday;
+                let address = req.body.address == '' || req.body.address == undefined ?  resultSelect[0].address : req.body.address;
+                let phoneNumber = req.body.phoneNumber == '' || req.body.phoneNumber == undefined ? resultSelect[0].phoneNumber : req.body.phoneNumber;
+                let driverLicence = req.body.driverLicence == '' || req.body.driverLicence == undefined  ? resultSelect[0].driverLicence : req.body.driverLicence;
+                console.log(lastname)
+                req.sql.query('UPDATE users SET firstname = ?, lastname = ?, birthday = ?, address = ?, phoneNumber = ?,'+
+                'driverLicence = ? WHERE idusers = ?', [firstname, lastname, birthday, address, phoneNumber, driverLicence, req.params.id])
+                .then((resultUpdate) => {
+                    res.json(success(resultUpdate))
+                })
+                .catch((err) => res.json(error(err.message)))
+                }
+            })
+            .catch((err) => console.log(err))
+        }else{
+            res.json(error(new Error("Can't not use this method").message));
+        }
+    }
+}
+
 
