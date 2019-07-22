@@ -1,8 +1,10 @@
 //Module
 import express from 'express';
 import bodyParser from 'body-parser';
+import sqlFixtures from 'sql-fixtures';
 import morgan from 'morgan';
 import mariadb from 'mariadb';
+import mysql from 'mysql'; //pour les fixtures
 
 //Module créer par nous
 import {rootApi, port, secret} from '../src/config';
@@ -36,11 +38,11 @@ async function asyncConnection() {
         app.use(bodyParser.urlencoded({extended: true}));
 
         app.use(morgan('dev'));
-
+      
         const mariadbConn = (req, res, next)=> {
             req.conn = conn;
             next()
-        }
+        };
 
         //Routes
         app.use(`${rootApi}/offer`, mariadbConn,anonymeRouteOffers);
