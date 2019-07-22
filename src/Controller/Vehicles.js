@@ -36,7 +36,7 @@ export function editVehicles() { //
     return (req, res) => {
         const decodeToken = jwt.decode(req.headers['x-access-token']);
 
-        if (decodeToken.role !== "ROLE_ADMIN" || decodeToken.role !== "ROLE_POPRIO") {
+        if (decodeToken.role.indexOf("ROLE_ADMIN") || decodeToken.role.indexOf("ROLE_POPRIO")) {
             res.json(error(new Error("Can't not use this method").message));
         } else {
             req.sql.query("UPDATE vehicle SET brand = ?, model = ?, serialNumber = ?,color = ?" +
@@ -57,7 +57,7 @@ export function addVehicles() { //
     return (req, res) => {
         const decodeToken = jwt.decode(req.headers['x-access-token']);
 
-        if (decodeToken.role !== "ROLE_ADMIN" || decodeToken.role !== "ROLE_POPRIO") {
+        if (decodeToken.role.indexOf("ROLE_ADMIN") || decodeToken.role.indexOf("ROLE_POPRIO")) {
             res.json(error(new Error("Can't not use this method").message));
         } else {
             let brand = req.body.brand;
@@ -87,7 +87,7 @@ export function outVehiclesOfList(conn) { //Mettre un soft Delete et sauvergarde
     return (req, res) => {
         const decodeToken = jwt.decode(req.headers['x-access-token']);
 
-        if (decodeToken.role !== "ROLE_ADMIN" || decodeToken.role !== "ROLE_POPRIO") {
+        if (decodeToken.role.indexOf("ROLE_ADMIN") || decodeToken.role.indexOf("ROLE_POPRIO")) {
             res.json(error(new Error("Can't not use this method").message));
         } else {
             req.sql.query("DELETE FROM `vehicle` WHERE idvehicle = ?", req.params.id)

@@ -15,7 +15,7 @@ export function addUser() {
                     let nullField = false;
 
                     for (let key of Object.entries(req.body)) {
-                        if (key[1] == "" && key[0] != 'pointFidelity' || key[1] == null && key[0] != 'pointFidelity') {
+                        if (key[1] === "" && key[0] !== 'pointFidelity' || key[1] == null && key[0] !== 'pointFidelity') {
                             nullField = true;
                         }
                     }
@@ -96,15 +96,18 @@ export function seeInformationAccount() {
 export function updateInformationAccount() {
     return (req, res) => {
         const decodeToken = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
-        if(decodeToken.indexOf('ROLE_USER') != -1 || decodeToken.indexOf('ROLE_POPRIO') != -1){
+      
+        if(decodeToken.indexOf('ROLE_USER') != -1 || decodeToken.indexOf('ROLE_POPRIO') != -1) {
+            res.json(error(new Error("Can't not use this method").message));
+        } else {
             req.sql.query('SELECT firstname, lastname, birthday, address, phoneNumber, driverLicence FROM users WHERE username = ?', [decodeToken.username])
             .then((resultSelect) => {
-                let firstname = req.body.firstname == '' ?  resultSelect[0].firstname : req.body.firstname ;
-                let lastname = req.body.lastname == '' ?  resultSelect[0].lastname : req.body.lastname ;
-                let birthday = req.body.birthday == '' ?  resultSelect[0].birthday : req.body.birthday;
-                let address = req.body.address == '' ?  resultSelect[0].address : req.body.address;
-                let phoneNumber = req.body.phoneNumber == '' ? resultSelect[0].phoneNumber : req.body.phoneNumber;
-                let driverLicence = req.body.driverLicence == '' ? resultSelect[0].driverLicence : req.body.driverLicence;
+                let firstname = req.body.firstname === '' ?  resultSelect[0].firstname : req.body.firstname ;
+                let lastname = req.body.lastname === '' ?  resultSelect[0].lastname : req.body.lastname ;
+                let birthday = req.body.birthday === '' ?  resultSelect[0].birthday : req.body.birthday;
+                let address = req.body.address === '' ?  resultSelect[0].address : req.body.address;
+                let phoneNumber = req.body.phoneNumber === '' ? resultSelect[0].phoneNumber : req.body.phoneNumber;
+                let driverLicence = req.body.driverLicence === '' ? resultSelect[0].driverLicence : req.body.driverLicence;
                 
                 req.sql.query('UPDATE users SET firstname = ?, lastname = ?, birthday = ?, address = ?, phoneNumber = ?,'+
                 'driverLicence = ? WHERE username = ?', [firstname, lastname, birthday, address, phoneNumber, driverLicence, decodeToken.username])
