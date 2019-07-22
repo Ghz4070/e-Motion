@@ -5,7 +5,7 @@ export function allLocations() {
     return (req, res) => {
         const decodeToken = jwt.decode(req.headers['x-access-token']);
 
-        if (decodeToken.role.indexOf("ROLE_ADMIN" || "ROLE_POPRIO")) {
+        if (decodeToken.role.indexOf("ROLE_ADMIN") || decodeToken.role.indexOf("ROLE_POPRIO")) {
             res.json(error(new Error("Can't not use this method").message));
         } else {
             req.sql.query(' SELECT * FROM offers ' +
@@ -22,7 +22,7 @@ export function getOneLocation() {
     return (req, res) => {
         const decodeToken = jwt.decode(req.headers['x-access-token']);
 
-        if (decodeToken.role.indexOf("ROLE_ADMIN" || "ROLE_POPRIO")) {
+        if (decodeToken.role.indexOf("ROLE_ADMIN") || decodeToken.role.indexOf("ROLE_POPRIO")) {
             res.json(error(new Error("Can't not use this method").message));
         } else {
             req.sql.query(' SELECT * FROM offers ' +
