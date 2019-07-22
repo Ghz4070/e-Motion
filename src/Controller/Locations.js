@@ -3,28 +3,26 @@ import jwt from "jsonwebtoken";
 
 export function allLocations() {
     return (req, res) => {
-        const decodeToken = jwt.decode(req.headers['x-access-token']);
+        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
-        if (decodeToken.role.indexOf("ROLE_ADMIN") || decodeToken.role.indexOf("ROLE_POPRIO")) {
-            res.json(error(new Error("Can't not use this method").message));
-        } else {
+        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
             req.sql.query(' SELECT * FROM offers ' +
                 ' LEFT JOIN location ON offers.location_idlocation = location.idlocation ')
                 .then((result) => {
                     res.json(success(result));
                 })
                 .catch((err) => res.json(error(err.message)));
+        } else {
+            res.json(error(new Error("Can't not use this method").message));
         }
     }
 }
 
 export function getOneLocation() {
     return (req, res) => {
-        const decodeToken = jwt.decode(req.headers['x-access-token']);
+        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
-        if (decodeToken.role.indexOf("ROLE_ADMIN") || decodeToken.role.indexOf("ROLE_POPRIO")) {
-            res.json(error(new Error("Can't not use this method").message));
-        } else {
+        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
             req.sql.query(' SELECT * FROM offers ' +
                 ' LEFT JOIN location ON offers.location_idlocation = location.idlocation ' +
                 ' WHERE offers.idoffers = ?', req.params.id)
@@ -33,6 +31,8 @@ export function getOneLocation() {
                     console.log(result)
                 })
                 .catch((err) => res.json(err.message));
+        } else {
+            res.json(error(new Error("Can't not use this method").message));
         }
     }
 }
