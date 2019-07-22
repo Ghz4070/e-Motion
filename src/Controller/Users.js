@@ -9,6 +9,7 @@ export function addUser() {
         req.sql.query('SELECT * FROM users WHERE username = ? UNION SELECT * FROM users WHERE email = ?', [req.body.username, req.body.email])
             .then((resultSelectUsername) => {
                 if (resultSelectUsername.length > 0) {
+                    console.log(resultSelectUsername)
                     res.json(error('This username is used'));
                 } else {
                     let nullField = false;
