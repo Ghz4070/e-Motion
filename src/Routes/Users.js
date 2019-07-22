@@ -1,24 +1,23 @@
-import {
-    addUser,
-    login,
-    allUsers,
-    logout
-} from '../Controller/Users';
-import {rootApi} from '../config'
-import {checkToken} from '../middleware'
+import { addUser, login, allUsers, logout, seeInformationAccount, updateInformationAccount } from '../Controller/Users';
+import { checkToken } from '../middleware'
+import express from 'express';
 
-export function routesUsers(app, conn, ProtectedRoutes) {
-    ProtectedRoutes.use(checkToken);
-
-    app.route(rootApi + '/user/add')
-        .post(addUser(conn));
-
-    app.route(rootApi + '/user/login')
-        .get(login(conn));
-
-    ProtectedRoutes.route('/user/all')
-        .get(allUsers(conn));
-    //ProtectedRoutes.get('/user/logout', logout())
-
-    app.use(rootApi, ProtectedRoutes);
+const db = (req, res, next) => {
+    req.sql = req.conn;
+    next();
 }
+
+export const anonymeRouteUsers = express.Router();
+export const adminRouteUsers = express.Router();
+
+anonymeRouteUsers.route('/add')
+    .post(db,addUser())
+anonymeRouteUsers.route('/login')
+    .get(db,login())
+adminRouteUsers.route('/all')
+    .get(db,checkToken,allUsers())
+adminRouteUsers.route('/')
+    .get(db, checkToken, seeInformationAccount())
+adminRouteUsers.route('/modify')
+    .patch(db, checkToken, updateInformationAccount())
+

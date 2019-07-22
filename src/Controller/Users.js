@@ -4,9 +4,9 @@ import jwt from 'jsonwebtoken';
 import {success, error} from '../returnjson';
 import {secret} from '../config';
 
-export function addUser(conn) {
+export function addUser() {
     return (req, res) => {
-        conn.query('SELECT * FROM users WHERE username = ? UNION SELECT * FROM users WHERE email = ?', [req.body.username, req.body.email])
+        req.sql.query('SELECT * FROM users WHERE username = ? UNION SELECT * FROM users WHERE email = ?', [req.body.username, req.body.email])
             .then((resultSelectUsername) => {
                 if (resultSelectUsername.length > 0) {
                     res.json(error('This username is used'));
@@ -26,7 +26,7 @@ export function addUser(conn) {
                             .then((salt) => {
                                 bcrypt.hash(req.body.password, salt)
                                     .then((hash) => {
-                                        conn.query('INSERT INTO users (firstname, lastname, birthday, address, phoneNumber, driverLicence, roles,' +
+                                        req.sql.query('INSERT INTO users (firstname, lastname, birthday, address, phoneNumber, driverLicence, roles,' +
                                             'password, email, username) VALUES (?,?,?,?,?,?,?,?,?,?)',
                                             [req.body.firstname, req.body.lastname, req.body.birthday, req.body.address, req.body.phoneNumber, req.body.driverLicence,
                                                 '[ROLE_USER]', hash, req.body.email, req.body.username])
@@ -45,9 +45,9 @@ export function addUser(conn) {
     }
 }
 
-export function login(conn) {
+export function login() {
     return (req, res) => {
-        conn.query('SELECT username, password FROM users WHERE username = ?', req.body.username)
+        req.sql.query('SELECT username, password, roles FROM users WHERE username = ?', req.body.username)
             .then((result) => {
                 if (result.length < 1) {
                     res.json(error('Unknown username'));
@@ -55,7 +55,7 @@ export function login(conn) {
                     bcrypt.compare(req.body.password, result[0].password)
                         .then((passwordDecrypted) => {
                             if (passwordDecrypted && req.body.username === result[0].username) {
-                                let token = jwt.sign({username: req.body.username}, secret, {
+                                let token = jwt.sign({username: req.body.username, role:result[0].roles}, secret, {
                                     algorithm: 'HS256',
                                     expiresIn: '24h'
                                 }, (err, encoded) => {
@@ -73,9 +73,51 @@ export function login(conn) {
     }
 }
 
-export function allUsers(conn) {
+
+export function seeInformationAccount() {
     return (req, res) => {
-        conn.query('SELECT * FROM users')
+        const decodeToken = jwt.decode(req.headers['x-access-token']);
+        console.log(decodeToken)
+        req.sql.query('SELECT * FROM users WHERE username = ?', [decodeToken.username])
+        .then((resultQuery) => {
+            res.json(success(resultQuery));
+        })
+        .catch((err) => res.json(error(err)))
+    }
+}
+
+export function updateInformationAccount() {
+    return (req, res) => {
+        const decodeToken = jwt.decode(req.headers['x-access-token']);
+        
+        if(decodeToken.role == "ROLE_USER" || decodeToken.role == "ROLE_POPRIO"){
+            res.json(error(new Error("Can't not use this method").message));
+        }else{
+            req.sql.query('SELECT firstname, lastname, birthday, address, phoneNumber, driverLicence FROM users WHERE username = ?', [decodeToken.username])
+            .then((resultSelect) => {
+                let firstname = req.body.firstname == '' ?  resultSelect[0].firstname : req.body.firstname ;
+                let lastname = req.body.lastname == '' ?  resultSelect[0].lastname : req.body.lastname ;
+                let birthday = req.body.birthday == '' ?  resultSelect[0].birthday : req.body.birthday;
+                let address = req.body.address == '' ?  resultSelect[0].address : req.body.address;
+                let phoneNumber = req.body.phoneNumber == '' ? resultSelect[0].phoneNumber : req.body.phoneNumber;
+                let driverLicence = req.body.driverLicence == '' ? resultSelect[0].driverLicence : req.body.driverLicence;
+                
+                req.sql.query('UPDATE users SET firstname = ?, lastname = ?, birthday = ?, address = ?, phoneNumber = ?,'+
+                'driverLicence = ?', [firstname, lastname, birthday, address, phoneNumber, driverLicence])
+                .then((resultUpdate) => {
+                    res.json(success(resultUpdate))
+                })
+                .catch((err) => res.json(error(err.message)))
+            })
+            .catch((err) => res.json(error(err.message)))
+        }
+    }
+}
+
+
+export function allUsers() {
+    return (req, res) => {
+        req.sql.query('SELECT * FROM users')
             .then((result) => {
                 res.json(success(result))
             })

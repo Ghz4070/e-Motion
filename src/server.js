@@ -8,14 +8,14 @@ import mysql from 'mysql'; //pour les fixtures
 
 //Module créer par nous
 import {rootApi, port, secret} from '../src/config';
-import {success, error} from '../src/returnjson';
 import {Host, User, Password, Database} from '../src/database';
 
 //Routes import
-import {routesUsers} from '../src/Routes/Users'
-import {routesVehicles} from "./Routes/Vehicles";
-import {routesOffers} from './Routes/Offers';
-import {routesLocation} from "./Routes/Locations";
+import { anonymeRouteUsers, adminRouteUsers } from '../src/Routes/Users'
+import { anonymeRouteVehicles, adminRouteVehicles } from "./Routes/Vehicles";
+import { anonymeRouteOffers, adminRouteOffers } from './Routes/Offers';
+import { adminRouteLocations } from "./Routes/Locations";
+
 
 const pool = mariadb.createPool({
     host: Host,
@@ -31,7 +31,7 @@ async function asyncConnection() {
         console.log('hello');
 
         const app = express();
-        const ProtectedRoutes = express.Router();
+        //const ProtectedRoutes = express.Router();
 
         //Middleware
         app.use(bodyParser.json());
@@ -74,7 +74,21 @@ async function asyncConnection() {
 
         sqlFixtures.create(dbConfig, dataSpec, function(err, result) {
         });
+      
+        const mariadbConn = (req, res, next)=> {
+            req.conn = conn;
+            next()
+        }
 
+        //Routes
+        app.use(`${rootApi}/offer`, mariadbConn,anonymeRouteOffers);
+        app.use(`${rootApi}/admin/offer`, mariadbConn,adminRouteOffers);
+        app.use(`${rootApi}/vehicle`, mariadbConn, anonymeRouteVehicles);
+        app.use(`${rootApi}/admin/vehicle`, mariadbConn,adminRouteVehicles);
+        app.use(`${rootApi}/admin/location`, mariadbConn ,adminRouteLocations);
+        app.use(`${rootApi}/user`, mariadbConn,anonymeRouteUsers);
+        app.use(`${rootApi}/admin/user`, mariadbConn, adminRouteUsers);
+ 
         app.listen(port, () => console.log(`Server running in port ${port}`))
     } catch (err) {
         console.log(err);

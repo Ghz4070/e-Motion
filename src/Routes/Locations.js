@@ -2,18 +2,18 @@ import {
     allLocations,
     getOneLocation,
 } from '../Controller/Locations';
-import {rootApi} from '../config';
-import {checkToken} from '../middleware';
 
-export function routesLocation(app, conn, ProtectedRoutes) {
-    ProtectedRoutes.use(checkToken);
+import { checkToken } from '../middleware';
+import express from 'express';
 
-    ProtectedRoutes.route('/locations/all')
-        .get(allLocations(conn));
-    app.use(rootApi, ProtectedRoutes);
+export const adminRouteLocations = express.Router();
 
-    ProtectedRoutes.route('/locations/:id')
-        .get(getOneLocation(conn));
 
-    app.use(rootApi, ProtectedRoutes);
+const db = (req, res, next) => {
+    req.sql = req.conn;
+    next();
 }
+   
+adminRouteLocations.route('/all')
+    .get(db,checkToken,allLocations())
+
