@@ -27,10 +27,9 @@ export function postOffer() {
     return (req, res) => {
         const decodeToken = jwt.decode(req.headers['x-access-token']);
 
-        if (decodeToken.role != "ROLE_ADMIN" || decodeToken.role != "ROLE_POPRIO") {
+        if (decodeToken.role.indexOf("ROLE_ADMIN") || decodeToken.role.indexOf("ROLE_POPRIO")) {
             res.json(error(new Error("Can't not use this method").message));
-        }
-        else {
+        } else {
             req.sql.query('INSERT INTO offers (title, price, description, penality, nbKm, pointFidelityOffers) VALUES (?,?,?,?,?,?)',
                 [req.body.title, req.body.price, req.body.description, req.body.penality, req.body.nbKm, req.body.pointFidelityOffers])
                 .then((result) => {
@@ -43,10 +42,9 @@ export function postOffer() {
 
 export function removeOffer() {
     return (req, res) => {
-        if (decodeToken.role != "ROLE_ADMIN" || decodeToken.role != "ROLE_POPRIO") {
+        if (decodeToken.role.indexOf("ROLE_ADMIN") || decodeToken.role.indexOf("ROLE_POPRIO")) {
             res.json(error(new Error("Can't not use this method").message));
-        }
-        else {
+        } else {
             req.sql.query('DELETE FROM offers WHERE idoffers = ?', req.params.id)
                 .then((result) => {
                     res.json(success(result));
@@ -58,10 +56,9 @@ export function removeOffer() {
 
 export function updateOffer() {
     return (req, res) => {
-        if (decodeToken.role != "ROLE_ADMIN" || decodeToken.role != "ROLE_POPRIO") {
+        if (decodeToken.role.indexOf("ROLE_ADMIN") || decodeToken.role.indexOf("ROLE_POPRIO")) {
             res.json(error(new Error("Can't not use this method").message));
-        }
-        else {
+        } else {
             req.sql.query('SELECT * FROM offers WHERE idoffers= ?', req.params.id)
                 .then((result2) => {
                     let title = result2[0].title;
@@ -71,22 +68,22 @@ export function updateOffer() {
                     let nbKm = result2[0].nbKm;
                     let pointFidelityOffers = result2[0].pointFidelityOffers;
 
-                    if (req.body.title != undefined) {
+                    if (req.body.title !== undefined) {
                         title = req.body.title
                     }
-                    if (req.body.price != undefined) {
+                    if (req.body.price !== undefined) {
                         price = req.body.price
                     }
-                    if (req.body.description != undefined) {
+                    if (req.body.description !== undefined) {
                         description = req.body.description
                     }
-                    if (req.body.penality != undefined) {
+                    if (req.body.penality !== undefined) {
                         penality = req.body.penality
                     }
-                    if (req.body.nbKm != undefined) {
+                    if (req.body.nbKm !== undefined) {
                         nbKm = req.body.nbKm
                     }
-                    if (req.body.pointFidelityOffers != undefined) {
+                    if (req.body.pointFidelityOffers !== undefined) {
                         pointFidelityOffers = req.body.pointFidelityOffers
                     }
                     req.sql.query('UPDATE offers SET title=?, price=?, description=?, penality=?, nbKm=?, pointFidelityOffers=? WHERE idoffers = ?',
