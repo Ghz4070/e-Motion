@@ -34,11 +34,9 @@ export function getVehicleById() { // get vehicle by id
 
 export function editVehicles() { //
     return (req, res) => {
-        const decodeToken = jwt.decode(req.headers['x-access-token']);
+        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
-        if (decodeToken.role !== "ROLE_ADMIN" || decodeToken.role !== "ROLE_POPRIO") {
-            res.json(error(new Error("Can't not use this method").message));
-        } else {
+        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
             req.sql.query("UPDATE vehicle SET brand = ?, model = ?, serialNumber = ?,color = ?" +
                 " ,licensePlate = ?, nbKm = ? , datePurchase = ?, price = ?" +
                 " ,available = ?, lising = ?, offers_idoffers = ? WHERE idvehicle = ?",
@@ -49,17 +47,17 @@ export function editVehicles() { //
                     res.json(success(result))
                 })
                 .catch((err) => res.json(error(err.message)));
+        } else {
+            res.json(error(new Error("Can't not use this method").message));
         }
     }
 }
 
 export function addVehicles() { //
     return (req, res) => {
-        const decodeToken = jwt.decode(req.headers['x-access-token']);
+        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
-        if (decodeToken.role !== "ROLE_ADMIN" || decodeToken.role !== "ROLE_POPRIO") {
-            res.json(error(new Error("Can't not use this method").message));
-        } else {
+        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
             let brand = req.body.brand;
             let model = req.body.model;
             let serialNumber = req.body.serialNumber;
@@ -79,22 +77,24 @@ export function addVehicles() { //
                     res.json(success(result))
                 })
                 .catch((err) => res.json(error(err.message)));
+        } else {
+            res.json(error(new Error("Can't not use this method").message));
         }
     }
 }
 
 export function outVehiclesOfList(conn) { //Mettre un soft Delete et sauvergarder les modifications (historique) des actions effectuer
     return (req, res) => {
-        const decodeToken = jwt.decode(req.headers['x-access-token']);
+        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
-        if (decodeToken.role !== "ROLE_ADMIN" || decodeToken.role !== "ROLE_POPRIO") {
-            res.json(error(new Error("Can't not use this method").message));
-        } else {
+        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
             req.sql.query("DELETE FROM `vehicle` WHERE idvehicle = ?", req.params.id)
                 .then((result) => {
                     res.json(success(result))
                 })
                 .catch((err) => res.json(error(err.message)));
+        } else {
+            res.json(error(new Error("Can't not use this method").message));
         }
     }
 }

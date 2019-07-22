@@ -15,7 +15,7 @@ export function addUser() {
                     let nullField = false;
 
                     for (let key of Object.entries(req.body)) {
-                        if (key[1] == "" && key[0] != 'pointFidelity' || key[1] == null && key[0] != 'pointFidelity') {
+                        if (key[1] == "" && key[0] !== 'pointFidelity' || key[1] == null && key[0] !== 'pointFidelity') {
                             nullField = true;
                         }
                     }
@@ -62,8 +62,8 @@ export function login() {
                 } else {
                     bcrypt.compare(req.body.password, result[0].password)
                         .then((passwordDecrypted) => {
-                            if (passwordDecrypted && req.body.username === result[0].username) {
-                                let token = jwt.sign({username: req.body.username, role:result[0].roles}, secret, {
+                            if (passwordDecrypted && req.body.username == result[0].username) {
+                                let token = jwt.sign({username: req.body.username, role: result[0].roles}, secret, {
                                     algorithm: 'HS256',
                                     expiresIn: '24h'
                                 }, (err, encoded) => {
@@ -85,36 +85,40 @@ export function login() {
 export function seeInformationAccount() {
     return (req, res) => {
         const decodeToken = jwt.decode(req.headers['x-access-token']);
+
         req.sql.query('SELECT * FROM users WHERE username = ?', [decodeToken.username])
-        .then((resultQuery) => {
-            res.json(success(resultQuery));
-        })
-        .catch((err) => res.json(error(err)))
+            .then((resultQuery) => {
+                res.json(success(resultQuery));
+            })
+            .catch((err) => res.json(error(err)))
     }
 }
 
 export function updateInformationAccount() {
     return (req, res) => {
-        const decodeToken = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
-        if(decodeToken.indexOf('ROLE_USER') != -1 || decodeToken.indexOf('ROLE_POPRIO') != -1){
-            req.sql.query('SELECT firstname, lastname, birthday, address, phoneNumber, driverLicence FROM users WHERE username = ?', [decodeToken.username])
-            .then((resultSelect) => {
-                let firstname = req.body.firstname == '' ?  resultSelect[0].firstname : req.body.firstname ;
-                let lastname = req.body.lastname == '' ?  resultSelect[0].lastname : req.body.lastname ;
-                let birthday = req.body.birthday == '' ?  resultSelect[0].birthday : req.body.birthday;
-                let address = req.body.address == '' ?  resultSelect[0].address : req.body.address;
-                let phoneNumber = req.body.phoneNumber == '' ? resultSelect[0].phoneNumber : req.body.phoneNumber;
-                let driverLicence = req.body.driverLicence == '' ? resultSelect[0].driverLicence : req.body.driverLicence;
-                
-                req.sql.query('UPDATE users SET firstname = ?, lastname = ?, birthday = ?, address = ?, phoneNumber = ?,'+
-                'driverLicence = ? WHERE username = ?', [firstname, lastname, birthday, address, phoneNumber, driverLicence, decodeToken.username])
-                .then((resultUpdate) => {
-                    res.json(success(resultUpdate))
+        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
+        const decodeTokenUsername = jwt.decode(req.headers['x-access-token']);
+
+        if (decodeTokenRole.indexOf('ROLE_USER') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
+            req.sql.query('SELECT firstname, lastname, birthday, address, phoneNumber, driverLicence FROM users WHERE username = ?', [decodeTokenUsername.username])
+                .then((resultSelect) => {
+                    console.log(resultSelect)
+                    let firstname = req.body.firstname == '' ? resultSelect[0].firstname : req.body.firstname;
+                    let lastname = req.body.lastname == '' ? resultSelect[0].lastname : req.body.lastname;
+                    let birthday = req.body.birthday == '' ? resultSelect[0].birthday : req.body.birthday;
+                    let address = req.body.address == '' ? resultSelect[0].address : req.body.address;
+                    let phoneNumber = req.body.phoneNumber == '' ? resultSelect[0].phoneNumber : req.body.phoneNumber;
+                    let driverLicence = req.body.driverLicence == '' ? resultSelect[0].driverLicence : req.body.driverLicence;
+
+                    req.sql.query('UPDATE users SET firstname = ?, lastname = ?, birthday = ?, address = ?, phoneNumber = ?,' +
+                        'driverLicence = ? WHERE username = ?', [firstname, lastname, birthday, address, phoneNumber, driverLicence, decodeTokenUsername.username])
+                        .then((resultUpdate) => {
+                            res.json(success(resultUpdate))
+                        })
+                        .catch((err) => res.json(error(err.message)))
                 })
                 .catch((err) => res.json(error(err.message)))
-            })
-            .catch((err) => res.json(error(err.message)))
-        }else{
+        } else {
             res.json(error(new Error("Can't not use this method").message));
         }
     }
@@ -122,47 +126,49 @@ export function updateInformationAccount() {
 
 export function deleteAccount() {
     return (req, res) => {
-        const decodeToken = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
-        if(decodeToken.indexOf('ROLE_ADMIN') != -1){
+        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
+        const decodeTokenUsername = jwt.decode(req.headers['x-access-token']);
+
+        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1) {
             req.sql.query('SELECT username FROM users WHERE idusers = ?', req.params.id)
-            .then((resultSelect) => {
-                if(resultSelect.length < 1){
-                    res.json(error(new Error("Unknown id").message))
-                }
-                else{
-                    if(decodeToken.username == resultSelect[0].username){
-                        res.json(error(new Error('You cant delete your account').message))
-                    }else{
-                        req.sql.query('DELETE FROM users WHERE idusers = ?', req.params.id)
-                        .then((resultDelete) => {
-                            res.json(success(resultDelete));
-                        })
-                        .catch((err) => res.json(error(err.message)))
+                .then((resultSelect) => {
+                    if (resultSelect.length < 1) {
+                        res.json(error(new Error("Unknown id").message))
+                    } else {
+                        if (decodeTokenUsername.username == resultSelect[0].username) {
+                            res.json(error(new Error('You cant delete your account').message))
+                        } else {
+                            req.sql.query('DELETE FROM users WHERE idusers = ?', req.params.id)
+                                .then((resultDelete) => {
+                                    res.json(success(resultDelete));
+                                })
+                                .catch((err) => res.json(error(err.message)))
+                        }
                     }
-                }
-            })
-            .catch((err) => res.json(error(err.message)))
-        }else{
+                })
+                .catch((err) => res.json(error(err.message)))
+        } else {
             res.json(error(new Error('You are not admin').message))
         }
-        
+
     }
 }
 
 export function userById() {
     return (req, res) => {
         const decodeToken = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
-        if(decodeToken.indexOf('ROLE_ADMIN') != -1){
+
+        if (decodeToken.indexOf('ROLE_ADMIN') != -1) {
             req.sql.query('SELECT * FROM users WHERE idusers = ?', req.params.id)
-            .then((resultSelect) => {
-                if(resultSelect.length < 1){
-                    res.json(error(new Error('Unknown ID').message));
-                }else{
-                    res.json(success(resultSelect));
-                }
-            })
-            .catch((err) => res.json(error(err.message)))
-        }else{
+                .then((resultSelect) => {
+                    if (resultSelect.length < 1) {
+                        res.json(error(new Error('Unknown ID').message));
+                    } else {
+                        res.json(success(resultSelect));
+                    }
+                })
+                .catch((err) => res.json(error(err.message)))
+        } else {
             res.json(error(new Error('You cant to use this method you are not admin').message))
         }
     }
@@ -172,46 +178,46 @@ export function userById() {
 export function allUsers() {
     return (req, res) => {
         const decodeToken = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
-        if(decodeToken.indexOf('ROLE_ADMIN') != -1){
+        if (decodeToken.indexOf('ROLE_ADMIN') != -1) {
             req.sql.query('SELECT * FROM users')
-            .then((result) => {
-                res.json(success(result));
-            })
-            .catch((err) => res.json(error(err)))
-        }else{
+                .then((result) => {
+                    res.json(success(result));
+                })
+                .catch((err) => res.json(error(err)))
+        } else {
             res.json(error(new Error('You cant use this method, you are not admin')));
         }
-       
+
     }
 }
 
 export function updateInformationAccountForAdmin() {
     return (req, res) => {
         const decodeToken = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
-        
-        if(decodeToken.indexOf('ROLE_ADMIN') != -1){
+
+        if (decodeToken.indexOf('ROLE_ADMIN') !== -1) {
             req.sql.query('SELECT firstname, lastname, birthday, address, phoneNumber, driverLicence FROM users WHERE idusers = ?', [req.params.id])
-            .then((resultSelect) => {
-                if(resultSelect.length < 1){
-                    res.json(error(new Error('ID Unknown').message))
-                }else{
-                    let firstname = req.body.firstname == '' || req.body.firstname == undefined ?  resultSelect[0].firstname : req.body.firstname ;
-                let lastname = req.body.lastname == '' || req.body.lastname == undefined ?  resultSelect[0].lastname : req.body.lastname ;
-                let birthday = req.body.birthday == '' || req.body.birthday == undefined ?  resultSelect[0].birthday : req.body.birthday;
-                let address = req.body.address == '' || req.body.address == undefined ?  resultSelect[0].address : req.body.address;
-                let phoneNumber = req.body.phoneNumber == '' || req.body.phoneNumber == undefined ? resultSelect[0].phoneNumber : req.body.phoneNumber;
-                let driverLicence = req.body.driverLicence == '' || req.body.driverLicence == undefined  ? resultSelect[0].driverLicence : req.body.driverLicence;
-                console.log(lastname)
-                req.sql.query('UPDATE users SET firstname = ?, lastname = ?, birthday = ?, address = ?, phoneNumber = ?,'+
-                'driverLicence = ? WHERE idusers = ?', [firstname, lastname, birthday, address, phoneNumber, driverLicence, req.params.id])
-                .then((resultUpdate) => {
-                    res.json(success(resultUpdate))
+                .then((resultSelect) => {
+                    if (resultSelect.length < 1) {
+                        res.json(error(new Error('ID Unknown').message))
+                    } else {
+                        let firstname = req.body.firstname == '' || req.body.firstname == undefined ? resultSelect[0].firstname : req.body.firstname;
+                        let lastname = req.body.lastname == '' || req.body.lastname == undefined ? resultSelect[0].lastname : req.body.lastname;
+                        let birthday = req.body.birthday == '' || req.body.birthday == undefined ? resultSelect[0].birthday : req.body.birthday;
+                        let address = req.body.address == '' || req.body.address == undefined ? resultSelect[0].address : req.body.address;
+                        let phoneNumber = req.body.phoneNumber == '' || req.body.phoneNumber == undefined ? resultSelect[0].phoneNumber : req.body.phoneNumber;
+                        let driverLicence = req.body.driverLicence == '' || req.body.driverLicence == undefined ? resultSelect[0].driverLicence : req.body.driverLicence;
+                        console.log(lastname)
+                        req.sql.query('UPDATE users SET firstname = ?, lastname = ?, birthday = ?, address = ?, phoneNumber = ?,' +
+                            'driverLicence = ? WHERE idusers = ?', [firstname, lastname, birthday, address, phoneNumber, driverLicence, req.params.id])
+                            .then((resultUpdate) => {
+                                res.json(success(resultUpdate))
+                            })
+                            .catch((err) => res.json(error(err.message)))
+                    }
                 })
-                .catch((err) => res.json(error(err.message)))
-                }
-            })
-            .catch((err) => console.log(err))
-        }else{
+                .catch((err) => console.log(err))
+        } else {
             res.json(error(new Error("Can't not use this method").message));
         }
     }
