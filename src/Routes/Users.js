@@ -1,4 +1,4 @@
-import { addUser, login, allUsers, logout, seeInformationAccount, updateInformationAccount } from '../Controller/Users';
+import { addUser, login, allUsers, logout, seeInformationAccount, updateInformationAccount, deleteAccount, userById, updateInformationAccountForAdmin } from '../Controller/Users';
 import { checkToken } from '../middleware'
 import express from 'express';
 
@@ -20,4 +20,10 @@ adminRouteUsers.route('/')
     .get(db, checkToken, seeInformationAccount())
 adminRouteUsers.route('/modify')
     .patch(db, checkToken, updateInformationAccount())
+adminRouteUsers.route('/delete/:id')
+    .delete(db, checkToken, deleteAccount())
+adminRouteUsers.route('/:id')
+    .get(db, checkToken, userById())
+adminRouteUsers.route('/update/:id')
+    .patch(db, checkToken, updateInformationAccountForAdmin())
 
