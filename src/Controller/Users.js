@@ -27,10 +27,17 @@ export function addUser() {
                             .then((salt) => {
                                 bcrypt.hash(req.body.password, salt)
                                     .then((hash) => {
+                                        let role = {
+                                            role: [
+                                                'ROLE_USER',
+                                                'ROLE_POPRIO',
+                                                'ROLE_ADMIN'
+                                            ]
+                                        };
                                         req.sql.query('INSERT INTO users (firstname, lastname, birthday, address, phoneNumber, driverLicence, roles,' +
                                             'password, email, username) VALUES (?,?,?,?,?,?,?,?,?,?)',
                                             [req.body.firstname, req.body.lastname, req.body.birthday, req.body.address, req.body.phoneNumber, req.body.driverLicence,
-                                                'ROLE_USER', hash, req.body.email, req.body.username])
+                                                role, hash, req.body.email, req.body.username])
                                             .then((resultInsert) => {
                                                 res.json(success(resultInsert));
                                             })
@@ -88,8 +95,8 @@ export function seeInformationAccount() {
 
 export function updateInformationAccount() {
     return (req, res) => {
-        const decodeToken = jwt.decode(req.headers['x-access-token']);
-        if(decodeToken.role == "ROLE_USER" || decodeToken.role == "ROLE_POPRIO"){
+        const decodeToken = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
+        if(decodeToken.indexOf('ROLE_USER') != -1 || decodeToken.indexOf('ROLE_POPRIO') != -1){
             req.sql.query('SELECT firstname, lastname, birthday, address, phoneNumber, driverLicence FROM users WHERE username = ?', [decodeToken.username])
             .then((resultSelect) => {
                 let firstname = req.body.firstname == '' ?  resultSelect[0].firstname : req.body.firstname ;
@@ -115,8 +122,8 @@ export function updateInformationAccount() {
 
 export function deleteAccount() {
     return (req, res) => {
-        const decodeToken = jwt.decode(req.headers['x-access-token']);
-        if(decodeToken.role == 'ROLE_ADMIN'){
+        const decodeToken = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
+        if(decodeToken.indexOf('ROLE_ADMIN') != -1){
             req.sql.query('SELECT username FROM users WHERE idusers = ?', req.params.id)
             .then((resultSelect) => {
                 if(resultSelect.length < 1){
@@ -144,8 +151,8 @@ export function deleteAccount() {
 
 export function userById() {
     return (req, res) => {
-        const decodeToken = jwt.decode(req.headers['x-access-token']);
-        if(decodeToken.role == 'ROLE_ADMIN'){
+        const decodeToken = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
+        if(decodeToken.indexOf('ROLE_ADMIN') != -1){
             req.sql.query('SELECT * FROM users WHERE idusers = ?', req.params.id)
             .then((resultSelect) => {
                 if(resultSelect.length < 1){
@@ -164,8 +171,8 @@ export function userById() {
 
 export function allUsers() {
     return (req, res) => {
-        const decodeToken = jwt.decode(req.headers['x-access-token']);
-        if(decodeToken.role == 'ROLE_ADMIN'){
+        const decodeToken = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
+        if(decodeToken.indexOf('ROLE_ADMIN') != -1){
             req.sql.query('SELECT * FROM users')
             .then((result) => {
                 res.json(success(result));
@@ -180,8 +187,9 @@ export function allUsers() {
 
 export function updateInformationAccountForAdmin() {
     return (req, res) => {
-        const decodeToken = jwt.decode(req.headers['x-access-token']);
-        if(decodeToken.role == "ROLE_ADMIN"){
+        const decodeToken = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
+        
+        if(decodeToken.indexOf('ROLE_ADMIN') != -1){
             req.sql.query('SELECT firstname, lastname, birthday, address, phoneNumber, driverLicence FROM users WHERE idusers = ?', [req.params.id])
             .then((resultSelect) => {
                 if(resultSelect.length < 1){
