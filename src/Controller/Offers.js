@@ -2,6 +2,7 @@ import {
     success,
     error
 } from '../returnjson';
+import jwt from "jsonwebtoken";
 
 export function getAllOffers() {
     return (req, res) => {
@@ -25,40 +26,42 @@ export function getOfferById() {
 
 export function postOffer() {
     return (req, res) => {
-        const decodeToken = jwt.decode(req.headers['x-access-token']);
+        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
-        if (decodeToken.role.indexOf("ROLE_ADMIN") || decodeToken.role.indexOf("ROLE_POPRIO")) {
-            res.json(error(new Error("Can't not use this method").message));
-        } else {
+        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
             req.sql.query('INSERT INTO offers (title, price, description, penality, nbKm, pointFidelityOffers) VALUES (?,?,?,?,?,?)',
                 [req.body.title, req.body.price, req.body.description, req.body.penality, req.body.nbKm, req.body.pointFidelityOffers])
                 .then((result) => {
                     res.json(success(result));
                 })
                 .catch((err) => res.json(error(err.message)))
+        } else {
+            res.json(error(new Error("Can't not use this method").message));
         }
     }
 }
 
 export function removeOffer() {
     return (req, res) => {
-        if (decodeToken.role.indexOf("ROLE_ADMIN") || decodeToken.role.indexOf("ROLE_POPRIO")) {
-            res.json(error(new Error("Can't not use this method").message));
-        } else {
+        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
+
+        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
             req.sql.query('DELETE FROM offers WHERE idoffers = ?', req.params.id)
                 .then((result) => {
                     res.json(success(result));
                 })
                 .catch((err) => res.json(error(err.message)))
+        } else {
+            res.json(error(new Error("Can't not use this method").message));
         }
     }
 }
 
 export function updateOffer() {
     return (req, res) => {
-        if (decodeToken.role.indexOf("ROLE_ADMIN") || decodeToken.role.indexOf("ROLE_POPRIO")) {
-            res.json(error(new Error("Can't not use this method").message));
-        } else {
+        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
+
+        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
             req.sql.query('SELECT * FROM offers WHERE idoffers= ?', req.params.id)
                 .then((result2) => {
                     let title = result2[0].title;
@@ -93,6 +96,8 @@ export function updateOffer() {
                         })
                         .catch((err) => res.json(error(err.message)))
                 })
+        } else {
+            res.json(error(new Error("Can't not use this method").message));
         }
     }
 }
