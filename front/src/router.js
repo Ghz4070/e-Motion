@@ -7,6 +7,7 @@ import Profile from './pages/Profile.vue';
 import Signup from './pages/Signup.vue';
 import MainNavbar from './layout/MainNavbar.vue';
 import MainFooter from './layout/MainFooter.vue';
+import CreateVehicle from './pages/CreateVehicle.vue';
 
 Vue.use(Router);
 
@@ -38,6 +39,15 @@ export default new Router({
       components: { default: Login, header: MainNavbar },
       props: {
         header: { colorOnScroll: 400 }
+      }
+    },
+    {
+      path: '/createVehicle',
+      name: 'createVehicle',
+      components: {default: CreateVehicle, header: MainNavbar, footer: MainFooter},
+      props: {
+        header: {colorOnScroll: 400},
+        footer: {backgroundColor: 'black'}
       }
     },
     {
