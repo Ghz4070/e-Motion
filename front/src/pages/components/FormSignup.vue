@@ -30,7 +30,7 @@
               <el-date-picker v-model="datePicker"
                   popper-class="date-picker-primary"
                   type="date"
-                  placeholder="Select date">
+                  placeholder="Date de naissance">
                 </el-date-picker>
             </fg-input>
 
@@ -92,7 +92,7 @@
 
           </template>
           <div class="card-footer text-center">
-            <n-button type="neutral" round size="lg"  v-on:click="testData">Get Started</n-button>
+            <n-button type="neutral" round size="lg"  v-on:click="testData">Créer</n-button>
           </div>
         </card>
       </div>
@@ -138,11 +138,14 @@ import axios from 'axios';
               }
           },
           testData: function (){
+            const convertDatepicker = this.datePicker.toISOString();
+            const datePickerLessT = convertDatepicker.replace('T', ' ')
+            const finalDate = datePickerLessT.replace('Z', '')
 
-            axios.get('http://localhost:3000/api/v1/admin/user', {
+            axios.post('http://localhost:3000/api/v1/user/add', {
               firstname: this.firstname,
               lastname: this.lastname,
-              birthday: this.datePicker,
+              birthday: finalDate,
               address: this.address,
               phoneNumber: this.telNumber,
               driverLicence: this.driverNumber,
@@ -152,13 +155,11 @@ import axios from 'axios';
             })
             .then((result) => {
               console.log(result)
+              if(result.data.status == "success"){
+                this.$router.push('/');
+              }
             })
-            .catch((err) => console.log(err))
-            /*
-            console.log(this.checkPassword())
-            console.log(`Le prénom ${this.firstname}, son nom ${this.lastname}, sa date de naissance ${this.datePicker}, son adresse ${this.address}, son numéro de tel ${this.telNumber}
-            , permis ${this.driverNumber}, l'identifiant ${this.username}, mail est ${this.mail}, le mdp ${this.password}, le derniere mdp ${this.passwords}`)
-            */          
+            .catch((err) => console.log(err))        
           }
         },
         components: {

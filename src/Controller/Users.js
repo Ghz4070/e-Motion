@@ -34,7 +34,7 @@ export function addUser() {
                                                 'ROLE_ADMIN'
                                             ]
                                         };
-                                        req.sql.query('INSERT INTO users (firstname, lastname, birthday, address, phoneNumber, driverLicence, roles,' +
+                                        req.sql.query("INSERT INTO users (firstname, lastname, birthday, address, phoneNumber, driverLicence, roles," +
                                             'password, email, username) VALUES (?,?,?,?,?,?,?,?,?,?)',
                                             [req.body.firstname, req.body.lastname, req.body.birthday, req.body.address, req.body.phoneNumber, req.body.driverLicence,
                                                 role, hash, req.body.email, req.body.username])
