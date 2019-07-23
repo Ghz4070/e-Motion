@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `emotion`.`users` (
   `idusers` INT NOT NULL AUTO_INCREMENT,
   `firstname` VARCHAR(45) NOT NULL,
   `lastname` VARCHAR(45) NOT NULL,
-  `birthday` DATETIME NOT NULL,
+  `birthday` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `address` VARCHAR(45) NOT NULL,
   `phoneNumber` INT NOT NULL,
   `driverLicence` VARCHAR(45) NOT NULL,
