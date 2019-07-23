@@ -111,7 +111,7 @@
 <script>
 import { Card, FormGroupInput, Button } from '@/components';
 import {DatePicker} from 'element-ui';
-
+import axios from 'axios';
     export default {
         name:'FormSignup',
         data() {
@@ -125,13 +125,40 @@ import {DatePicker} from 'element-ui';
             username:'',
             mail:'',
             password:'',
-            passwords:''
+            passwords:'',
+            passwordChecked:''
           }
         },
         methods:{
+          checkPassword: function(){
+              if(this.password == this.passwords){
+                return this.passwordChecked = this.password
+              }else{
+                return 'Erreur'
+              }
+          },
           testData: function (){
+
+            axios.get('http://localhost:3000/api/v1/admin/user', {
+              firstname: this.firstname,
+              lastname: this.lastname,
+              birthday: this.datePicker,
+              address: this.address,
+              phoneNumber: this.telNumber,
+              driverLicence: this.driverNumber,
+              password: this.checkPassword(),
+              email: this.mail,
+              username:this.username 
+            })
+            .then((result) => {
+              console.log(result)
+            })
+            .catch((err) => console.log(err))
+            /*
+            console.log(this.checkPassword())
             console.log(`Le prénom ${this.firstname}, son nom ${this.lastname}, sa date de naissance ${this.datePicker}, son adresse ${this.address}, son numéro de tel ${this.telNumber}
             , permis ${this.driverNumber}, l'identifiant ${this.username}, mail est ${this.mail}, le mdp ${this.password}, le derniere mdp ${this.passwords}`)
+            */          
           }
         },
         components: {
