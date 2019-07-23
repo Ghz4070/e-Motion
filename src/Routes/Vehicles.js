@@ -4,7 +4,8 @@ import {
     getVehicleById,
     addVehicles,
     editVehicles,
-    outVehiclesOfList
+    outVehiclesOfList,
+    findVehicleByCriteria
 } from '../Controller/Vehicles';
 import express from 'express';
 import {checkToken} from './../middleware'
@@ -24,10 +25,14 @@ anonymeRouteVehicles.route('/available')
     .get(db,allListVehiclesAvailable());
 anonymeRouteVehicles.route('/:id')
     .get(db,getVehicleById())
+anonymeRoute.route('/findby')
+    .get(findVehicleByCriteria(db));
+
 adminRouteVehicles.route('/add')
     .post(checkToken,db,addVehicles());
 adminRouteVehicles.route('/edit/:id')
     .patch(checkToken,db,editVehicles());
 adminRouteVehicles.route('/delete/:id')
     .delete(checkToken,db,outVehiclesOfList());
+    
 
