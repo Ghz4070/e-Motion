@@ -4,6 +4,7 @@ import Index from './pages/Index.vue';
 import Landing from './pages/Landing.vue';
 import Login from './pages/Login.vue';
 import Profile from './pages/Profile.vue';
+import Signup from './pages/Signup.vue';
 import MainNavbar from './layout/MainNavbar.vue';
 import MainFooter from './layout/MainFooter.vue';
 
@@ -46,7 +47,15 @@ export default new Router({
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: 'black' }
       }
-    }
+    },
+    {
+      path:'/signup',
+      name:'signup',
+      components: { default:Signup, header: MainNavbar},
+      props: {
+        header: { colorOnScroll: 400 }
+      }
+    },
   ],
   scrollBehavior: to => {
     if (to.hash) {

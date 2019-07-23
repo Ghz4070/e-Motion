@@ -25,8 +25,8 @@ anonymeRouteVehicles.route('/available')
     .get(db,allListVehiclesAvailable());
 anonymeRouteVehicles.route('/:id')
     .get(db,getVehicleById())
-anonymeRoute.route('/findby')
-    .get(findVehicleByCriteria(db));
+anonymeRouteVehicles.route('/findby')
+    .get(db,findVehicleByCriteria());
 
 adminRouteVehicles.route('/add')
     .post(checkToken,db,addVehicles());
