@@ -2,19 +2,20 @@ import {
     allLocations,
     getOneLocation,
 } from '../Controller/Locations';
-import {rootApi} from '../config';
+
 import {checkToken} from '../middleware';
 import express from 'express';
 
-module.exports = (_db) => {
-    const db = _db;
+export const adminRouteLocations = express.Router();
 
-    const adminRoute = express.Router();
-    
-    adminRoute.use(checkToken);
-    
-    adminRoute.route('/all')
-        .get(allLocations(db));
 
-    return adminRoute;
-}
+const db = (req, res, next) => {
+    req.sql = req.conn;
+    next();
+};
+
+adminRouteLocations.route('/all')
+    .get(db, checkToken, allLocations());
+adminRouteLocations.route('/:id')
+    .get(db, checkToken, getOneLocation());
+
