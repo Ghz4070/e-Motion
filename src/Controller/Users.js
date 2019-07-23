@@ -15,7 +15,7 @@ export function addUser() {
                     let nullField = false;
 
                     for (let key of Object.entries(req.body)) {
-                        if (key[1] == "" && key[0] !== 'pointFidelity' || key[1] == null && key[0] !== 'pointFidelity') {
+                        if (key[1] == "" && key[0] != 'pointFidelity' || key[1] == null && key[0] != 'pointFidelity') {
                             nullField = true;
                         }
                     }
@@ -99,7 +99,7 @@ export function updateInformationAccount() {
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
         const decodeTokenUsername = jwt.decode(req.headers['x-access-token']);
 
-        if (decodeTokenRole.indexOf('ROLE_USER') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
+        if (decodeTokenRole.indexOf('ROLE_USER') != -1 || decodeTokenRole.indexOf('ROLE_POPRIO') != -1) {
             req.sql.query('SELECT firstname, lastname, birthday, address, phoneNumber, driverLicence FROM users WHERE username = ?', [decodeTokenUsername.username])
                 .then((resultSelect) => {
                     console.log(resultSelect)
@@ -129,7 +129,7 @@ export function deleteAccount() {
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
         const decodeTokenUsername = jwt.decode(req.headers['x-access-token']);
 
-        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1) {
+        if (decodeTokenRole.indexOf('ROLE_ADMIN') != -1) {
             req.sql.query('SELECT username FROM users WHERE idusers = ?', req.params.id)
                 .then((resultSelect) => {
                     if (resultSelect.length < 1) {
@@ -195,7 +195,7 @@ export function updateInformationAccountForAdmin() {
     return (req, res) => {
         const decodeToken = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
-        if (decodeToken.indexOf('ROLE_ADMIN') !== -1) {
+        if (decodeToken.indexOf('ROLE_ADMIN') != -1) {
             req.sql.query('SELECT firstname, lastname, birthday, address, phoneNumber, driverLicence FROM users WHERE idusers = ?', [req.params.id])
                 .then((resultSelect) => {
                     if (resultSelect.length < 1) {
