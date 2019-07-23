@@ -5,13 +5,16 @@ import Landing from './pages/Landing.vue';
 import Login from './pages/Login.vue';
 import Vehicule from './pages/Vehicule.vue';
 import Profile from './pages/Profile.vue';
+import Signup from './pages/Signup.vue';
 import MainNavbar from './layout/MainNavbar.vue';
 import MainFooter from './layout/MainFooter.vue';
+import CreateVehicle from './pages/CreateVehicle.vue';
 
 Vue.use(Router);
 
 export default new Router({
   linkExactActiveClass: 'active',
+  mode:'history',
   routes: [
     {
       path: '/',
@@ -40,6 +43,15 @@ export default new Router({
       }
     },
     {
+      path: '/createVehicle',
+      name: 'createVehicle',
+      components: {default: CreateVehicle, header: MainNavbar, footer: MainFooter},
+      props: {
+        header: {colorOnScroll: 400},
+        footer: {backgroundColor: 'black'}
+      }
+    },
+    {
       path: '/profile',
       name: 'profile',
       components: { default: Profile, header: MainNavbar, footer: MainFooter },
@@ -56,7 +68,15 @@ export default new Router({
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: 'black' }
       }
-    }
+    },
+    {
+      path:'/signup',
+      name:'signup',
+      components: { default:Signup, header: MainNavbar},
+      props: {
+        header: { colorOnScroll: 400 }
+      }
+    },
   ],
   scrollBehavior: to => {
     if (to.hash) {
