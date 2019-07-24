@@ -80,7 +80,7 @@ export default {
 
 <style scoped>
 .dropdown-item.active, .dropdown-item:active {
-    color: #fff;
+    color:black;
     text-decoration: none;
     background-color: transparent !important;
 }</style>
