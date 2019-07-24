@@ -8,6 +8,7 @@ import Signup from './pages/Signup.vue';
 import MainNavbar from './layout/MainNavbar.vue';
 import MainFooter from './layout/MainFooter.vue';
 import CreateVehicle from './pages/CreateVehicule.vue';
+import ListOffers from './pages/ListOffers.vue';
 
 Vue.use(Router);
 
@@ -18,10 +19,18 @@ export default new Router({
         {
             path: '/',
             name: 'index',
-            components: {default: Index, header: MainNavbar, footer: MainFooter},
+            components: {
+                default: Index,
+                header: MainNavbar,
+                footer: MainFooter
+            },
             props: {
-                header: {colorOnScroll: 400},
-                footer: {backgroundColor: 'black'}
+                header: {
+                    colorOnScroll: 400
+                },
+                footer: {
+                    backgroundColor: 'black'
+                }
             }
         },
         {
@@ -45,6 +54,15 @@ export default new Router({
             path: '/createVehicle',
             name: 'createVehicle',
             components: {default: CreateVehicle, header: MainNavbar, footer: MainFooter},
+            props: {
+                header: {colorOnScroll: 400},
+                footer: {backgroundColor: 'black'}
+            }
+        },
+        {
+            path: '/listOffers',
+            name: 'listOffers',
+            components: {default: ListOffers, header: MainNavbar, footer: MainFooter},
             props: {
                 header: {colorOnScroll: 400},
                 footer: {backgroundColor: 'black'}
