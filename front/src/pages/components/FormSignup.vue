@@ -4,6 +4,9 @@
     style="background-image: url('img/bg11.jpg'); background-size: cover; background-position: top center; min-height: 700px;"
   >
     <div class="container">
+      <div v-bind:class="hideOrNot">
+        <Alert type="success"><span class="alert-link">{{ account }}</span></Alert>
+      </div>
       <div class="row">
         <card class="card-signup" header-classes="text-center" color="orange">
           <template slot="header">
@@ -115,9 +118,11 @@
 </template>
 
 <script>
-import { Card, FormGroupInput, Button } from '@/components';
+import { Card, FormGroupInput, Button, Alert } from '@/components';
 import {DatePicker} from 'element-ui';
 import axios from 'axios';
+import { setTimeout } from 'timers';
+
     export default {
         name:'FormSignup',
         data() {
@@ -132,7 +137,9 @@ import axios from 'axios';
             mail:'',
             password:'',
             passwords:'',
-            passwordChecked:''
+            passwordChecked:'',
+            account:'',
+            hideOrNot:'hide'
           }
         },
         methods:{
@@ -162,7 +169,11 @@ import axios from 'axios';
             .then((result) => {
               console.log(result)
               if(result.data.status == "success"){
-                this.$router.push('/');
+                this.account = "Votre compte a été créé, vous allez être redirectionné dans moins de 5 secondes";
+                this.hideOrNot = 'donthide';
+                setTimeout(()=> {
+                  this.$router.push('/');
+                },5000);
               }
             })
             .catch((err) => console.log(err))        
@@ -170,6 +181,7 @@ import axios from 'axios';
         },
         components: {
             Card,
+            Alert,
             [DatePicker.name]: DatePicker,
             [Button.name]: Button,
             [FormGroupInput.name]:FormGroupInput
@@ -178,5 +190,11 @@ import axios from 'axios';
 </script>
 
 <style scoped>
+.hide {
+  display: none;
+}
 
+.donthide{
+  display: block;
+}
 </style>
