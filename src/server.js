@@ -31,6 +31,14 @@ async function asyncConnection() {
         const app = express();
         //const ProtectedRoutes = express.Router();
 
+        app.use(function(req, res, next) {
+            res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+            res.setHeader('Access-Control-Allow-Headers', 'Content-Type,x-access-token, Access-Control-Allow-Headers, Authorization, X-Requested-With"');
+            res.setHeader('Access-Control-Allow-Credentials', true);
+            next();
+        });
+        
         //Middleware
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: true}));
@@ -42,11 +50,7 @@ async function asyncConnection() {
             next()
         };
 
-        app.use(function(req, res, next) {
-            res.header("Access-Control-Allow-Origin", "http://localhost:8080"); // update to match the domain you will make the request from
-            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-            next();
-        });
+        
 
         //Routes
         app.use(`${rootApi}/offer`, mariadbConn, anonymeRouteOffers);

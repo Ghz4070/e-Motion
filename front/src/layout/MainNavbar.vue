@@ -35,8 +35,13 @@
         </router-link>
       </li>
       <li class="nav-item">
-        <router-link class="nav-link" to="/landing">
+        <router-link class="nav-link" to="/login">
           <a><i class="now-ui-icons users_circle-08"></i><p>Se connecter</p></a>
+        </router-link>
+      </li>
+      <li class="nav-item">
+        <router-link class="nav-link" to="/signup">
+          <a><i class="now-ui-icons users_circle-08"></i><p>S'inscrire</p></a>
         </router-link>
       </li> 
        <drop-down tag="li" title="Mon compte" icon="now-ui-icons users_circle-08" class="nav-item">
