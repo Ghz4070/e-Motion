@@ -83,7 +83,7 @@ export function addVehicles() { //
     }
 }
 
-export function outVehiclesOfList(conn) { //Mettre un soft Delete et sauvergarder les modifications (historique) des actions effectuer
+export function outVehiclesOfList() { //Mettre un soft Delete et sauvergarder les modifications (historique) des actions effectuer
     return (req, res) => {
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
