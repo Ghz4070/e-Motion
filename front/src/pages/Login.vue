@@ -15,24 +15,25 @@
             <fg-input
               class="no-border input-lg"
               addon-left-icon="now-ui-icons users_circle-08"
-              placeholder="First Name..."
+              placeholder="Identifiant"
+              v-model="username"
+              required
             >
             </fg-input>
 
             <fg-input
               class="no-border input-lg"
               addon-left-icon="now-ui-icons text_caps-small"
-              placeholder="Last Name..."
+              placeholder="Mot de passe"
+              type="password"
+              v-model="password"
+              required
             >
             </fg-input>
 
-            <template slot="raw-content">
+            <template>
               <div class="card-footer text-center">
-                <a
-                  href="#pablo"
-                  class="btn btn-primary btn-round btn-lg btn-block"
-                  >Get Started</a
-                >
+                <n-button type="neutral" round size="lg"  v-on:click="connect">Connectez-vous</n-button>
               </div>
               <div class="pull-left">
                 <h6>
@@ -55,14 +56,38 @@
 <script>
 import { Card, Button, FormGroupInput } from '@/components';
 import MainFooter from '@/layout/MainFooter';
+import axios from 'axios';
+
 export default {
   name: 'login-page',
   bodyClass: 'login-page',
+  data() {
+    return {
+      username : '',
+      password: ''
+    }
+  },
   components: {
     Card,
     MainFooter,
     [Button.name]: Button,
     [FormGroupInput.name]: FormGroupInput
+  },
+  methods:{
+    connect: function(){
+      axios.post('http://localhost:3000/api/v1/user/login', {
+        username: this.username,
+        password: this.password
+      })
+      .then((result) => {
+        console.log(result)
+        if(result.data.status == "success"){
+          localStorage.setItem('x-access-token', result.data.result);
+          this.$router.push('/');
+        }
+      })
+      .catch((err) => console.log(err))
+    }
   }
 };
 </script>
