@@ -7,7 +7,7 @@ import Profile from './pages/Profile.vue';
 import Signup from './pages/Signup.vue';
 import MainNavbar from './layout/MainNavbar.vue';
 import MainFooter from './layout/MainFooter.vue';
-import CreateVehicle from './pages/CreateVehicle.vue';
+import CreateVehicle from './pages/CreateVehicule.vue';
 
 Vue.use(Router);
 

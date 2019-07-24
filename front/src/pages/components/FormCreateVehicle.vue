@@ -72,7 +72,7 @@
 
                     </template>
                     <div class="card-footer text-center">
-                        <n-button type="neutral" round size="lg" v-on:click="respData">Créer</n-button>
+                        <n-button type="neutral" round size="lg" v-on:click="createVehicle">Créer</n-button>
                     </div>
                 </card>
             </div>
@@ -85,7 +85,7 @@
     import axios from 'axios';
 
     export default {
-        name: 'CreateVehicle',
+        name: 'FormCreateVehicle',
         components: {
             Card,
             [DatePicker.name]: DatePicker,
@@ -106,29 +106,37 @@
                 brand: '',
             }
         },
-        respData: function () {
-            const convertDatepicker = this.datePurchase.toISOString();
-            const datePickerLessT = convertDatepicker.replace('T', ' ');
-            const finalDate = datePickerLessT.replace('Z', '');
+        methods: {
+            createVehicle: function () {
+                const convertDatepicker = this.datePurchase.toISOString();
+                const datePickerLessT = convertDatepicker.replace('T', ' ');
+                const finalDate = datePickerLessT.replace('Z', '');
 
-            axios.post('http://localhost:3000/api/v1/admin/vehicle/add', {
-                available: this.available,
-                datePurchase: finalDate,
-                price: this.price,
-                nbKm: this.nbKm,
-                licensePlate: this.licensePlate,
-                color: this.color,
-                numerSerie: this.numerSerie,
-                model: this.model,
-                brand: this.brand
-            })
-                .then((result) => {
-                    console.log(result);
-                    if (result.data.status == "success") {
-                        this.$router.push('/');
+                axios({
+                    url: 'http://localhost:3000/api/v1/admin/vehicle/add',
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': localStorage.getItem('x-access-token')
+                    },
+                    data: {
+                        available: this.available,
+                        datePurchase: finalDate,
+                        price: this.price,
+                        nbKm: this.nbKm,
+                        licensePlate: this.licensePlate,
+                        color: this.color,
+                        serialNumber: this.numerSerie,
+                        model: this.model,
+                        brand: this.brand,
+                        lising: '0', // a modifier
+                        offers_idoffers: null, // a modifier
                     }
                 })
-                .catch((err) => console.log(err))
+                    .then((response) => {
+                        console.log(response)
+                    })
+            }
         }
     }
 </script>
