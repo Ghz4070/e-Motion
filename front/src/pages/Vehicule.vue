@@ -1,12 +1,6 @@
 <template>
-
   <div>
     <div class="page-header clear-filter" filter-color="orange">
-      <parallax
-        class="page-header-image"
-        style="background-image:url('img/header.jpg')"
-      >
-      </parallax>
       <div class="container">
         <div class="content-center brand">
           <img class="n-logo" src="img/now-logo.png" alt="" />
@@ -21,7 +15,20 @@
         <div class="container">
           <div class="row">
             <div class="col-md-12">
-              DIV 12 MD 
+              <table>
+                <tr>
+                  <th> Brand </th>
+                  <th> Model </th>
+                  <th> Color </th>
+                  <th> Price </th>
+                </tr>
+                <tr v-for="vehicule in vehicules">
+                  <td>{{vehicule.brand}}</td>
+                  <td>{{vehicule.model}}</td>
+                  <td>{{vehicule.color}}</td>
+                  <td>{{vehicule.price}}</td>
+                </tr>
+              </table>
             </div>
           </div>
         </div>
@@ -31,22 +38,23 @@
   </div>
 </template>
 <script>
-import { Parallax } from '@/components';
+
+import axios from 'axios';
 
 export default {
   name: 'vehicule',
   bodyClass: 'index-page',
-  components: {
+  created(){
+      axios
+      .get('http://localhost:3000/api/v1/vehicle/all') 
+      .then(response => { this.vehicules = response.data.result })
+      .catch(error => console.log(error))
   },
   data () {
     return {
-      post: null,
-      error: null
+        vehicules: []
     }
-  },created(){
-      console.log('antoine');
   }
-
 };
 </script>
 <style></style>
