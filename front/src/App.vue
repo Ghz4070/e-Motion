@@ -10,3 +10,8 @@
 <script>
 export default {};
 </script>
+<style>
+.dropdown-menu .dropdown-item.active, .bootstrap-select .dropdown-menu.inner li a.active {
+    color: black;
+}
+</style>

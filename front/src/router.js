@@ -9,6 +9,7 @@ import MainNavbar from './layout/MainNavbar.vue';
 import MainFooter from './layout/MainFooter.vue';
 import CreateVehicle from './pages/CreateVehicule.vue';
 import ListOffers from './pages/ListOffers.vue';
+import UpdateProfile from './pages/UpdateProfile.vue';
 
 Vue.use(Router);
 
@@ -85,6 +86,15 @@ export default new Router({
                 header: {colorOnScroll: 400}
             }
         },
+        {
+            path: '/profile/update',
+            name: 'UpdateProfile',
+            components: {default: UpdateProfile, header: MainNavbar,  footer: MainFooter},
+            props: {
+                header: {colorOnScroll: 400},
+                footer: {backgroundColor: 'black'}
+            }
+        }
     ],
     scrollBehavior: to => {
         if (to.hash) {

@@ -79,6 +79,11 @@ export default {
 </script>
 
 <style scoped>
+.dropdown-menu .dropdown-item.active, .bootstrap-select .dropdown-menu.inner li a.active {
+    background-color: #f96332;
+    color: black;
+}
+
 .dropdown-item.active, .dropdown-item:active {
     color:black;
     text-decoration: none;
