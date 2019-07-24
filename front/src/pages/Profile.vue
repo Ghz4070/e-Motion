@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <!-- <div>
     <div class="page-header clear-filter" filter-color="orange">
       <parallax
         class="page-header-image"
@@ -121,10 +121,16 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
+  <div id="app">
+  {{ firstname }}
+</div>
+  
 </template>
 <script>
 import { Tabs, TabPane } from '@/components';
+import axios from 'axios';
+import Vue from 'vue';
 
 export default {
   name: 'profile',
@@ -132,7 +138,30 @@ export default {
   components: {
     Tabs,
     TabPane
-  }
+  },
+  
+  
+   data() {
+          return {
+            firstname: '',
+            lastname: '',
+            birthday: '',
+            address: '',
+            phoneNumber: '',
+            driverLicence: '',
+            email: '',
+            roles: '',
+            username: ''
+          }
+        },
+  mounted () {
+      axios.get('http://192.168.99.100:3000/api/v1/admin/user', {headers: {'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8',
+        "x-access-token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJvYm8iLCJyb2xlIjoie1wicm9sZVwiOltcIlJPTEVfVVNFUlwiLFwiUk9MRV9QT1BSSU9cIixcIlJPTEVfQURNSU5cIl19IiwiaWF0IjoxNTYzOTUzNjUwLCJleHAiOjE1NjQwNDAwNTB9.QkpKSz2IKmvddQmPzrEU3Jij4X8OMelIK-xWmxs2wbA"
+      }})
+            .then(response => (this.firstname = response.data.result[0].firstname))
+    }
+  
 };
+
 </script>
 <style></style>
