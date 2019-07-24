@@ -4,6 +4,7 @@ import Index from './pages/Index.vue';
 import Landing from './pages/Landing.vue';
 import Login from './pages/Login.vue';
 import Vehicule from './pages/Vehicule.vue';
+import LocationVehicule from './pages/LocationVehicule.vue';
 import Profile from './pages/Profile.vue';
 import Signup from './pages/Signup.vue';
 import MainNavbar from './layout/MainNavbar.vue';
@@ -77,6 +78,14 @@ export default new Router({
         header: { colorOnScroll: 400 }
       }
     },
+    {
+      path:'/locationVehicule/:id',
+      name:'locationVehicule',
+      components: { default: LocationVehicule, header: MainNavbar},
+      props: {
+        header: { colorOnScroll: 400 }
+      }
+    }
   ],
   scrollBehavior: to => {
     if (to.hash) {
