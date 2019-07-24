@@ -22,7 +22,7 @@
                   <th> Color </th>
                   <th> Price </th>
                 </tr>
-                <tr v-for="vehicule in vehicules">
+                <tr v-for="vehicule in vehicules" v-bind:key="vehicule.id">
                   <td>{{vehicule.brand}}</td>
                   <td>{{vehicule.model}}</td>
                   <td>{{vehicule.color}}</td>
