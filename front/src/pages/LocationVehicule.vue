@@ -21,12 +21,14 @@
                   <th> Model </th>
                   <th> Color </th>
                   <th> Price </th>
+                  <th> Action </th>
                 </tr>
                 <tr v-for="vehiculeInfo in vehicule" v-bind:key="vehiculeInfo.id">
                   <td> {{vehiculeInfo.brand}} </td>
                   <td> {{vehiculeInfo.model}} </td>
                   <td> {{vehiculeInfo.color}} </td>
                   <td> {{vehiculeInfo.price}} </td>
+                  <td> <button @click="bookACar">Add</button> </td>
                 </tr>
               </table>
             </div>
@@ -44,9 +46,17 @@ import axios from 'axios';
 export default {
   name: 'locationVehicule',
   bodyClass: 'index-page',
+    methods: {
+      bookACar(){
+        this.citizens.push({"firstname":"Lisa", "lastname":"Simpson", "age":"10"})
+        axios
+      .patch('http://localhost:3000/api/v1/vehicles/edit/'+ idVehicule) 
+      .then(response => { this.vehicule = response.data.result })
+      .catch(error => console.log(error))
+      }
+    },
   created(){
       let idVehicule = this.$route.params.id;
-      console.log(idVehicule);
       axios
       .get('http://localhost:3000/api/v1/vehicle/'+ idVehicule) 
       .then(response => { this.vehicule = response.data.result })

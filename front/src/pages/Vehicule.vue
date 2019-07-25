@@ -46,7 +46,7 @@ export default {
   bodyClass: 'index-page',
   created(){
       axios
-      .get('http://localhost:3000/api/v1/vehicle/all') 
+      .get('http://localhost:3000/api/v1/vehicle/available') //all pour tous 
       .then(response => { this.vehicules = response.data.result })
       .catch(error => console.log(error))
   },
