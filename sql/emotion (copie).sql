@@ -18,12 +18,12 @@ USE `emotion` ;
 -- Table `emotion`.`users`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `emotion`.`users` (
-  `idusers` INT NOT NULL AUTO_INCREMENT,
+  `idusers` INT(11) NOT NULL AUTO_INCREMENT,
   `firstname` VARCHAR(45) NOT NULL,
   `lastname` VARCHAR(45) NOT NULL,
   `birthday` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `address` VARCHAR(45) NOT NULL,
-  `phoneNumber` INT NOT NULL,
+  `phoneNumber` INT(11) NOT NULL,
   `driverLicence` VARCHAR(45) NOT NULL,
   `roles` JSON NOT NULL,
   `password` VARCHAR(255) NOT NULL,
@@ -33,17 +33,17 @@ CREATE TABLE IF NOT EXISTS `emotion`.`users` (
   `tokenResetPassword` VARCHAR(255) NULL ,
   `tokenValidateAccount` VARCHAR(255) NULL ,
   PRIMARY KEY (`idusers`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
 
 -- -----------------------------------------------------
 -- Table `emotion`.`location`
-
+-- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `emotion`.`location` (
   `idlocation` INT NOT NULL AUTO_INCREMENT,
   `startDate` DATETIME NOT NULL,
   `endDate` DATETIME NOT NULL,
   `users_idusers` INT NOT NULL,
-  `cancelLocation` BOOLEAN NOT NULL DEFAULT false,
+  `cancelLocation` BOOLEAN NOT NULL DEFAULT 0,
   `pointFidelityUsed` INT NULL,
   PRIMARY KEY (`idlocation`),
   CONSTRAINT `fk_location_users1`
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `emotion`.`location` (
     REFERENCES `emotion`.`users` (`idusers`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
 
 -- -----------------------------------------------------
 -- Table `emotion`.`offers`
@@ -65,14 +65,14 @@ CREATE TABLE IF NOT EXISTS `emotion`.`offers` (
   `nbKm` INT NOT NULL,
   `pointFidelityOffers` INT NOT NULL,
   `location_idlocation` INT NULL,
-  `hiddenOffers` BOOLEAN NOT NULL DEFAULT true,
+  `hiddenOffers` BOOLEAN NOT NULL DEFAULT 1,
   PRIMARY KEY (`idoffers`),
   CONSTRAINT `fk_offers_location1`
     FOREIGN KEY (`location_idlocation`)
     REFERENCES `emotion`.`location` (`idlocation`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
 
 -- -----------------------------------------------------
 -- Table `emotion`.`vehicle`
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `emotion`.`vehicle` (
   `available` INT NOT NULL,
   `lising` INT NOT NULL,
   `offers_idoffers` INT NULL,
-  `typeVehicle` INT NOT NULL,
+  `typeVehicle` BOOLEAN NOT NULL,
   `imgVehicle` VARCHAR(45) NULL DEFAULT 'default.jpg',
   PRIMARY KEY (`idvehicle`),
   INDEX `fk_vehicle_offers1` (`offers_idoffers` ASC),
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `emotion`.`vehicle` (
     REFERENCES `emotion`.`offers` (`idoffers`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
