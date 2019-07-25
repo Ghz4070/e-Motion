@@ -13,7 +13,7 @@ export const adminRouteUsers = express.Router();
 anonymeRouteUsers.route('/add')
     .post(db,addUser())
 anonymeRouteUsers.route('/login')
-    .get(db,login())
+    .post(db,login())
 adminRouteUsers.route('/all')
     .get(db,checkToken,allUsers())
 adminRouteUsers.route('/')

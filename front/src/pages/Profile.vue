@@ -1,138 +1,141 @@
 <template>
   <div>
     <div class="page-header clear-filter" filter-color="orange">
-      <parallax
-        class="page-header-image"
-        style="background-image:url('img/bg5.jpg')"
-      >
-      </parallax>
+      <parallax class="page-header-image" style="background-image:url('img/bg5.jpg')"></parallax>
       <div class="container">
         <div class="photo-container">
-          <img src="img/ryan.jpg" alt="" />
+          <img src="https://cdn3.iconfinder.com/data/icons/glyphicon/64/profil-512.png" alt />
         </div>
-        <h3 class="title">Ryan Scheinder</h3>
-        <p class="category">Photographer</p>
-        <div class="content">
-          <div class="social-description">
-            <h2>26</h2>
-            <p>Comments</p>
-          </div>
-          <div class="social-description">
-            <h2>26</h2>
-            <p>Comments</p>
-          </div>
-          <div class="social-description">
-            <h2>48</h2>
-            <p>Bookmarks</p>
-          </div>
-        </div>
+        <h3 class="title">{{ lastname }} {{ firstname }}</h3>
+        <p></p>
+        <p class="category">
+          Numéro de permis : {{ driverLicence }}
+          <br />
+          Point de fidélité : {{ pointFidelity }}
+        </p>
       </div>
     </div>
     <div class="section">
       <div class="container">
-        <div class="button-container">
-          <a href="#button" class="btn btn-primary btn-round btn-lg">Follow</a>
-          <a
-            href="#button"
-            class="btn btn-default btn-round btn-lg btn-icon"
-            rel="tooltip"
-            title="Follow me on Twitter"
-          >
-            <i class="fab fa-twitter"></i>
-          </a>
-          <a
-            href="#button"
-            class="btn btn-default btn-round btn-lg btn-icon"
-            rel="tooltip"
-            title="Follow me on Instagram"
-          >
-            <i class="fab fa-instagram"></i>
-          </a>
-        </div>
-        <h3 class="title">About me</h3>
+        <h3 class="title">Information du profil</h3>
+        <hr />
         <h5 class="description">
-          An artist of considerable range, Ryan — the name taken by
-          Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and
-          records all of his own music, giving it a warm, intimate feel with a
-          solid groove structure. An artist of considerable range.
+          <table>
+            <tbody>
+              <tr>
+                <th style="border:0">nom prénom</th>
+                <td style="border:0">{{ lastname }} {{ firstname }}</td>
+              </tr>
+              <tr>
+                <th style="border:0">nom d'utilisateur</th>
+                <td style="border:0">{{ username }}</td>
+              </tr>
+              <tr>
+                <th style="border:0">email</th>
+                <td style="border:0">{{ email }}</td>
+              </tr>
+              <tr>
+                <th style="border:0">numéro de téléphone</th>
+                <td style="border:0">{{ phoneNumber }}</td>
+              </tr>
+              <tr>
+                <th style="border:0">date de naissance</th>
+                <td style="border:0">{{ birthday | Upper }}</td>
+              </tr>
+              <tr>
+                <th style="border:0">adresse domcile</th>
+                <td style="border:0">{{ address }}</td>
+              </tr>
+            </tbody>
+          </table>
         </h5>
-        <div class="row">
-          <div class="col-md-6 ml-auto mr-auto">
-            <h4 class="title text-center">My Portfolio</h4>
-          </div>
-          <tabs
-            pills
-            class="nav-align-center"
-            tab-content-classes="gallery"
-            tab-nav-classes="nav-pills-just-icons"
-            type="primary"
-          >
-            <tab-pane title="Profile">
-              <i slot="label" class="now-ui-icons design_image"></i>
-
-              <div class="col-md-10 ml-auto mr-auto">
-                <div class="row collections">
-                  <div class="col-md-6">
-                    <img src="img/bg6.jpg" class="img-raised" />
-                    <img src="img/bg11.jpg" alt="" class="img-raised" />
-                  </div>
-                  <div class="col-md-6">
-                    <img src="img/bg7.jpg" alt="" class="img-raised" />
-                    <img src="img/bg8.jpg" alt="" class="img-raised" />
-                  </div>
-                </div>
-              </div>
-            </tab-pane>
-
-            <tab-pane title="Home">
-              <i slot="label" class="now-ui-icons location_world"></i>
-
-              <div class="col-md-10 ml-auto mr-auto">
-                <div class="row collections">
-                  <div class="col-md-6">
-                    <img src="img/bg1.jpg" alt="" class="img-raised" />
-                    <img src="img/bg3.jpg" alt="" class="img-raised" />
-                  </div>
-                  <div class="col-md-6">
-                    <img src="img/bg8.jpg" alt="" class="img-raised" />
-                    <img src="img/bg7.jpg" alt="" class="img-raised" />
-                  </div>
-                </div>
-              </div>
-            </tab-pane>
-
-            <tab-pane title="Messages">
-              <i slot="label" class="now-ui-icons sport_user-run"></i>
-
-              <div class="col-md-10 ml-auto mr-auto">
-                <div class="row collections">
-                  <div class="col-md-6">
-                    <img src="img/bg3.jpg" alt="" class="img-raised" />
-                    <img src="img/bg8.jpg" alt="" class="img-raised" />
-                  </div>
-                  <div class="col-md-6">
-                    <img src="img/bg7.jpg" alt="" class="img-raised" />
-                    <img src="img/bg6.jpg" class="img-raised" />
-                  </div>
-                </div>
-              </div>
-            </tab-pane>
-          </tabs>
+        <div class="text-center">
+          <div>
+      <n-button type="primary" @click.native="modals.classic = true">
+        Modifier mes informations
+      </n-button>
+      <modal :show.sync="modals.classic" headerClasses="justify-content-center">
+        <h4 slot="header" class="title title-up">Modifier mes informations</h4>
+        <UpdateProfile />
+        
+      </modal>
+    </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { Tabs, TabPane } from '@/components';
+import { Tabs, TabPane, Button, Modal } from "@/components";
+import axios from "axios";
+import Vue from "vue";
+import UpdateProfile from './components/FormUpdateProfile.vue'
 
 export default {
-  name: 'profile',
-  bodyClass: 'profile-page',
+  name: "profile",
+  bodyClass: "profile-page",
   components: {
     Tabs,
-    TabPane
+    TabPane,
+    [Button.name]: Button,
+    Modal,
+    UpdateProfile
+  },
+  filters: {
+    // Filter definitions
+    Upper(value) {
+      return value.toUpperCase();
+    }
+  },
+  data() {
+    return {
+      firstname: "",
+      lastname: "",
+      birthday: "",
+      address: "",
+      phoneNumber: "",
+      driverLicence: "",
+      email: "",
+      roles: "",
+      username: "",
+      pointFidelity: "",
+      modals: {
+            classic: false
+          }
+    };
+  },
+  mounted() {
+    axios({
+      url: "http://localhost:3000/api/v1/admin/user",
+      method: "get",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "x-access-token": localStorage.getItem("x-access-token")
+      }
+    }).then(
+      response => (
+        (this.firstname = response.data.result[0].firstname),
+        (this.lastname = response.data.result[0].lastname),
+        (this.birthday = response.data.result[0].birthday),
+        (this.address = response.data.result[0].address),
+        (this.phoneNumber = response.data.result[0].phoneNumber),
+        (this.driverLicence = response.data.result[0].driverLicence),
+        (this.email = response.data.result[0].email),
+        (this.roles = response.data.result[0].roles),
+        (this.username = response.data.result[0].username),
+        (this.pointFidelity = response.data.result[0].pointFidelity)
+      )
+    );
   }
 };
 </script>
-<style></style>
+<style>
+th {
+  padding: 5px;
+  text-align: left;
+}
+
+table {
+  width: 100%;
+}
+</style>
