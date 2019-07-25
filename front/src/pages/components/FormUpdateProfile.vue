@@ -45,7 +45,7 @@ export default {
   },
   mounted() {
     axios({
-      url: "http://192.168.99.100:3000/api/v1/admin/user",
+      url: "http://localhost:3000/api/v1/admin/user",
       method: "get",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
