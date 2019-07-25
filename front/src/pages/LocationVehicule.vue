@@ -48,14 +48,16 @@ export default {
   bodyClass: 'index-page',
     methods: {
       bookACar(){
-        this.citizens.push({"firstname":"Lisa", "lastname":"Simpson", "age":"10"})
+        //Vérifier que l'utilisateur est bien connecté
+
         axios
-      .patch('http://localhost:3000/api/v1/vehicles/edit/'+ idVehicule) 
-      .then(response => { this.vehicule = response.data.result })
-      .catch(error => console.log(error))
+            .put('http://localhost:3000/api/v1/vehicles/bookACar/'+ idVehicule)
+            .then(response => { this.vehicule = response.data.result }) // gestion du retour faire une vue different ou changer le composant 
+            .catch(error => console.log(error))
       }
     },
   created(){
+      // Mettre beforeCreated, si le vehicule demandé n'est pas dispo gérer l'affichage en fonction.
       let idVehicule = this.$route.params.id;
       axios
       .get('http://localhost:3000/api/v1/vehicle/'+ idVehicule) 
