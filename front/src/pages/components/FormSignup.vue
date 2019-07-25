@@ -5,7 +5,7 @@
                 <Alert type="success"><span class="alert-link">{{ account }}</span></Alert>
             </div>
             <div class="row">
-                <card class="card-signup mt-5" header-classes="text-center" color="orange">
+                <card class="card-signup mt-5" style="background-color: transparent">
                     <template slot="header">
                         <h3 class="card-title title-up">Créé votre compte</h3>
                     </template>
@@ -15,7 +15,6 @@
                                 placeholder="Prénom"
                                 addon-left-icon="now-ui-icons users_circle-08"
                                 v-model="firstname"
-                                required
                         >
                         </fg-input>
 
@@ -24,7 +23,6 @@
                                 placeholder="Nom"
                                 addon-left-icon="now-ui-icons text_caps-small"
                                 v-model="lastname"
-                                required
                         >
                         </fg-input>
 
