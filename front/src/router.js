@@ -99,6 +99,15 @@ export default new Router({
             }
         },
         {
+            path: '/vehicule',
+            name: 'vehicule',
+            components: { default: Vehicule, header: MainNavbar, footer: MainFooter },
+            props: {
+              header: { colorOnScroll: 400 },
+              footer: { backgroundColor: 'black' }
+            }
+          },
+        {
             path: '/locationVehicule/:id',
             name: 'locationVehicule',
             components: {default: LocationVehicule, header: MainNavbar, footer: MainFooter},
