@@ -1,4 +1,4 @@
-import { addUser, login, allUsers, logout, seeInformationAccount, updateInformationAccount, deleteAccount, userById, updateInformationAccountForAdmin } from '../Controller/Users';
+import { addUser, login, allUsers, logout, seeInformationAccount, updateInformationAccount, deleteAccount, userById, updateInformationAccountForAdmin, forgotPassword, resetPassword, activateAccount } from '../Controller/Users';
 import { checkToken } from '../middleware'
 import express from 'express';
 
@@ -14,6 +14,12 @@ anonymeRouteUsers.route('/add')
     .post(db,addUser())
 anonymeRouteUsers.route('/login')
     .post(db,login())
+anonymeRouteUsers.route('/forgot_password')
+    .get(db,forgotPassword())
+anonymeRouteUsers.route('/reset_password')
+    .post(db,resetPassword())
+anonymeRouteUsers.route('/activate_account')
+    .get(db, activateAccount())
 adminRouteUsers.route('/all')
     .get(db,checkToken,allUsers())
 adminRouteUsers.route('/')
