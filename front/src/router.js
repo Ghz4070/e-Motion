@@ -49,7 +49,7 @@ export default new Router({
         {
             path: '/login',
             name: 'login',
-            components: {default: Login, header: MainNavbar},
+            components: {default: Login, header: MainNavbar, footer: MainFooter},
             props: {
                 header: {colorOnScroll: 400}
             }
@@ -84,7 +84,7 @@ export default new Router({
         {
             path: '/signup',
             name: 'signup',
-            components: {default: Signup, header: MainNavbar},
+            components: {default: Signup, header: MainNavbar, footer: MainFooter},
             props: {
                 header: {colorOnScroll: 400}
             }
@@ -92,18 +92,18 @@ export default new Router({
         {
             path: '/profile/update',
             name: 'UpdateProfile',
-            components: {default: UpdateProfile, header: MainNavbar,  footer: MainFooter},
+            components: {default: UpdateProfile, header: MainNavbar, footer: MainFooter},
             props: {
                 header: {colorOnScroll: 400},
                 footer: {backgroundColor: 'black'}
             }
         },
         {
-            path:'/locationVehicule/:id',
-            name:'locationVehicule',
-            components: { default: LocationVehicule, header: MainNavbar},
+            path: '/locationVehicule/:id',
+            name: 'locationVehicule',
+            components: {default: LocationVehicule, header: MainNavbar, footer: MainFooter},
             props: {
-              header: { colorOnScroll: 400 }
+                header: {colorOnScroll: 400}
             }
         },
         {
