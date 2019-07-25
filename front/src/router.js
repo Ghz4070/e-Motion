@@ -12,6 +12,7 @@ import MainFooter from './layout/MainFooter.vue';
 import CreateVehicle from './pages/CreateVehicule.vue';
 import ListOffers from './pages/ListOffers.vue';
 import UpdateProfile from './pages/UpdateProfile.vue';
+import Logout from './pages/Logout.vue';
 
 Vue.use(Router);
 
@@ -104,6 +105,12 @@ export default new Router({
             props: {
                 header: {colorOnScroll: 400}
             }
+        },
+        {
+            path:'/logout',
+            name:'logout',
+            components: { default: Logout},
+            
         }
     ],
     scrollBehavior: to => {

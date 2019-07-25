@@ -61,6 +61,9 @@
                 <nav-link to="/profile">
                     <i class="now-ui-icons objects_diamond"></i> Point de fidélité
                 </nav-link>
+                <nav-link to="/logout">
+                  <i class="now-ui-icons users_single-02"></i> Déconnexion
+                </nav-link>
             </drop-down>
         </template>
     </navbar>

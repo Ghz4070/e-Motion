@@ -65,11 +65,12 @@
 <script>
 import { Parallax } from '@/components';
 
+
 export default {
   name: 'index',
   bodyClass: 'index-page',
   components: {
-    Parallax,
+    Parallax
   }
 };
 </script>

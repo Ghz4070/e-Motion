@@ -63,15 +63,16 @@ export function addUser() {
                                         req.sql.query("INSERT INTO users (firstname, lastname, birthday, address, phoneNumber, driverLicence, roles," +
                                             'password, email, username,tokenValidateAccount) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
                                             [req.body.firstname, req.body.lastname, req.body.birthday, req.body.address, req.body.phoneNumber, req.body.driverLicence,
-                                                role, hash, req.body.email, req.body.username, 'Need dactivate'])
+                                                role, hash, req.body.email, req.body.username, hash])
                                             .then((resultInsert) => {
                                                 const data = {
-                                                    to: resultSelect[0].email,
+                                                    to: req.body.email,
                                                     from: email,
                                                     template: 'Activate_account',
                                                     subject: 'Activer votre compte',
                                                     context: {
-                                                        name: resultSelect[0].firstname
+                                                        name: req.body.firstname,
+                                                        url: 'http://localhost:3000/api/v1/user/activate_account?token='+ hash,
                                                     }
                                                 }
                                                 smtpTransport.sendMail(data, (err)=> {
@@ -97,12 +98,15 @@ export function addUser() {
 
 export function login() {
     return (req, res) => {
-        req.sql.query('SELECT username, password, roles FROM users WHERE username = ?', req.body.username)
+        req.sql.query('SELECT username, password, tokenValidateAccount ,roles FROM users WHERE username = ?', req.body.username)
             .then((result) => {
                 if (result.length < 1) {
                     res.json(error('Unknown username'));
                 } else {
-                    bcrypt.compare(req.body.password, result[0].password)
+                    if(result[0].tokenValidateAccount != null){
+                        res.json(error('This account isnt activated, please active your account'))
+                    }else{
+                        bcrypt.compare(req.body.password, result[0].password)
                         .then((passwordDecrypted) => {
                             if (passwordDecrypted && req.body.username == result[0].username) {
                                 let token = jwt.sign({username: req.body.username, role: result[0].roles}, secret, {
@@ -117,6 +121,7 @@ export function login() {
                             }
                         })
                         .catch((err) => res.json(error(err.message)))
+                    }
                 }
             })
             .catch((err) => res.json(error(err.message)))
@@ -352,5 +357,33 @@ export function resetPassword () {
         }else{
             res.json(error('Not the same password'))
         }
+    }
+}
+
+export function activateAccount() {
+    return (req, res) => {
+        req.sql.query('SELECT email, firstname FROM users WHERE tokenValidateAccount = ?', [req.query.token])
+        .then((resultSelect) => {
+            req.sql.query('UPDATE users SET tokenValidateAccount = ? WHERE tokenValidateAccount = ?', [null,req.query.token])
+            .then((resultUpdate) => {
+                const data = {
+                    to: resultSelect[0].email,
+                    from: email,
+                    template: 'Activited_account',
+                    subject: 'Votre compte est activé',
+                    context: {
+                        name: resultSelect[0].firstname,
+                    }
+                }
+                smtpTransport.sendMail(data, (err)=> {
+                    if(err){
+                        res.json(error(err.message))
+                    }
+                    res.json(success('Mail envoyé'));
+                })
+            })
+            .catch((err) => res.json(error(err)))
+        })
+        .catch((err) => res.json(error(err)))
     }
 }
