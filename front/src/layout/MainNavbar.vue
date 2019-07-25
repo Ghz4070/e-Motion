@@ -43,7 +43,7 @@
         <router-link class="nav-link" to="/signup">
           <a><i class="now-ui-icons users_circle-08"></i><p>S'inscrire</p></a>
         </router-link>
-      </li> 
+      </li>
        <drop-down tag="li" title="Mon compte" icon="now-ui-icons users_circle-08" class="nav-item">
         <nav-link to="/profile">
           <i class="now-ui-icons users_single-02"></i> Profil
@@ -54,13 +54,16 @@
         <nav-link to="/profile">
           <i class="now-ui-icons objects_diamond"></i> Point de fidélité
         </nav-link>
+        <nav-link to="/logout">
+          <i class="now-ui-icons users_single-02"></i> Déconnexion
+        </nav-link> 
       </drop-down> 
     </template> 
   </navbar>
 </template>
 
 <script>
-import { DropDown, NavbarToggleButton, Navbar, NavLink } from '@/components';
+import { DropDown, NavbarToggleButton, Navbar, NavLink, toggle, isToggled } from '@/components';
 import { Popover } from 'element-ui';
 export default {
   name: 'main-navbar',
