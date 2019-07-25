@@ -147,3 +147,19 @@ export function findVehicleByCriteria() {
 
     }
 }
+
+export function bookACar() {
+    return (req, res) => {
+        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
+
+        let idVehicule = req.params.id;
+        // Voir si une sécurite ici est réélemment pertinente // lire defensive programming 
+        
+        req.sql.query("UPDATE vehicle SET available = 0 WHERE idvehicle = ?", req.params.id)
+                .then((result) => {
+                    res.json(success(result))
+                })
+                .catch((err) => res.json(error(err.message)));
+
+    }
+}
