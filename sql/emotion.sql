@@ -91,6 +91,8 @@ CREATE TABLE IF NOT EXISTS `emotion`.`users` (
   `email` VARCHAR(45) NOT NULL,
   `pointFidelity` INT NULL,
   `username` VARCHAR(45) NOT NULL,
+  `tokenResetPassword` VARCHAR(255) NULL,
+  `tokenValidateAccount` VARCHAR(255) NULL,
   `offers_idoffers` INT NULL,
   PRIMARY KEY (`idusers`),
   CONSTRAINT `fk_users_offers1`

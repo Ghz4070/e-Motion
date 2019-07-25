@@ -1,8 +1,36 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-
+import path from 'path';
+import nodemailerExpressHandlebars from 'nodemailer-express-handlebars';
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
+import { email, password } from './../smtp'
 import {success, error} from '../returnjson';
 import {secret} from '../config';
+
+
+
+const smtpTransport = nodemailer.createTransport({
+    service: 'Gmail',
+    auth:{
+        user: email,
+        pass : password
+    }
+});
+
+const handlebarsOption = {
+    viewEngine:{
+        extName: '.html',
+        partialsDir: path.join(__dirname,'../Template'),
+        layoutsDir:path.join(__dirname,'../Template'),
+    },
+    viewPath: path.join(__dirname,'../Template'),
+    extName: '.html',
+
+}
+
+smtpTransport.use('compile', nodemailerExpressHandlebars(handlebarsOption))
+
 
 export function addUser() {
     return (req, res) => {
@@ -30,16 +58,30 @@ export function addUser() {
                                         let role = {
                                             role: [
                                                 'ROLE_USER',
-                                                'ROLE_POPRIO',
-                                                'ROLE_ADMIN'
                                             ]
                                         };
                                         req.sql.query("INSERT INTO users (firstname, lastname, birthday, address, phoneNumber, driverLicence, roles," +
-                                            'password, email, username) VALUES (?,?,?,?,?,?,?,?,?,?)',
+                                            'password, email, username,tokenValidateAccount) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
                                             [req.body.firstname, req.body.lastname, req.body.birthday, req.body.address, req.body.phoneNumber, req.body.driverLicence,
-                                                role, hash, req.body.email, req.body.username])
+                                                role, hash, req.body.email, req.body.username, 'Need dactivate'])
                                             .then((resultInsert) => {
-                                                res.json(success(resultInsert));
+                                                const data = {
+                                                    to: resultSelect[0].email,
+                                                    from: email,
+                                                    template: 'Activate_account',
+                                                    subject: 'Activer votre compte',
+                                                    context: {
+                                                        name: resultSelect[0].firstname
+                                                    }
+                                                }
+                                                smtpTransport.sendMail(data, (err)=> {
+                                                    if(err){
+                                                        res.json(error(err.message))
+                                                    }
+                                                    res.json(success(resultInsert));
+                                                    console.log(('Mail envoyé'))
+                                                    
+                                                })
                                             })
                                             .catch((errInsert) => res.json(error(errInsert.message)))
                                     })
@@ -223,4 +265,92 @@ export function updateInformationAccountForAdmin() {
     }
 }
 
+export function forgotPassword(){
+    return (req, res)=> {
+        console.log(req.query.email)
+        req.sql.query('SELECT * FROM users WHERE email = ?', req.query.email)
+        .then((resultSelect) => {
+            if(resultSelect.length > 0) {
+                if(resultSelect[0].tokenResetPassword != null){
+                    req.sql.query('UPDATE users SET tokenResetPassword = ? WHERE idusers = ?', [null,resultSelect[0].idusers])
+                    .then((resultUpdate) => {
+                        console.log('delete')
+                    })
+                    .catch((err) => res.json(error(err)))
+                }                
+                crypto.randomBytes(20, (err, buffer) => {
+                    if(err){
+                        res.json(error(err))
+                    }
+                    const token = buffer.toString('hex')
+                    req.sql.query("UPDATE users SET tokenResetPassword = ?  WHERE idusers = ?", [token, resultSelect[0].idusers])
+                    .then((resultInsert) => {
+                        const data = {
+                            to: resultSelect[0].email,
+                            from: email,
+                            template: 'forgot-password-email',
+                            subject: 'Réinistialisation du mot de passe',
+                            context: {
+                                
+                                url: 'http://localhost:3000/api/v1/user/reset_password?token='+ token,
+                                name: resultSelect[0].firstname
+                            }
+                        }
 
+                        smtpTransport.sendMail(data, (err)=> {
+                            if(err){
+                                res.json(error(err.message))
+                            }
+                            res.json(success('Mail envoyé'))
+                        })
+                    })
+                    .catch((err) => res.json(error(err.message)))
+                })
+
+            }else{
+                res.json(error('Mail inconnu'))
+            }
+        })
+        .catch((err) => res.json(error(err.message)))
+    }
+}
+
+export function resetPassword () {
+    return (req, res) => {
+        if(req.body.firstPassword == req.body.secondPassword){
+            req.sql.query('SELECT email, firstname FROM users WHERE tokenResetPassword = ?', [req.query.token])
+            .then((resultSelect) => {
+                bcrypt.genSalt(10)
+                .then((salt) => {
+                    bcrypt.hash(req.body.firstPassword, salt)
+                    .then((hash) => {
+                        req.sql.query('UPDATE users SET password = ? , tokenResetPassword = ? WHERE tokenResetPassword = ?', [hash,null,req.query.token])
+                            .then((resultUpdate) => {
+                                const data = {
+                                    to: resultSelect[0].email,
+                                    from: email,
+                                    template: 'reset-password-email',
+                                    subject: 'Mot de passe réinitialisé !',
+                                    context: {
+                                        name: resultSelect[0].firstname
+                                    }
+                                }
+                                smtpTransport.sendMail(data, (err)=> {
+                                    if(err){
+                                        res.json(error(err.message))
+                                    }
+                                    res.json(success('Mail envoyé'))
+                                })
+                            })
+                            .catch((err) => (res.json(error(err))))
+                    })
+                    .catch((err) => res.json(error(err)))
+                })
+                .catch((err) => res.json(error(err)))
+                })
+            .catch((err) => res.json(error(err)))
+        }else{
+            res.json(error('Not the same password'))
+        }
+    }
+}

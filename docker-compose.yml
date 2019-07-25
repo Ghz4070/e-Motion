@@ -21,3 +21,4 @@ services:
             - MYSQL_DATABASE=emotion
             - MYSQL_USER=admin
             - MYSQL_PASSWORD=admin
+        restart: always
