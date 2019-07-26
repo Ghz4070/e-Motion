@@ -180,3 +180,17 @@ export function setAvailable() {
         }
     }
 }
+
+export function allVehiclesNotAvailable() {
+    return (req, res) => {
+        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
+
+        if(decodeTokenRole.indexOf('ROLE_ADMIN') !== -1){
+            req.sql.query('SELECT * FROM vehicle WHERE available = FALSE')
+            .then((resultSelect) => {
+                res.json(success(resultSelect))
+            })
+            .catch((err) => res.json(error(err)))
+        }
+    }
+}
