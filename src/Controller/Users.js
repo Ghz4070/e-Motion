@@ -338,7 +338,7 @@ export function resetPassword() {
                                                 context: {
                                                     name: resultSelect[0].firstname
                                                 }
-                                            }
+                                            };
                                             smtpTransport.sendMail(data, (err) => {
                                                 if (err) {
                                                     res.json(error(err.message))
@@ -373,7 +373,7 @@ export function activateAccount() {
                             context: {
                                 name: resultSelect[0].firstname,
                             }
-                        }
+                        };
                         smtpTransport.sendMail(data, (err) => {
                             if (err) {
                                 res.json(error(err.message))
@@ -392,44 +392,62 @@ export function addPropioUserByAdmin() {
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
         if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1) {
-            let firstname = req.body.firstname;
-            let lastname = req.body.lastname;
-            let phoneNumber = req.body.phoneNumber;
-            let email = req.body.email;
-            let username = req.body.username;
-            let password = req.body.phoneNumber;
-            let roles = 'ROLES_PROPRIO';
 
-            req.sql.query("INSERT INTO users () VALUES (? , ?, ?, ?, ?) "
-                , [brand, model, serialNumber, color])
-                .then((result) => {
-                    res.json(success(result))
+            req.sql.query('SELECT * FROM users WHERE username = ? UNION SELECT * FROM users WHERE email = ?', [req.body.username, req.body.email])
+                .then((resultSelectUsername) => {
+                    if (resultSelectUsername.length > 0) {
+                        console.log(resultSelectUsername);
+                        res.json(error('This username is used'));
+                    } else {
+                        bcrypt.genSalt(10)
+                            .then((salt) => {
+                                bcrypt.hash(req.body.password, salt)
+                                    .then((hash) => {
+                                        let role = {
+                                            role: [
+                                                'ROLE_PROPRIO',
+                                            ]
+                                        };
+                                        let adressePropio = 'adresse du proprio';
+                                        let diverLicence = 'XXXXXXXXX';
+                                        req.sql.query("INSERT INTO users (firstname, lastname, birthday, phoneNumber, roles, address, driverLicence, " +
+                                            'password, email, username, tokenValidateAccount) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+                                            [req.body.username, req.body.lastname, req.body.birthday, req.body.phoneNumber,
+                                                role, adressePropio, diverLicence, hash, req.body.email, req.body.username, hash])
+                                            .then((resultInsert) => {
+                                                res.json(success(resultInsert));
+                                            })
+                                            .catch((errInsert) => res.json(error(errInsert.message)))
+                                    })
+                                    .catch((err) => res.json(err.message))
+                            })
+                            .catch((err) => res.json(error(err.message)))
+                    }
                 })
-                .catch((err) => res.json(error(err.message)));
-        } else {
-            res.json(error(new Error("Can't not use this method").message));
+                .catch((errSelect) => res.json(error(errSelect.message)))
         }
     }
 }
 
 export function userHistorical() {
     return (req, res) => {
-        req.sql.query('SELECT * FROM location ' 
-        + 'LEFT JOIN user ON location.users_idusers = users.idusers WHERE idusers = ?', req.params.id 
+        req.sql.query('SELECT * FROM location '
+            + 'LEFT JOIN user ON location.users_idusers = users.idusers WHERE idusers = ?', req.params.id
         )
-        .then((resultSelect) => {
-            res.json(success(resultSelect));
-        })
+            .then((resultSelect) => {
+                res.json(success(resultSelect));
+            })
     }
 }
-//Peux etre faire un code review et utiliser une seule fonction. 
+
+//Peux etre faire un code review et utiliser une seule fonction.
 export function getLastLocation() {
     return (req, res) => {
-        req.sql.query('SELECT * FROM location ' 
-        + 'LEFT JOIN user ON location.users_idusers = users.idusers WHERE idusers = ? ORDER BY DESC', req.params.id 
+        req.sql.query('SELECT * FROM location '
+            + 'LEFT JOIN user ON location.users_idusers = users.idusers WHERE idusers = ? ORDER BY DESC', req.params.id
         )
-        .then((resultSelect) => {
-            res.json(success(resultSelect[0]));
-        })
+            .then((resultSelect) => {
+                res.json(success(resultSelect[0]));
+            })
     }
 }

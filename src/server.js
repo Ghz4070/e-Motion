@@ -31,14 +31,14 @@ async function asyncConnection() {
         const app = express();
         //const ProtectedRoutes = express.Router();
 
-        app.use(function(req, res, next) {
+        app.use(function (req, res, next) {
             res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
             res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
             res.setHeader('Access-Control-Allow-Headers', 'Content-Type,x-access-token, Access-Control-Allow-Headers, Authorization, X-Requested-With"');
             res.setHeader('Access-Control-Allow-Credentials', true);
             next();
         });
-        
+
         //Middleware
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: true}));
@@ -50,16 +50,14 @@ async function asyncConnection() {
             next()
         };
 
-        
-
         //Routes
         app.use(`${rootApi}/offer`, mariadbConn, anonymeRouteOffers);
         app.use(`${rootApi}/admin/offer`, mariadbConn, adminRouteOffers);
         app.use(`${rootApi}/vehicle`, mariadbConn, anonymeRouteVehicles);
         app.use(`${rootApi}/admin/vehicle`, mariadbConn, adminRouteVehicles);
-        app.use(`${rootApi}/admin/location`, mariadbConn, adminRouteLocations);
         app.use(`${rootApi}/user`, mariadbConn, anonymeRouteUsers);
         app.use(`${rootApi}/admin/user`, mariadbConn, adminRouteUsers);
+        app.use(`${rootApi}/admin/location`, mariadbConn, adminRouteLocations);
 
         app.listen(port, () => console.log(`Server running in port ${port}`))
     } catch (err) {
