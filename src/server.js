@@ -13,7 +13,7 @@ import {anonymeRouteUsers, adminRouteUsers} from '../src/Routes/Users'
 import {anonymeRouteVehicles, adminRouteVehicles} from "./Routes/Vehicles";
 import {anonymeRouteOffers, adminRouteOffers} from './Routes/Offers';
 import {adminRouteLocations} from "./Routes/Locations";
-
+import {reportLateVehicle} from "./Controller/Users";
 
 const pool = mariadb.createPool({
     host: Host,
@@ -49,6 +49,10 @@ async function asyncConnection() {
             req.conn = conn;
             next()
         };
+
+
+        const dayInMilliseconds = 1000 * 60 * 60 * 24;
+        //setInterval(reportLateVehicle(conn),dayInMilliseconds);
 
         //Routes
         app.use(`${rootApi}/offer`, mariadbConn, anonymeRouteOffers);
