@@ -6,8 +6,8 @@ export function addLocation() {
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
         if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
-            req.sql.query(' INSERT INTO location (startDate, endDate, users_idusers, cancelLocation, pointFidelityUsed ) VALUES (?, ?, ?, ?, ?)',
-            [req.body.startDate, req.body.endDate, req.body.users_idusers, req.body.cancelLocation, req.body.pointFidelityUsed]) 
+            req.sql.query(' INSERT INTO location (startDate, endDate, users_idusers, cancelLocation, pointFidelityUsed, status ) VALUES (?, ?, ?, ?, ?, ?)'
+            [req.body.startDate, req.body.endDate, req.body.users_idusers, req.body.cancelLocation, req.body.pointFidelityUsed, req.body.status]) 
                 .then((result) => {
                     res.json(success(result));
                 })
@@ -24,8 +24,7 @@ export function allLocations() {
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
         if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
-            req.sql.query(' SELECT * FROM offers ' +
-                ' LEFT JOIN location ON offers.location_idlocation = location.idlocation ')
+            req.sql.query(' SELECT * FROM location LEFT JOIN offers ON location.offers_idoffers = offers.idoffers')
                 .then((result) => {
                     res.json(success(result));
                 })

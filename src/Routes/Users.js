@@ -2,7 +2,6 @@ import {
     addUser,
     login,
     allUsers,
-    logout,
     seeInformationAccount,
     updateInformationAccount,
     deleteAccount,
@@ -13,7 +12,8 @@ import {
     activateAccount,
     userHistorical,
     getLastLocation,
-    addPropioUserByAdmin
+    addPropioUserByAdmin,
+    usePointFidelity
 } from '../Controller/Users';
 import {checkToken} from '../middleware'
 import express from 'express';
@@ -42,6 +42,8 @@ anonymeRouteUsers.route('/lastLocation/:id')
     .get(db, getLastLocation());
 adminRouteUsers.route('/all')
     .get(db, checkToken, allUsers());
+adminRouteUsers.route('/usePointFidelity')
+    .get(db, checkToken, usePointFidelity())
 adminRouteUsers.route('/')
     .get(db, checkToken, seeInformationAccount());
 adminRouteUsers.route('/modify')
