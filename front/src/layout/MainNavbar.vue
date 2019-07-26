@@ -35,23 +35,29 @@
             </li>
             <li class="nav-item">
                 <router-link class="nav-link" to="/landing">
+                    <a><i class="now-ui-icons shopping_delivery-fast"></i>
+                        <p>Les véhicules</p></a>
+                </router-link>
+            </li>
+            <li v-if="role[0]" class="nav-item">
+                <router-link class="nav-link" to="/landing">
                     <a><i class="now-ui-icons ui-1_calendar-60"></i>
                         <p>Louer un véhicules</p></a>
                 </router-link>
             </li>
-            <li class="nav-item">
+            <li v-if="!role[0]" class="nav-item">
                 <router-link class="nav-link" to="/login">
                     <a><i class="now-ui-icons users_circle-08"></i>
                         <p>Se connecter</p></a>
                 </router-link>
             </li>
-            <li class="nav-item">
+            <li v-if="!role[0]" class="nav-item">
                 <router-link class="nav-link" to="/signup">
                     <a><i class="now-ui-icons users_circle-08"></i>
                         <p>S'inscrire</p></a>
                 </router-link>
             </li>
-            <drop-down tag="li" title="Mon compte" icon="now-ui-icons users_circle-08" class="nav-item">
+            <drop-down v-if="role[0]" tag="li" title="Mon compte" icon="now-ui-icons users_circle-08" class="nav-item">
                 <nav-link to="/profile">
                     <i class="now-ui-icons users_single-02"></i> Profil
                 </nav-link>
@@ -65,6 +71,12 @@
                   <i class="now-ui-icons users_single-02"></i> Déconnexion
                 </nav-link>
             </drop-down>
+            <li v-if="role.includes('ROLE_ADMIN')" class="nav-item">
+                <router-link class="nav-link" to="/signup">
+                    <a><i class="now-ui-icons users_circle-08"></i>
+                        <p>Espace Admin</p></a>
+                </router-link>
+            </li>
         </template>
     </navbar>
 </template>
@@ -72,9 +84,15 @@
 <script>
     import {DropDown, NavbarToggleButton, Navbar, NavLink} from '@/components';
     import {Popover} from 'element-ui';
+    import jwt from 'jsonwebtoken';
 
     export default {
         name: 'main-navbar',
+        data() {
+            return {
+                role: (jwt.decode(localStorage.getItem("x-access-token"))) ? (jwt.decode(localStorage.getItem("x-access-token")).role) : [],
+            }
+        },
         props: {
             transparent: Boolean,
             colorOnScroll: Number
