@@ -10,7 +10,9 @@ import {
     updateInformationAccountForAdmin,
     forgotPassword,
     resetPassword,
-    activateAccount
+    activateAccount,
+    userHistorical,
+    getLastLocation
 } from '../Controller/Users';
 import {checkToken} from '../middleware'
 import express from 'express';
@@ -33,6 +35,10 @@ anonymeRouteUsers.route('/reset_password')
     .post(db, resetPassword());
 anonymeRouteUsers.route('/activate_account')
     .get(db, activateAccount());
+anonymeRouteUsers.route('/historical/:id')
+    .get(db, userHistorical());
+anonymeRouteUsers.route('/lastLocation/:id')
+    .get(db, getLastLocation());
 adminRouteUsers.route('/all')
     .get(db, checkToken, allUsers());
 adminRouteUsers.route('/')
