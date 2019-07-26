@@ -387,3 +387,25 @@ export function activateAccount() {
         .catch((err) => res.json(error(err)))
     }
 }
+
+export function userHistorical() {
+    return (req, res) => {
+        req.sql.query('SELECT * FROM location ' 
+        + 'LEFT JOIN user ON location.users_idusers = users.idusers WHERE idusers = ?', req.params.id 
+        )
+        .then((resultSelect) => {
+            res.json(success(resultSelect));
+        })
+    }
+}
+//Peux etre faire un code review et utiliser une seule fonction. 
+export function getLastLocation() {
+    return (req, res) => {
+        req.sql.query('SELECT * FROM location ' 
+        + 'LEFT JOIN user ON location.users_idusers = users.idusers WHERE idusers = ? ORDER BY DESC', req.params.id 
+        )
+        .then((resultSelect) => {
+            res.json(success(resultSelect[0]));
+        })
+    }
+}

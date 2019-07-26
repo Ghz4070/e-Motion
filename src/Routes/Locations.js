@@ -1,6 +1,7 @@
 import {
     allLocations,
     getOneLocation,
+    addLocation
 } from '../Controller/Locations';
 
 import {checkToken} from '../middleware';
@@ -14,6 +15,9 @@ const db = (req, res, next) => {
     next();
 };
 
+
+adminRouteLocations.route('/add')
+    .post(db, checkToken, addLocation());
 adminRouteLocations.route('/all')
     .get(db, checkToken, allLocations());
 adminRouteLocations.route('/:id')
