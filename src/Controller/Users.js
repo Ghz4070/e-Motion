@@ -433,7 +433,7 @@ export function addPropioUserByAdmin() {
 export function userHistorical() {
     return (req, res) => {
         req.sql.query('SELECT * FROM location '
-            + 'LEFT JOIN user ON location.users_idusers = users.idusers WHERE idusers = ?', req.params.id
+            + 'LEFT JOIN users ON location.users_idusers = users.idusers WHERE idusers = ?', [req.params.id]
         )
             .then((resultSelect) => {
                 res.json(success(resultSelect));
@@ -445,11 +445,11 @@ export function userHistorical() {
 export function getLastLocation() {
     return (req, res) => {
         req.sql.query('SELECT * FROM location '
-            + 'LEFT JOIN user ON location.users_idusers = users.idusers WHERE idusers = ? ORDER BY DESC', req.params.id
+            + 'LEFT JOIN users ON location.users_idusers = users.idusers WHERE idusers = ?  ORDER BY location.endDate DESC limit 1', [req.params.id]
         )
-            .then((resultSelect) => {
-                res.json(success(resultSelect[0]));
-            })
+        .then((resultSelect) => {
+            res.json(success(resultSelect[0]));
+        })
     }
 }
 
