@@ -6,7 +6,8 @@ import {
     editVehicles,
     outVehiclesOfList,
     findVehicleByCriteria,
-    bookACar
+    bookACar,
+    setAvailable
 
 } from '../Controller/Vehicles';
 import express from 'express';
@@ -38,5 +39,7 @@ adminRouteVehicles.route('/edit/:id')
     .patch(checkToken,db,editVehicles());
 adminRouteVehicles.route('/delete/:id')
     .delete(checkToken,db,outVehiclesOfList());
+adminRouteVehicles.route('/available/:id')
+    .patch(checkToken,db,setAvailable());
     
 
