@@ -1,4 +1,4 @@
-import { addUser, login, allUsers, logout, seeInformationAccount, updateInformationAccount, deleteAccount, userById, updateInformationAccountForAdmin, forgotPassword, resetPassword, activateAccount } from '../Controller/Users';
+import { addUser, login, allUsers, logout, seeInformationAccount, updateInformationAccount, deleteAccount, userById, updateInformationAccountForAdmin, forgotPassword, resetPassword, activateAccount, usePointFidelity } from '../Controller/Users';
 import { checkToken } from '../middleware'
 import express from 'express';
 
@@ -22,6 +22,8 @@ anonymeRouteUsers.route('/activate_account')
     .get(db, activateAccount())
 adminRouteUsers.route('/all')
     .get(db,checkToken,allUsers())
+adminRouteUsers.route('/usePointFidelity')
+    .get(db, checkToken, usePointFidelity())
 adminRouteUsers.route('/')
     .get(db, checkToken, seeInformationAccount())
 adminRouteUsers.route('/modify')

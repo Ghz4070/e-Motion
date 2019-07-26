@@ -7,6 +7,7 @@ import nodemailer from 'nodemailer';
 import { email, password } from './../smtp'
 import {success, error} from '../returnjson';
 import {secret} from '../config';
+import { reduc } from '../Method/methodUser';
 
 
 
@@ -385,5 +386,58 @@ export function activateAccount() {
             .catch((err) => res.json(error(err)))
         })
         .catch((err) => res.json(error(err)))
+    }
+}
+
+export function usePointFidelity() {
+    return (req, res) => {
+        const decodeToken = jwt.decode(req.headers['x-access-token']);
+
+        req.sql.query('SELECT pointFidelity FROM users WHERE username = ?', [decodeToken.username])
+        .then((resultSelect) => {
+            if(req.query.pointFidelity  <= resultSelect[0].pointFidelity){
+                res.json(reduc(500,50))
+                req.sql.query('UPDATE users SET pointDidelity = ? WHERE username = ?', [resultSelect[0].pointFidelity - req.query.pointFidelity, decodeToken.username])
+                .then((resultUpdate) =>{
+                    
+                })
+                .catch((err) => res.json(error(err)))
+            }else{
+                res.json(error('you cant to use more than your point'))
+            }
+        })
+        .catch((err) => res.json(error(err)))
+    }
+}
+
+export function reportLateVehicle(conn){
+    
+    return () => {
+        conn.query('SELECT users.email, DATEDIFF(location.endDate,DATE( NOW())) AS diffDate'+
+        'FROM location RIGHT JOIN users ON location.idusers=users.idusers WHERE location.returnVehicle = ? AND diffDate < 0', [false])
+        .then((resultSelect) => {
+            if(resultsSelect.length > 0){
+                if(diffDate < 0){
+                    for(resultSelect in resultsSelect){
+                        const data = {
+                            to: resultSelect.email,
+                            cc: email,
+                            from: email,
+                            template: 'Late_vehicle',
+                            subject: 'Voiture en retard'
+                        }
+                        smtpTransport.sendMail(data, (err)=> {
+                            if(err){
+                                console.log(error(err.message))
+                            }
+                            console.log(success(resultInsert));
+                            console.log(('Mail envoyé'))  
+                        })
+                    }
+                } 
+            }else{
+                console.log('No late')
+            }
+        })
     }
 }
