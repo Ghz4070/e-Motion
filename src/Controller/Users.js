@@ -4,27 +4,26 @@ import path from 'path';
 import nodemailerExpressHandlebars from 'nodemailer-express-handlebars';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
-import { email, password } from './../smtp'
+import {email, password} from './../smtp'
 import {success, error} from '../returnjson';
 import {secret} from '../config';
 
 
-
 const smtpTransport = nodemailer.createTransport({
     service: 'Gmail',
-    auth:{
+    auth: {
         user: email,
-        pass : password
+        pass: password
     }
 });
 
 const handlebarsOption = {
-    viewEngine:{
+    viewEngine: {
         extName: '.html',
-        partialsDir: path.join(__dirname,'../Template'),
-        layoutsDir:path.join(__dirname,'../Template'),
+        partialsDir: path.join(__dirname, '../Template'),
+        layoutsDir: path.join(__dirname, '../Template'),
     },
-    viewPath: path.join(__dirname,'../Template'),
+    viewPath: path.join(__dirname, '../Template'),
     extName: '.html',
 
 }
@@ -72,16 +71,16 @@ export function addUser() {
                                                     subject: 'Activer votre compte',
                                                     context: {
                                                         name: req.body.firstname,
-                                                        url: 'http://localhost:3000/api/v1/user/activate_account?token='+ hash,
+                                                        url: 'http://localhost:3000/api/v1/user/activate_account?token=' + hash,
                                                     }
                                                 }
-                                                smtpTransport.sendMail(data, (err)=> {
-                                                    if(err){
+                                                smtpTransport.sendMail(data, (err) => {
+                                                    if (err) {
                                                         res.json(error(err.message))
                                                     }
                                                     res.json(success(resultInsert));
                                                     console.log(('Mail envoyé'))
-                                                    
+
                                                 })
                                             })
                                             .catch((errInsert) => res.json(error(errInsert.message)))
@@ -103,24 +102,24 @@ export function login() {
                 if (result.length < 1) {
                     res.json(error('Unknown username'));
                 } else {
-                    if(result[0].tokenValidateAccount != null){
+                    if (result[0].tokenValidateAccount != null) {
                         res.json(error('This account isnt activated, please active your account'))
-                    }else{
+                    } else {
                         bcrypt.compare(req.body.password, result[0].password)
-                        .then((passwordDecrypted) => {
-                            if (passwordDecrypted && req.body.username == result[0].username) {
-                                let token = jwt.sign({username: req.body.username, role: result[0].roles}, secret, {
-                                    algorithm: 'HS256',
-                                    expiresIn: '24h'
-                                }, (err, encoded) => {
-                                    if (err) {
-                                        res.json(error(err.message))
-                                    }
-                                    res.json(success(encoded));
-                                })
-                            }
-                        })
-                        .catch((err) => res.json(error(err.message)))
+                            .then((passwordDecrypted) => {
+                                if (passwordDecrypted && req.body.username == result[0].username) {
+                                    let token = jwt.sign({username: req.body.username, role: result[0].roles}, secret, {
+                                        algorithm: 'HS256',
+                                        expiresIn: '24h'
+                                    }, (err, encoded) => {
+                                        if (err) {
+                                            res.json(error(err.message))
+                                        }
+                                        res.json(success(encoded));
+                                    })
+                                }
+                            })
+                            .catch((err) => res.json(error(err.message)))
                     }
                 }
             })
@@ -270,91 +269,91 @@ export function updateInformationAccountForAdmin() {
     }
 }
 
-export function forgotPassword(){
-    return (req, res)=> {
+export function forgotPassword() {
+    return (req, res) => {
         console.log(req.query.email)
         req.sql.query('SELECT * FROM users WHERE email = ?', req.query.email)
-        .then((resultSelect) => {
-            if(resultSelect.length > 0) {
-                if(resultSelect[0].tokenResetPassword != null){
-                    req.sql.query('UPDATE users SET tokenResetPassword = ? WHERE idusers = ?', [null,resultSelect[0].idusers])
-                    .then((resultUpdate) => {
-                        console.log('delete')
-                    })
-                    .catch((err) => res.json(error(err)))
-                }                
-                crypto.randomBytes(20, (err, buffer) => {
-                    if(err){
-                        res.json(error(err))
-                    }
-                    const token = buffer.toString('hex')
-                    req.sql.query("UPDATE users SET tokenResetPassword = ?  WHERE idusers = ?", [token, resultSelect[0].idusers])
-                    .then((resultInsert) => {
-                        const data = {
-                            to: resultSelect[0].email,
-                            from: email,
-                            template: 'forgot-password-email',
-                            subject: 'Réinistialisation du mot de passe',
-                            context: {
-                                
-                                url: 'http://localhost:3000/api/v1/user/reset_password?token='+ token,
-                                name: resultSelect[0].firstname
-                            }
-                        }
-
-                        smtpTransport.sendMail(data, (err)=> {
-                            if(err){
-                                res.json(error(err.message))
-                            }
-                            res.json(success('Mail envoyé'))
-                        })
-                    })
-                    .catch((err) => res.json(error(err.message)))
-                })
-
-            }else{
-                res.json(error('Mail inconnu'))
-            }
-        })
-        .catch((err) => res.json(error(err.message)))
-    }
-}
-
-export function resetPassword () {
-    return (req, res) => {
-        if(req.body.firstPassword == req.body.secondPassword){
-            req.sql.query('SELECT email, firstname FROM users WHERE tokenResetPassword = ?', [req.query.token])
             .then((resultSelect) => {
-                bcrypt.genSalt(10)
-                .then((salt) => {
-                    bcrypt.hash(req.body.firstPassword, salt)
-                    .then((hash) => {
-                        req.sql.query('UPDATE users SET password = ? , tokenResetPassword = ? WHERE tokenResetPassword = ?', [hash,null,req.query.token])
+                if (resultSelect.length > 0) {
+                    if (resultSelect[0].tokenResetPassword != null) {
+                        req.sql.query('UPDATE users SET tokenResetPassword = ? WHERE idusers = ?', [null, resultSelect[0].idusers])
                             .then((resultUpdate) => {
+                                console.log('delete')
+                            })
+                            .catch((err) => res.json(error(err)))
+                    }
+                    crypto.randomBytes(20, (err, buffer) => {
+                        if (err) {
+                            res.json(error(err))
+                        }
+                        const token = buffer.toString('hex')
+                        req.sql.query("UPDATE users SET tokenResetPassword = ?  WHERE idusers = ?", [token, resultSelect[0].idusers])
+                            .then((resultInsert) => {
                                 const data = {
                                     to: resultSelect[0].email,
                                     from: email,
-                                    template: 'reset-password-email',
-                                    subject: 'Mot de passe réinitialisé !',
+                                    template: 'forgot-password-email',
+                                    subject: 'Réinistialisation du mot de passe',
                                     context: {
+
+                                        url: 'http://localhost:3000/api/v1/user/reset_password?token=' + token,
                                         name: resultSelect[0].firstname
                                     }
                                 }
-                                smtpTransport.sendMail(data, (err)=> {
-                                    if(err){
+
+                                smtpTransport.sendMail(data, (err) => {
+                                    if (err) {
                                         res.json(error(err.message))
                                     }
                                     res.json(success('Mail envoyé'))
                                 })
                             })
-                            .catch((err) => (res.json(error(err))))
+                            .catch((err) => res.json(error(err.message)))
                     })
-                    .catch((err) => res.json(error(err)))
+
+                } else {
+                    res.json(error('Mail inconnu'))
+                }
+            })
+            .catch((err) => res.json(error(err.message)))
+    }
+}
+
+export function resetPassword() {
+    return (req, res) => {
+        if (req.body.firstPassword == req.body.secondPassword) {
+            req.sql.query('SELECT email, firstname FROM users WHERE tokenResetPassword = ?', [req.query.token])
+                .then((resultSelect) => {
+                    bcrypt.genSalt(10)
+                        .then((salt) => {
+                            bcrypt.hash(req.body.firstPassword, salt)
+                                .then((hash) => {
+                                    req.sql.query('UPDATE users SET password = ? , tokenResetPassword = ? WHERE tokenResetPassword = ?', [hash, null, req.query.token])
+                                        .then((resultUpdate) => {
+                                            const data = {
+                                                to: resultSelect[0].email,
+                                                from: email,
+                                                template: 'reset-password-email',
+                                                subject: 'Mot de passe réinitialisé !',
+                                                context: {
+                                                    name: resultSelect[0].firstname
+                                                }
+                                            }
+                                            smtpTransport.sendMail(data, (err) => {
+                                                if (err) {
+                                                    res.json(error(err.message))
+                                                }
+                                                res.json(success('Mail envoyé'))
+                                            })
+                                        })
+                                        .catch((err) => (res.json(error(err))))
+                                })
+                                .catch((err) => res.json(error(err)))
+                        })
+                        .catch((err) => res.json(error(err)))
                 })
                 .catch((err) => res.json(error(err)))
-                })
-            .catch((err) => res.json(error(err)))
-        }else{
+        } else {
             res.json(error('Not the same password'))
         }
     }
@@ -363,27 +362,52 @@ export function resetPassword () {
 export function activateAccount() {
     return (req, res) => {
         req.sql.query('SELECT email, firstname FROM users WHERE tokenValidateAccount = ?', [req.query.token])
-        .then((resultSelect) => {
-            req.sql.query('UPDATE users SET tokenValidateAccount = ? WHERE tokenValidateAccount = ?', [null,req.query.token])
-            .then((resultUpdate) => {
-                const data = {
-                    to: resultSelect[0].email,
-                    from: email,
-                    template: 'Activited_account',
-                    subject: 'Votre compte est activé',
-                    context: {
-                        name: resultSelect[0].firstname,
-                    }
-                }
-                smtpTransport.sendMail(data, (err)=> {
-                    if(err){
-                        res.json(error(err.message))
-                    }
-                    res.json(success('Mail envoyé'));
-                })
+            .then((resultSelect) => {
+                req.sql.query('UPDATE users SET tokenValidateAccount = ? WHERE tokenValidateAccount = ?', [null, req.query.token])
+                    .then((resultUpdate) => {
+                        const data = {
+                            to: resultSelect[0].email,
+                            from: email,
+                            template: 'Activited_account',
+                            subject: 'Votre compte est activé',
+                            context: {
+                                name: resultSelect[0].firstname,
+                            }
+                        }
+                        smtpTransport.sendMail(data, (err) => {
+                            if (err) {
+                                res.json(error(err.message))
+                            }
+                            res.json(success('Mail envoyé'));
+                        })
+                    })
+                    .catch((err) => res.json(error(err)))
             })
             .catch((err) => res.json(error(err)))
-        })
-        .catch((err) => res.json(error(err)))
+    }
+}
+
+export function addPropioUserByAdmin() {
+    return (req, res) => {
+        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
+
+        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1) {
+            let firstname = req.body.firstname;
+            let lastname = req.body.lastname;
+            let phoneNumber = req.body.phoneNumber;
+            let email = req.body.email;
+            let username = req.body.username;
+            let password = req.body.phoneNumber;
+            let roles = 'ROLES_PROPRIO';
+
+            req.sql.query("INSERT INTO users () VALUES (? , ?, ?, ?, ?) "
+                , [brand, model, serialNumber, color])
+                .then((result) => {
+                    res.json(success(result))
+                })
+                .catch((err) => res.json(error(err.message)));
+        } else {
+            res.json(error(new Error("Can't not use this method").message));
+        }
     }
 }
