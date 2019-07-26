@@ -7,7 +7,8 @@ import {
     outVehiclesOfList,
     findVehicleByCriteria,
     bookACar,
-    setAvailable
+    setAvailable,
+    allVehiclesNotAvailable
 
 } from '../Controller/Vehicles';
 import express from 'express';
@@ -41,5 +42,6 @@ adminRouteVehicles.route('/delete/:id')
     .delete(checkToken,db,outVehiclesOfList());
 adminRouteVehicles.route('/available/:id')
     .patch(checkToken,db,setAvailable());
-    
+adminRouteVehicles.route('/notavailable')
+    .get(db,checkToken, allVehiclesNotAvailable())
 
