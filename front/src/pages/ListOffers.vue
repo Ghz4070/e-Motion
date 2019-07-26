@@ -4,7 +4,7 @@
             <h3 class="title">Listes des offres</h3>
             <p></p>
             <ul>
-                <li v-for="offer in offers"> {{ offer.idoffers }}, {{ offer.title }}, {{ offer.price }}, {{ offer.description }},
+                <li v-for="offer in offers" v-bind:key="offer.id"> {{ offer.idoffers }}, {{ offer.title }}, {{ offer.price }}, {{ offer.description }},
                     {{ offer.penality }}, {{ offer.nbKm }}, {{ offer.pointFidelityOffers }}</li>
             </ul>
         </div>
