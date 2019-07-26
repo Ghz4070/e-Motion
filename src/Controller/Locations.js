@@ -5,17 +5,16 @@ export function addLocation() {
     return (req, res) => {
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
-        //if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
-                                                                    //, users_idusers, cancelLocation, pointFidelityUsed 
-            req.sql.query(' INSERT INTO location (startDate, endDate) VALUES (?, ?)',
-            [req.body.startDate, req.body.endDate]) //, req.body.users_idusers, req.body.cancelLocation, req.body.pointFidelityUsed]
+        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
+            req.sql.query(' INSERT INTO location (startDate, endDate, users_idusers, cancelLocation, pointFidelityUsed ) VALUES (?, ?, ?, ?, ?)',
+            [req.body.startDate, req.body.endDate, req.body.users_idusers, req.body.cancelLocation, req.body.pointFidelityUsed]) 
                 .then((result) => {
                     res.json(success(result));
                 })
                 .catch((err) => res.json(error(err.message)));
-        //} else {
-          //  res.json(error(new Error("Can't not use this method").message));
-        //}
+        } else {
+            res.json(error(new Error("Can't not use this method").message));
+        }
     }
 }
 
@@ -24,16 +23,16 @@ export function allLocations() {
     return (req, res) => {
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
-        //if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
+        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
             req.sql.query(' SELECT * FROM offers ' +
                 ' LEFT JOIN location ON offers.location_idlocation = location.idlocation ')
                 .then((result) => {
                     res.json(success(result));
                 })
                 .catch((err) => res.json(error(err.message)));
-        //} else {
-          //  res.json(error(new Error("Can't not use this method").message));
-        //}
+        } else {
+            res.json(error(new Error("Can't not use this method").message));
+        }
     }
 }
 
