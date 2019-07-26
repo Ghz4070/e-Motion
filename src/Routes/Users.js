@@ -51,5 +51,5 @@ adminRouteUsers.route('/:id')
     .get(db, checkToken, userById());
 adminRouteUsers.route('/update/:id')
     .patch(db, checkToken, updateInformationAccountForAdmin());
-adminRouteUsers.route('/addByAdmin')
-    .patch(db, checkToken, addPropioUserByAdmin());
+/* adminRouteUsers.route('/addByAdmin')
+    .patch(db, checkToken, addPropioUserByAdmin()); */
