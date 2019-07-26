@@ -163,3 +163,20 @@ export function bookACar() {
 
     }
 }
+
+export function setAvailable() {
+    return (req, res) => {
+        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
+
+        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1) {
+            req.sql.query("UPDATE vehicle SET available = ? WHERE idvehicle = ?",
+                [req.body.available, req.params.id])
+                .then((result) => {
+                    res.json(success(result))
+                })
+                .catch((err) => res.json(error(err.message)));
+        } else {
+            res.json(error(new Error("Can't not use this method").message));
+        }
+    }
+}

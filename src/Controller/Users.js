@@ -387,7 +387,7 @@ export function activateAccount() {
     }
 }
 
-export function addPropioUserByAdmin() {
+/* export function addPropioUserByAdmin() {
     return (req, res) => {
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
@@ -410,7 +410,7 @@ export function addPropioUserByAdmin() {
             res.json(error(new Error("Can't not use this method").message));
         }
     }
-}
+} */
 
 export function userHistorical() {
     return (req, res) => {
