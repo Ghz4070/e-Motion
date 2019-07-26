@@ -12,7 +12,8 @@ import {
     resetPassword,
     activateAccount,
     userHistorical,
-    getLastLocation
+    getLastLocation,
+    addPropioUserByAdmin
 } from '../Controller/Users';
 import {checkToken} from '../middleware'
 import express from 'express';
@@ -51,5 +52,5 @@ adminRouteUsers.route('/:id')
     .get(db, checkToken, userById());
 adminRouteUsers.route('/update/:id')
     .patch(db, checkToken, updateInformationAccountForAdmin());
-/* adminRouteUsers.route('/addByAdmin')
-    .patch(db, checkToken, addPropioUserByAdmin()); */
+adminRouteUsers.route('/addByAdmin')
+    .post(db, checkToken, addPropioUserByAdmin());
