@@ -12,7 +12,7 @@ import {Host, User, Password, Database} from '../src/database';
 import {anonymeRouteUsers, adminRouteUsers} from '../src/Routes/Users'
 import {anonymeRouteVehicles, adminRouteVehicles} from "./Routes/Vehicles";
 import {anonymeRouteOffers, adminRouteOffers} from './Routes/Offers';
-import {adminRouteLocations} from "./Routes/Locations";
+import {adminRouteLocations, anonymeRouteLocations} from "./Routes/Locations";
 import {reportLateVehicle} from "./Controller/Users";
 
 const pool = mariadb.createPool({
@@ -61,6 +61,7 @@ async function asyncConnection() {
         app.use(`${rootApi}/user`, mariadbConn, anonymeRouteUsers);
         app.use(`${rootApi}/admin/user`, mariadbConn, adminRouteUsers);
         app.use(`${rootApi}/admin/location`, mariadbConn, adminRouteLocations);
+        app.use(`${rootApi}/admin/location`, mariadbConn, anonymeRouteLocations);
 
         app.listen(port, () => console.log(`Server running in port ${port}`))
     } catch (err) {

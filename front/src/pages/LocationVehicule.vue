@@ -50,11 +50,48 @@ export default {
       bookACar(){
         //Vérifier que l'utilisateur est bien connecté
 
-        axios
-            .put('http://localhost:3000/api/v1/vehicles/bookACar/'+ idVehicule)
-            .then(response => { this.vehicule = response.data.result }) // gestion du retour faire une vue different ou changer le composant 
-            .catch(error => console.log(error))
-      }
+               localStorage.setItem('x-access-token','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IntcInJvbGVcIjpbXCJST0xFX0FETUlOXCIsXCJST0xFX1BST1BSSU9cIixcIlJPTEVfVVNFUlwiXX0iLCJpYXQiOjE1NjQyMzUzNTAsImV4cCI6MTU2NDMyMTc1MH0.jamDDvEELSPaqi2cLat4_JCP72bQtcgb6zhxfPsS9G4')
+
+        let token = localStorage.getItem('x-access-token')//Mettre des verification et de la sécurité localstorage est accesible avec des injections ou par la console du navigateur 
+        if(token == null || token == undefined ){
+          console.log('Vous devez vous connecter pour éxécuter cette action') // Peux etre mettre un message d'alerte
+
+          let routeRedirection = this.$router; 
+          routeRedirection.push('/login') // Possibilité de mettre un setTimeOUt le temps d'informer l'utiilisateur
+        }
+
+        let idVehicule = this.$route.params.id;
+        let startDate = "2019-07-27 15:08:49";
+        let endDate = "2019-07-29 15:08:49";
+        let pointFidelityUsed = 0;
+        let status = "Terminer";
+        let idoffers = 1;
+        let cancelLocation = 0;
+        let returnVehicule = 0;
+        
+       localStorage.setItem('x-access-token','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IntcInJvbGVcIjpbXCJST0xFX0FETUlOXCIsXCJST0xFX1BST1BSSU9cIixcIlJPTEVfVVNFUlwiXX0iLCJpYXQiOjE1NjQyMzUzNTAsImV4cCI6MTU2NDMyMTc1MH0.jamDDvEELSPaqi2cLat4_JCP72bQtcgb6zhxfPsS9G4')
+        axios({
+              url: 'http://localhost:3000/api/v1/location/add',
+              method: 'post',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'x-access-token': localStorage.getItem('x-access-token')
+              },
+              data: {
+                  startDate: startDate,
+                  endDate: endDate,
+                  pointFidelityUsed: pointFidelityUsed,
+                  status: status,
+                  cancelLocation:cancelLocation,
+                  returnVehicule : returnVehicule,
+                  idoffers: idoffers,
+                  
+              }
+          })
+          .then((response) => {
+                console.log(response)
+            })
+        }
     },
   created(){
       // Mettre beforeCreated, si le vehicule demandé n'est pas dispo gérer l'affichage en fonction.
