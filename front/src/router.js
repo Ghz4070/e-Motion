@@ -101,10 +101,9 @@ export default new Router({
         {
             path: '/vehicule',
             name: 'vehicule',
-            components: { default: Vehicule, header: MainNavbar, footer: MainFooter },
+            components: { default: Vehicule, header: MainNavbar},
             props: {
               header: { colorOnScroll: 400 },
-              footer: { backgroundColor: 'black' }
             }
           },
         {
