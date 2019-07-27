@@ -12,6 +12,7 @@ export function addLocation() {
                 if(req.body.pointFidelityUsed <= resultSelect[0].pointFidelity){
                     const finalPrice = reduc(req.query.pointFidelity,req.query.price)
 
+
                     req.sql.query(' INSERT INTO location (startDate, endDate, users_idusers, pointFidelityUsed, status, finalPrice ,offers_idoffers ) VALUES ( ?, ?, ?, ?, ?, ?, ?)',
                     [req.body.startDate, req.body.endDate, resultSelect[0].idusers, req.body.pointFidelityUsed, req.body.status, finalPrice ,req.body.idoffers]) 
                     .then((resultInsert) => {
@@ -39,7 +40,7 @@ export function allLocations() {
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
         if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
-            req.sql.query(' SELECT * FROM location')// Left join vers offers
+            req.sql.query(' SELECT * FROM location LEFT JOIN offers ON location.offers_idoffers = offers.idoffers')
                 .then((result) => {
                     res.json(success(result));
                 })

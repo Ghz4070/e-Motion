@@ -58,6 +58,7 @@ export function addVehicles() { //
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
         if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
+
             let brand = req.body.brand;
             let model = req.body.model;
             let serialNumber = req.body.serialNumber;
@@ -67,12 +68,13 @@ export function addVehicles() { //
             let datePurchase = req.body.datePurchase;
             let price = req.body.price;
             let available = req.body.available;
-            let listing = req.body.lising;
+            let imgVehicle = req.body.imgVehicle;
+            let typeVehicle = req.body.typeVehicle;
             let offers_idoffers = req.body.offers_idoffers;
 
             req.sql.query("INSERT INTO vehicle (brand, model, serialNumber, color, licensePlate, nbKm, " +
-                " datePurchase, price, available,lising) VALUES (? , ?, ?, ?, ? ,? ,? ,? ,? ,?) "
-                , [brand, model, serialNumber, color, licensePlate, nbKm, datePurchase, price, available, listing, offers_idoffers])
+                "datePurchase, price, available, imgVehicle, typeVehicle, offers_idoffers) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+                , [brand, model, serialNumber, color, licensePlate, nbKm, datePurchase, price, available, imgVehicle, typeVehicle, offers_idoffers])
                 .then((result) => {
                     res.json(success(result))
                 })
@@ -193,7 +195,6 @@ export function allVehiclesNotAvailable() {
                 }else{
                     res.json(error('All available'))
                 }
-                
             })
             .catch((err) => res.json(error(err)))
         }

@@ -433,7 +433,7 @@ export function addPropioUserByAdmin() {
 export function userHistorical() {
     return (req, res) => {
         req.sql.query('SELECT * FROM location '
-            + 'LEFT JOIN user ON location.users_idusers = users.idusers WHERE idusers = ?', req.params.id
+            + 'LEFT JOIN users ON location.users_idusers = users.idusers WHERE idusers = ?', [req.params.id]
         )
             .then((resultSelect) => {
                 res.json(success(resultSelect));
@@ -445,11 +445,11 @@ export function userHistorical() {
 export function getLastLocation() {
     return (req, res) => {
         req.sql.query('SELECT * FROM location '
-            + 'LEFT JOIN user ON location.users_idusers = users.idusers WHERE idusers = ? ORDER BY DESC', req.params.id
+            + 'LEFT JOIN users ON location.users_idusers = users.idusers WHERE idusers = ?  ORDER BY location.endDate DESC limit 1', [req.params.id]
         )
-            .then((resultSelect) => {
-                res.json(success(resultSelect[0]));
-            })
+        .then((resultSelect) => {
+            res.json(success(resultSelect[0]));
+        })
     }
 }
 
@@ -523,3 +523,16 @@ export function paybackFidelityPoint() {
         }
     }
 }
+
+export function getHistoric() {
+    return (req, res) => {
+        const decodeToken = jwt.decode(req.headers['x-access-token']);
+
+        req.sql.query('SELECT u.firstname, u.lastname, u.username, l.startDate, l.endDate, l.pointFidelityUsed FROM users u INNER JOIN location l ON u.idusers = l.users_idusers WHERE username = ?', [decodeToken.username])
+            .then((resultQuery) => {
+                res.json(success(resultQuery));
+            })
+            .catch((err) => res.json(error(err)))
+    }
+}
+

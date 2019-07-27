@@ -50,8 +50,10 @@
                                 v-model="nbKm"
                         >
                         </fg-input>
+
                         <fg-input>
                             <el-date-picker
+                                    class="no-border "
                                     popper-class="date-picker-primary"
                                     type="date"
                                     placeholder="date d'achat"
@@ -60,15 +62,20 @@
                             </el-date-picker>
                         </fg-input>
                         <fg-input
-                                class="no-border"
+                                class="no-border pt-2"
                                 placeholder="Prix"
                                 addon-left-icon="now-ui-icons text_caps-small"
                                 v-model="price"
                         >
                         </fg-input>
 
-                        <n-radio v-model="available" label="0">Disponible</n-radio>
-                        <n-radio v-model="available" label="1">Indisponible</n-radio>
+                        <n-radio inline class="mb-3" v-model="typeVehicule" label="voiture">Voiture</n-radio>
+                        <n-radio inline class="mb-3" v-model="typeVehicule" label="scooter">Scooter</n-radio>
+
+
+                        <v-select :options="options" v-model="selected"
+                                  :reduce="titleOffers => titleOffers.idOffers"
+                                  label="titleOffers"></v-select>
 
                     </template>
                     <div class="card-footer text-center">
@@ -84,10 +91,14 @@
     import {DatePicker} from 'element-ui';
     import axios from 'axios';
 
+    import vSelect from 'vue-select';
+    import 'vue-select/dist/vue-select.css';
+
     export default {
         name: 'FormCreateVehicle',
         components: {
             Card,
+            vSelect,
             [DatePicker.name]: DatePicker,
             [Button.name]: Button,
             [FormGroupInput.name]: FormGroupInput,
@@ -95,7 +106,8 @@
         },
         data() {
             return {
-                available: '',
+                img: 'default.jpg',
+                typeVehicule: '',
                 datePurchase: '',
                 price: '',
                 nbKm: '',
@@ -104,6 +116,10 @@
                 numerSerie: '',
                 model: '',
                 brand: '',
+                selected: null,
+                options: [],
+                titleOffers: '',
+                idOffers: '',
             }
         },
         methods: {
@@ -120,7 +136,9 @@
                         'x-access-token': localStorage.getItem('x-access-token')
                     },
                     data: {
-                        available: this.available,
+                        imgVehicle: this.img,
+                        typeVehicle: this.typeVehicule,
+                        available: '1', //true
                         datePurchase: finalDate,
                         price: this.price,
                         nbKm: this.nbKm,
@@ -129,14 +147,28 @@
                         serialNumber: this.numerSerie,
                         model: this.model,
                         brand: this.brand,
-                        lising: '0', // a modifier
-                        offers_idoffers: null, // a modifier
+                        offers_idoffers: this.selected,
                     }
                 })
                     .then((response) => {
                         console.log(response)
                     })
             }
+        },
+        mounted() {
+            axios
+                .get('http://localhost:3000/api/v1/offer') //recup all offers
+                .then(response => {
+                    for (let i in response.data.result) {
+                        this.idOffers = response.data.result[i].idoffers;
+                        this.titleOffers = response.data.result[i].title;
+                        this.options.push({
+                            'idOffers': this.idOffers,
+                            'titleOffers': this.titleOffers,
+                        });
+                    }
+                })
+                .catch(error => console.log(error))
         }
     }
 </script>
