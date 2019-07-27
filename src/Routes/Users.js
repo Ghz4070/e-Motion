@@ -13,7 +13,7 @@ import {
     userHistorical,
     getLastLocation,
     addPropioUserByAdmin,
-    usePointFidelity
+    paybackFidelityPoint
 } from '../Controller/Users';
 import {checkToken} from '../middleware'
 import express from 'express';
@@ -42,8 +42,6 @@ anonymeRouteUsers.route('/lastLocation/:id')
     .get(db, getLastLocation());
 adminRouteUsers.route('/all')
     .get(db, checkToken, allUsers());
-adminRouteUsers.route('/usePointFidelity')
-    .get(db, checkToken, usePointFidelity())
 adminRouteUsers.route('/')
     .get(db, checkToken, seeInformationAccount());
 adminRouteUsers.route('/modify')
@@ -56,3 +54,5 @@ adminRouteUsers.route('/update/:id')
     .patch(db, checkToken, updateInformationAccountForAdmin());
 adminRouteUsers.route('/addByAdmin')
     .post(db, checkToken, addPropioUserByAdmin());
+adminRouteUsers.route('/paybackFidelityPoint')
+    .patch(db, checkToken, paybackFidelityPoint())

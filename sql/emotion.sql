@@ -63,6 +63,7 @@ CREATE TABLE IF NOT EXISTS `emotion`.`location` (
   `pointFidelityUsed` INT NULL,
   `returnVehicle` BOOLEAN NOT NULL DEFAULT FALSE,
   `status` VARCHAR(255) NOT NULL,
+  `finalPrice` INT NOT NULL,
   `offers_idoffers` INT NULL,
   PRIMARY KEY (`idlocation`),
   CONSTRAINT `fk_location_users`
