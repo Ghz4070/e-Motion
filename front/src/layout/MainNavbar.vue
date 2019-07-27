@@ -64,11 +64,8 @@
                 <nav-link to="/profile">
                     <i class="now-ui-icons shopping_basket"></i> Historique des commandes
                 </nav-link>
-                <nav-link to="/profile">
-                    <i class="now-ui-icons objects_diamond"></i> Point de fidélité
-                </nav-link>
                 <nav-link to="/logout">
-                  <i class="now-ui-icons users_single-02"></i> Déconnexion
+                  <i class="now-ui-icons ui-1_simple-remove"></i> Déconnexion
                 </nav-link>
             </drop-down>
             <li v-if="role.includes('ROLE_ADMIN')" class="nav-item">
