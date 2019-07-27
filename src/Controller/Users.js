@@ -453,56 +453,74 @@ export function getLastLocation() {
     }
 }
 
-export function usePointFidelity() {
-    return (req, res) => {
-        const decodeToken = jwt.decode(req.headers['x-access-token']);
-
-        req.sql.query('SELECT pointFidelity FROM users WHERE username = ?', [decodeToken.username])
-        .then((resultSelect) => {
-            if(req.query.pointFidelity  <= resultSelect[0].pointFidelity){
-                res.json(reduc(500,50))
-                req.sql.query('UPDATE users SET pointDidelity = ? WHERE username = ?', [resultSelect[0].pointFidelity - req.query.pointFidelity, decodeToken.username])
-                .then((resultUpdate) =>{
-                    
-                })
-                .catch((err) => res.json(error(err)))
-            }else{
-                res.json(error('you cant to use more than your point'))
-            }
-        })
-        .catch((err) => res.json(error(err)))
-    }
-}
-
 export function reportLateVehicle(conn){
     
     return () => {
-        conn.query('SELECT users.email, DATEDIFF(location.endDate,DATE( NOW())) AS diffDate'+
-        'FROM location RIGHT JOIN users ON location.idusers=users.idusers WHERE location.returnVehicle = ? AND diffDate < 0', [false])
-        .then((resultSelect) => {
+        conn.query('SELECT u.email, u.idusers, u.firstname, u.lastname, startDate, endDate ,DATEDIFF(location.endDate,DATE( NOW()))*-1 AS diffDate, v.brand, v.model, (DATEDIFF(location.endDate,DATE( NOW()))*o.penality*-1) AS totalpenality'+
+        ' FROM location' +
+        ' LEFT JOIN users u on location.users_idusers = u.idusers' +
+        ' LEFT JOIN offers o on location.offers_idoffers = o.idoffers'+
+        ' LEFT JOIN vehicle v on o.idoffers = v.offers_idoffers'+
+        ' WHERE (DATEDIFF(location.endDate,DATE( NOW()))) < 0 AND returnVehicle = 0;')
+        .then((resultsSelect) => {
             if(resultsSelect.length > 0){
-                if(diffDate < 0){
-                    for(resultSelect in resultsSelect){
+                    for(let resultSelect of resultsSelect){
+
                         const data = {
                             to: resultSelect.email,
                             cc: email,
                             from: email,
                             template: 'Late_vehicle',
-                            subject: 'Voiture en retard'
+                            subject: 'Voiture en retard',
+                            context: {
+                                nom: resultSelect.lastname,
+                                prenom: resultSelect.firstname,
+                                startDate: resultSelect.startDate,
+                                endDate: resultSelect.endDate,
+                                retard: resultSelect.diffDate,
+                                marque: resultSelect.brand,
+                                modele: resultSelect.model,
+                                penality: resultSelect.totalpenality
+                            }
                         }
                         smtpTransport.sendMail(data, (err)=> {
                             if(err){
                                 console.log(error(err.message))
                             }
-                            console.log(success(resultInsert));
+                            //console.log(success(data));
                             console.log(('Mail envoyé'))  
                         })
                     }
-                } 
+                
             }else{
                 console.log('No late')
             }
         })
+    }
+}
+
+export function paybackFidelityPoint() {
+    return (req, res) => {
+        const decodeTokenUsername = jwt.decode(req.headers['x-access-token']);
+
+        if(decodeTokenUsername){
+            req.sql.query('SELECT idusers, pointFidelity FROM users WHERE username = ?', [decodeTokenUsername.username])
+            .then((resultSelect) => {
+                req.sql.query('UPDATE location SET status = ? WHERE idlocation = ?', ['Annulé', req.query.idlocation])
+                .then((resultUpdate) =>{
+                    req.sql.query('UPDATE users SET pointFidelity = ? WHERE username = ?', 
+                    [parseInt(resultSelect[0].pointFidelity) + parseInt(req.query.pointFidelityUsed), decodeTokenUsername.username])
+                    .then((resultUpdateUser) => {
+                        res.json(success('Method has been worked'))
+                    })
+                    .catch((err) => res.json(error(err.message)))
+                })
+                .catch((err) => res.json(error(err.message)))
+            })
+            .catch((err) => res.json(error(err.message)))
+        }else{
+            res.json(error('You can\'t use this method'));
+        }
     }
 }
 
@@ -517,3 +535,4 @@ export function getHistoric() {
             .catch((err) => res.json(error(err)))
     }
 }
+

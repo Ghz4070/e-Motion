@@ -8,8 +8,19 @@
 </head>
 <body>
     <div>
-        <h3>{{name}},</h3>
-        <p>Vous devez rendre votre voiture.</p>
+        <h3>Bonjour {{nom}} {{prenom}},</h3>
+        <p>Nous vous rappelons que la date de fin de l'occasion est arrivé à l'échéance.
+            Récapitulatif de votre réservation:</p> 
+        <ul>
+            <li>Marque: {{ marque }}</li>
+            <li>Modèle: {{ modele}}</li>
+            <li>Date de début: {{ startDate}}</li>
+            <li>Date de fin: {{endDate}}</li>
+            <li>Nombre de jour de retard: {{retard}}</li>
+        </ul>        
+        <p>. Vous serez donc redevable de la somme suivante: {{penality}}<br>
+        Ne vous prions de rendre le véhicule dans les plus brefs délais</p>
+        <h1>Merci d'avance</h1>
     </div>
 </body>
 </html>

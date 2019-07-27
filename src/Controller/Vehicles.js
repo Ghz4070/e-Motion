@@ -190,7 +190,11 @@ export function allVehiclesNotAvailable() {
         if(decodeTokenRole.indexOf('ROLE_ADMIN') !== -1){
             req.sql.query('SELECT * FROM vehicle WHERE available = FALSE')
             .then((resultSelect) => {
-                res.json(success(resultSelect))
+                if(resultSelect.length > 0){
+                    res.json(success(resultSelect))
+                }else{
+                    res.json(error('All available'))
+                }
             })
             .catch((err) => res.json(error(err)))
         }
