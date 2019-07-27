@@ -505,3 +505,15 @@ export function reportLateVehicle(conn){
         })
     }
 }
+
+export function getHistoric() {
+    return (req, res) => {
+        const decodeToken = jwt.decode(req.headers['x-access-token']);
+
+        req.sql.query('SELECT u.firstname, u.lastname, u.username, l.startDate, l.endDate, l.pointFidelityUsed FROM users u INNER JOIN location l ON u.idusers = l.users_idusers WHERE username = ?', [decodeToken.username])
+            .then((resultQuery) => {
+                res.json(success(resultQuery));
+            })
+            .catch((err) => res.json(error(err)))
+    }
+}

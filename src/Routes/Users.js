@@ -13,7 +13,8 @@ import {
     userHistorical,
     getLastLocation,
     addPropioUserByAdmin,
-    usePointFidelity
+    usePointFidelity,
+    getHistoric
 } from '../Controller/Users';
 import {checkToken} from '../middleware'
 import express from 'express';
@@ -50,9 +51,12 @@ adminRouteUsers.route('/modify')
     .patch(db, checkToken, updateInformationAccount());
 adminRouteUsers.route('/delete/:id')
     .delete(db, checkToken, deleteAccount());
-adminRouteUsers.route('/:id')
+adminRouteUsers.route('/info/:id')
     .get(db, checkToken, userById());
 adminRouteUsers.route('/update/:id')
     .patch(db, checkToken, updateInformationAccountForAdmin());
 adminRouteUsers.route('/addByAdmin')
     .post(db, checkToken, addPropioUserByAdmin());
+
+adminRouteUsers.route('/historic')
+.get(db, checkToken, getHistoric());
