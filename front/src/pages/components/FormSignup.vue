@@ -240,7 +240,7 @@
     import {DatePicker} from 'element-ui';
     import axios from 'axios';
     import {setTimeout} from 'timers';
-    import {checkInput} from '../../function/checkInput';
+    //import {checkInput} from '../../function/checkInput';
 
     export default {
         name: 'FormSignup',
