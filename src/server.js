@@ -61,7 +61,7 @@ async function asyncConnection() {
         app.use(`${rootApi}/user`, mariadbConn, anonymeRouteUsers);
         app.use(`${rootApi}/admin/user`, mariadbConn, adminRouteUsers);
         app.use(`${rootApi}/admin/location`, mariadbConn, adminRouteLocations);
-        app.use(`${rootApi}/admin/location`, mariadbConn, anonymeRouteLocations);
+        app.use(`${rootApi}/location`, mariadbConn, anonymeRouteLocations);
 
         app.listen(port, () => console.log(`Server running in port ${port}`))
     } catch (err) {

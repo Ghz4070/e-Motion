@@ -1,7 +1,8 @@
 import {
     allLocations,
     getOneLocation,
-    addLocation
+    addLocation,
+    addOneLocation
 } from '../Controller/Locations';
 
 import {checkToken} from '../middleware';
@@ -15,7 +16,12 @@ const db = (req, res, next) => {
     req.sql = req.conn;
     next();
 };
+ 
+// ******* FOR TESTING ******* ADMIN
+adminRouteLocations.route('/addOne')
+    .post(db, checkToken, addOneLocation());
 
+//******    ANONYME  *******
 anonymeRouteLocations.route('/add')
     .post(db, addLocation());
 

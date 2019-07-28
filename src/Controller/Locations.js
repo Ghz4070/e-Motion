@@ -6,16 +6,17 @@ export function addLocation() {
     return (req, res) => {
         const decodeTokenUsername = jwt.decode(req.headers['x-access-token']);
         
-        if(decodeTokenUsername){
+        res.json(success('The method work'))
+        /* if(decodeTokenUsername){ 
             req.sql.query('SELECT pointFidelity, idusers FROM users WHERE username = ?', [decodeTokenUsername.username])
-            .then((resultSelect) => {
-                if(req.body.pointFidelityUsed <= resultSelect[0].pointFidelity){
+            .then((resultSelect) => { 
+                //if(req.body.pointFidelityUsed <= resultSelect[0].pointFidelity){
                     const finalPrice = reduc(req.query.pointFidelity,req.query.price)
 
 
                     req.sql.query(' INSERT INTO location (startDate, endDate, users_idusers,cancelLocation, pointFidelityUsed,returnVehicule, status, finalPrice ,offers_idoffers ) VALUES ( ?, ?, ?, ?, ?, ?, ?,?,?)',
                     [req.body.startDate, req.body.endDate, resultSelect[0].idusers,req.body.cancelLocation, req.body.pointFidelityUsed,req.body.returnVehicule, req.body.status, finalPrice ,req.body.idoffers]) 
-                    .then((resultInsert) => {
+                    .then((resultInsert) => { 
                         req.sql.query('UPDATE users SET pointFidelity = ? WHERE username = ?', [resultSelect[0].pointFidelity - req.body.pointFidelityUsed, decodeTokenUsername.username])
                         .then((resultUpdate) => {
                             res.json(success('The method work'))
@@ -23,17 +24,25 @@ export function addLocation() {
                         .catch((err) => res.json(error(err)))
                     })
                     .catch((err) => res.json(error(err.message)));
-                }else{
-                    res.json(error('You can\'t to use more than your point'))
-                }
+                //}else{
+                    //res.json(error('You can\'t to use more than your point'))
+                //}
             })
             .catch((err) => res.json(error(err)))
         }else{
             res.json(error('You can\'t use this method'));
-        }
+        } */
     }
 }
 
+// *******TESTING FUCNTION ****** 
+export function addOneLocation() {
+    return (req, res) => {
+        /* let token = localStorage.getItem('x-access-token')
+        const decodeTokenUsername = localStorage.getItem('x-access-token') //jwt.decode(req.headers['x-access-token']); */
+        res.json(success({"message" :"antoine"}));
+    }
+}
 
 export function allLocations() {
     return (req, res) => {
