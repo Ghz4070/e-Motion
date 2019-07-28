@@ -528,8 +528,12 @@ export function getHistoric() {
     return (req, res) => {
         const decodeToken = jwt.decode(req.headers['x-access-token']);
 
-        req.sql.query('SELECT u.firstname, u.lastname, u.username, l.startDate, l.endDate, l.pointFidelityUsed FROM users u INNER JOIN location l ON u.idusers = l.users_idusers WHERE username = ?', [decodeToken.username])
-            .then((resultQuery) => {
+        //req.sql.query('SELECT u.firstname, u.lastname, u.username, l.startDate, l.endDate, l.pointFidelityUsed FROM users u INNER JOIN location l ON u.idusers = l.users_idusers WHERE username = ?', [decodeToken.username])
+        req.sql.query('SELECT l.idlocation, l.startDate, l.endDate, l.pointFidelityUsed,l.status,l.finalPrice, v.model, v.brand, o.title, o.price'+
+        ' FROM users u INNER JOIN location l ON u.idusers = l.users_idusers'+
+        ' INNER JOIN offers o ON l.offers_idoffers = o.idoffers INNER JOIN vehicle v ON l.vehicle_idvehicle = v.idvehicle'+
+        ' WHERE username = ?', [decodeToken.username])    
+        .then((resultQuery) => {
                 res.json(success(resultQuery));
             })
             .catch((err) => res.json(error(err)))
