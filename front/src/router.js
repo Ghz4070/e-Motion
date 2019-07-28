@@ -13,6 +13,7 @@ import CreateVehicle from './pages/CreateVehicule.vue';
 import ListOffers from './pages/ListOffers.vue';
 import UpdateProfile from './pages/UpdateProfile.vue';
 import Logout from './pages/Logout.vue';
+import Historic from './pages/Historic.vue';
 
 Vue.use(Router);
 
@@ -119,7 +120,16 @@ export default new Router({
             name:'logout',
             components: { default: Logout},
             
-        }
+        },
+        {
+            path: '/historic',
+            name: 'historic',
+            components: {default: Historic, header: MainNavbar, footer: MainFooter},
+            props: {
+                header: {colorOnScroll: 400},
+                footer: {backgroundColor: 'black'}
+            }
+        },
     ],
     scrollBehavior: to => {
         if (to.hash) {
