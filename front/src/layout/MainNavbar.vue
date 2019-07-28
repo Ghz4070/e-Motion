@@ -61,7 +61,7 @@
                 <nav-link to="/profile">
                     <i class="now-ui-icons users_single-02"></i> Profil
                 </nav-link>
-                <nav-link to="/profile">
+                <nav-link to="/historic">
                     <i class="now-ui-icons shopping_basket"></i> Historique des commandes
                 </nav-link>
                 <nav-link to="/logout">

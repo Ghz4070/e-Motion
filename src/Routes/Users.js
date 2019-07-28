@@ -57,6 +57,6 @@ adminRouteUsers.route('/addByAdmin')
     .post(db, checkToken, addPropioUserByAdmin());
 adminRouteUsers.route('/paybackFidelityPoint')
     .patch(db, checkToken, paybackFidelityPoint())
-adminRouteUsers.route('/historic')
+anonymeRouteUsers.route('/historic')
     .get(db, checkToken, getHistoric());
 
