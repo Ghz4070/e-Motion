@@ -51,7 +51,7 @@ async function asyncConnection() {
         };
 
         const dayInMilliseconds = 86400000;
-       // setInterval(reportLateVehicle(conn),10000);
+        setInterval(reportLateVehicle(conn),dayInMilliseconds);
 
         //Routes
         app.use(`${rootApi}/offer`, mariadbConn, anonymeRouteOffers);

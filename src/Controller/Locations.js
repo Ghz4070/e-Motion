@@ -13,8 +13,8 @@ export function addLocation() {
                     const finalPrice = reduc(req.query.pointFidelity,req.query.price)
 
 
-                    req.sql.query(' INSERT INTO location (startDate, endDate, users_idusers, pointFidelityUsed, status, finalPrice ,offers_idoffers ) VALUES ( ?, ?, ?, ?, ?, ?, ?)',
-                    [req.body.startDate, req.body.endDate, resultSelect[0].idusers, req.body.pointFidelityUsed, req.body.status, finalPrice ,req.body.idoffers]) 
+                    req.sql.query(' INSERT INTO location (startDate, endDate, users_idusers, pointFidelityUsed, status, finalPrice ,offers_idoffers,  vehicle_idvehicle) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)',
+                    [req.body.startDate, req.body.endDate, resultSelect[0].idusers, req.body.pointFidelityUsed, req.body.status, finalPrice ,req.body.idoffers, req.body.idvehicle]) 
                     .then((resultInsert) => {
                         req.sql.query('UPDATE users SET pointFidelity = ? WHERE username = ?', [resultSelect[0].pointFidelity - req.body.pointFidelityUsed, decodeTokenUsername.username])
                         .then((resultUpdate) => {
