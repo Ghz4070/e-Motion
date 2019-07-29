@@ -9,8 +9,8 @@
       <div class="container">
         <div class="content-center brand">
           <img class="n-logo" src="img/now-logo.png" alt="" />
-          <h1 class="h1-seo">Now UI Kit.</h1>
-          <h3>A beautiful Bootstrap 4 UI kit. Yours free.</h3>
+          <h1 class="h1-seo">Location Car Concept</h1>
+          <h3>Louer votre voiture à prix défiant toute concurence.</h3>
         </div>
         <h6 class="category category-absolute">
           Designed by
@@ -26,21 +26,14 @@
         </h6>
       </div>
     </div>
-    <div class="main">
-      <div class="section section-images">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="hero-images-container">
-                <img src="img/hero-image-1.png" alt="" />
-              </div>
-              <div class="hero-images-container-1">
-                <img src="img/hero-image-2.png" alt="" />
-              </div>
-              <div class="hero-images-container-2">
-                <img src="img/hero-image-3.png" alt="" />
-              </div>
-            </div>
+    <div class="section">
+      <div class="container text-center">
+        <div class="row justify-content-md-center">
+          <div class="col-md-12 col-lg-8">
+            <h2 class="title">La liste des offres</h2>
+            <h5 class="description">
+              <Offers />
+            </h5>
           </div>
         </div>
       </div>
@@ -64,13 +57,15 @@
 </template>
 <script>
 import { Parallax } from '@/components';
+import Offers from '../components/Offers';
 
 
 export default {
   name: 'index',
   bodyClass: 'index-page',
   components: {
-    Parallax
+    Parallax,
+    Offers
   }
 };
 </script>

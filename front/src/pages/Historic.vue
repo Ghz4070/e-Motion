@@ -18,7 +18,7 @@
           <div>
       <table id="customers">
         <tr>
-          <th>ID LOCATION</th>
+          <th>NUM. LOCATION</th>
           <th>Date de début</th>
           <th>Date de fin</th>
           <th>Voiture</th>
@@ -28,25 +28,21 @@
           <th>Annulation</th>
         </tr>
         <tr v-for="location in locations" :key="location.startDate">
-          <td>{{location.idlocation}}</td>
-          <td>{{location.startDate}}</td>
-          <td>{{location.endDate}}</td>
-          <td>{{location.brand}}</td>
-          <td>{{location.model}}</td>
-          <td>{{location.pointFidelityUsed}}</td>
-          <td>{{location.status}}</td>
-          <td><n-button type="danger" size="sm">Annulation</n-button></td>
+          <td>{{ location.idlocation }}</td>
+          <!-- <td>{{location.startDate}}</td> -->
+          <td>{{ new Intl.DateTimeFormat('en-GB').format(new Date(location.startDate)) }}</td>
+          <td>{{ new Intl.DateTimeFormat('en-GB').format(new Date(location.endDate)) }}</td>
+          <td>{{ location.brand }}</td>
+          <td>{{ location.model }}</td>
+          <td class="text-center" v-if="!location.pointFidelityUsed">0</td>
+          <td v-else>{{ location.pointFidelityUsed }}</td>
+          <td>{{ location.status }}</td>
+          <td v-if="new Date(location.startDate) > currentDate"><n-button type="danger" size="sm">Annulation</n-button></td>
+          <td v-else></td>
         </tr>
       </table>
     </div>
          <div class="text-center">
-          <!-- <div>
-            <n-button type="primary" @click.native="modals.classic = true">Modifier mes informations</n-button>
-            <modal :show.sync="modals.classic" headerClasses="justify-content-center">
-              <h4 slot="header" class="title title-up">Modifier mes informations</h4>
-              <UpdateProfile />
-            </modal>
-          </div> -->
         </div> 
       </div>
     </div>
@@ -76,7 +72,8 @@ export default {
   },
   data() {
     return {
-        locations:"",
+      currentDate: new Date(),
+      locations:"",
       firstname: "",
       lastname: "",
       birthday: "",
@@ -103,30 +100,12 @@ export default {
     }).then(
       response => (
         this.locations = response.data.result
-        /* (this.firstname = response.data.result[0].firstname),
-        (this.lastname = response.data.result[0].lastname),
-        (this.birthday = response.data.result[0].birthday),
-        (this.address = response.data.result[0].address),
-        (this.phoneNumber = response.data.result[0].phoneNumber),
-        (this.driverLicence = response.data.result[0].driverLicence),
-        (this.email = response.data.result[0].email),
-        (this.roles = response.data.result[0].roles),
-        (this.username = response.data.result[0].username),
-        (this.pointFidelity = response.data.result[0].pointFidelity) */
       )
     );
   }
 };
 </script>
 <style>
-/* th {
-        padding: 5px;
-        text-align: left;
-    }
-
-    table {
-        width: 100%;
-    } */
 #customers {
   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
   border-collapse: collapse;
@@ -151,7 +130,7 @@ export default {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
-  background-color: #4caf50;
+  background-color: slategray;
   color: white;
 }
 </style>
