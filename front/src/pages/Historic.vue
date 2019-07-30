@@ -37,7 +37,7 @@
           <td class="text-center" v-if="!location.pointFidelityUsed">0</td>
           <td v-else>{{ location.pointFidelityUsed }}</td>
           <td>{{ location.status }}</td>
-          <td v-if="new Date(location.startDate) > currentDate"><n-button type="danger" size="sm">Annulation</n-button></td>
+          <td v-if="(new Date(location.startDate) > currentDate) && location.status != 'Annuler'"><n-button type="danger" size="sm" v-on:click="setStatus(location.idlocation)">Annulation</n-button></td>
           <td v-else></td>
         </tr>
       </table>
@@ -76,17 +76,7 @@ export default {
       locations:"",
       firstname: "",
       lastname: "",
-      birthday: "",
-      address: "",
-      phoneNumber: "",
-      driverLicence: "",
-      email: "",
-      roles: "",
-      username: "",
-      pointFidelity: "",
-      modals: {
-        classic: false
-      }
+      theid: "",
     };
   },
   mounted() {
@@ -102,7 +92,25 @@ export default {
         this.locations = response.data.result
       )
     );
-  }
+  },
+  methods: {
+            setStatus: function (theid) {
+                axios({
+                    url: 'http://localhost:3000/api/v1/admin/location/cancel',
+                    method: 'patch',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': localStorage.getItem('x-access-token')
+                    },
+                    data: {
+                        id: theid
+                    }
+                })
+                    .then((response) => {
+                        console.log(response)
+                    })
+            }
+        }
 };
 </script>
 <style>

@@ -1,14 +1,14 @@
 import {
     allLocations,
     getOneLocation,
-    addLocation
+    addLocation,
+    setStatus
 } from '../Controller/Locations';
 
 import {checkToken} from '../middleware';
 import express from 'express';
 
 export const adminRouteLocations = express.Router();
-
 
 const db = (req, res, next) => {
     req.sql = req.conn;
@@ -22,4 +22,5 @@ adminRouteLocations.route('/all')
     .get(db, checkToken, allLocations());
 adminRouteLocations.route('/:id')
     .get(db, checkToken, getOneLocation());
-
+adminRouteLocations.route('/cancel')
+    .patch(db, checkToken, setStatus())
