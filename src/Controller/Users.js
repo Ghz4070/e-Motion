@@ -456,12 +456,11 @@ export function getLastLocation() {
 export function reportLateVehicle(conn){
     
     return () => {
-        conn.query('SELECT u.email, u.idusers, u.firstname, u.lastname, startDate, endDate ,DATEDIFF(location.endDate,DATE( NOW()))*-1 AS diffDate, v.brand, v.model, (DATEDIFF(location.endDate,DATE( NOW()))*o.penality*-1) AS totalpenality'+
-        ' FROM location' +
-        ' LEFT JOIN users u on location.users_idusers = u.idusers' +
-        ' LEFT JOIN offers o on location.offers_idoffers = o.idoffers'+
-        ' LEFT JOIN vehicle v on o.idoffers = v.offers_idoffers'+
-        ' WHERE (DATEDIFF(location.endDate,DATE( NOW()))) < 0 AND returnVehicle = 0;')
+        conn.query('SELECT l.idlocation,u.email, u.firstname, u.lastname, DATEDIFF(l.endDate, DATE ( NOW()))*-1 AS diffDate, l.startDate, l.endDate,  v.model, v.brand, o.title, o.price,'+
+        '(DATEDIFF(l.endDate, DATE( NOW())) * o.penality*-1) AS totalpenality '+
+        'FROM users u INNER JOIN location l ON u.idusers = l.users_idusers '+
+        'INNER JOIN offers o ON l.offers_idoffers = o.idoffers INNER JOIN vehicle v ON l.vehicle_idvehicle = v.idvehicle '+
+        'WHERE (DATEDIFF(l.endDate,DATE( NOW()))) < 0 AND returnVehicle = 0;')
         .then((resultsSelect) => {
             if(resultsSelect.length > 0){
                     for(let resultSelect of resultsSelect){
