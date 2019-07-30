@@ -80,7 +80,14 @@ export default {
     };
   },
   mounted() {
-    axios({
+    this.requestInfo()     
+  },
+  updated() {
+  this.requestInfo()
+  },
+  methods: {
+    requestInfo: function() {
+      axios({
       url: "http://localhost:3000/api/v1/user/historic",
       method: "get",
       headers: {
@@ -92,8 +99,7 @@ export default {
         this.locations = response.data.result
       )
     );
-  },
-  methods: {
+    },
             setStatus: function (theid) {
                 axios({
                     url: 'http://localhost:3000/api/v1/admin/location/cancel',
