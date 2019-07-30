@@ -69,3 +69,14 @@ export function getOneLocation() {
         }
     }
 }
+
+export function setStatus() {
+    return (req, res) => {
+            req.sql.query('UPDATE location SET status = "Annuler" WHERE idlocation = ?', req.body.id)
+                .then((result) => {
+                    res.json(result);
+                    console.log(result)
+                })
+                .catch((err) => res.json(err.message));
+    }
+}
