@@ -14,6 +14,8 @@ import ListOffers from './pages/ListOffers.vue';
 import UpdateProfile from './pages/UpdateProfile.vue';
 import Logout from './pages/Logout.vue';
 import Historic from './pages/Historic.vue';
+import OffersCreatedByProprio from './pages/OffersCreatedByProprio.vue';
+import VehiclesCreatedByProprio from './pages/VehiclesCreatedByProprio.vue';
 
 Vue.use(Router);
 
@@ -130,6 +132,24 @@ export default new Router({
                 footer: {backgroundColor: 'black'}
             }
         },
+        {
+            path: '/Offersbyproprio',
+            name: 'Offersbyproprio',
+            components: {default: OffersCreatedByProprio, header: MainNavbar, footer: MainFooter},
+            props: {
+                header: {colorOnScroll: 400},
+                footer: {backgroundColor: 'black'}
+            }
+        },
+        {
+            path: '/Vehiclesbyproprio',
+            name: 'Vehiclesbyproprio',
+            components: {default: VehiclesCreatedByProprio, header: MainNavbar, footer: MainFooter},
+            props: {
+                header: {colorOnScroll: 400},
+                footer: {backgroundColor: 'black'}
+            }
+        }
     ],
     scrollBehavior: to => {
         if (to.hash) {

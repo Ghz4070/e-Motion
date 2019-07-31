@@ -200,3 +200,22 @@ export function allVehiclesNotAvailable() {
         }
     }
 }
+
+export function vehicleByOffers(){
+    return (req, res) => {
+        const decodeTokenUser = jwt.decode(req.headers['x-access-token']);
+        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
+
+        if(decodeTokenRole.indexOf('ROLE_PROPRIO') != -1 || decodeTokenRole.indexOf('ROLE_ADMIN') != -1){
+            req.sql.query('SELECT *, u.email FROM vehicle v INNER JOIN users u on u.idusers = v.createdBy WHERE u.username = ?', [decodeTokenUser.username])
+            .then((result) => {
+                if(result.length > 0){
+                    res.json(success(result))
+                }else{
+                    res.json(error('no vehicle'))
+                }
+            })
+            .catch((err) => res.json(error(err)))
+        }
+    }  
+}
