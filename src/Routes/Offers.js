@@ -3,7 +3,8 @@ import {
     getAllOffers,
     postOffer,
     removeOffer,
-    updateOffer
+    updateOffer,
+    getOfferByPropio
 } from '../Controller/Offers';
 
 import express from 'express';
@@ -26,3 +27,5 @@ adminRouteOffers.route('/')
 adminRouteOffers.route('/:id')
     .delete(db,checkToken,removeOffer())
     .patch(db,checkToken,updateOffer());
+adminRouteOffers.route('/offersByProprio')
+    .get(db, checkToken, getOfferByPropio());

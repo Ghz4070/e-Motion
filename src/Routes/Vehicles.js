@@ -8,8 +8,8 @@ import {
     findVehicleByCriteria,
     bookACar,
     setAvailable,
-    allVehiclesNotAvailable
-
+    allVehiclesNotAvailable,
+    vehicleByOffers
 } from '../Controller/Vehicles';
 import express from 'express';
 import {checkToken} from './../middleware'
@@ -44,4 +44,6 @@ adminRouteVehicles.route('/available/:id')
     .patch(checkToken,db,setAvailable());
 adminRouteVehicles.route('/notavailable')
     .get(db,checkToken, allVehiclesNotAvailable())
+adminRouteVehicles.route('/vehicleByProprio')
+    .get(db, checkToken, vehicleByOffers())
 

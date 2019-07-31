@@ -14,11 +14,15 @@ import ListOffers from './pages/ListOffers.vue';
 import UpdateProfile from './pages/UpdateProfile.vue';
 import Logout from './pages/Logout.vue';
 import Historic from './pages/Historic.vue';
+
+import OffersCreatedByProprio from './pages/OffersCreatedByProprio.vue';
+import VehiclesCreatedByProprio from './pages/VehiclesCreatedByProprio.vue';
 import HomeAdmin from './pages/admin/Home.vue';
 import VehicleAdmin from './pages/admin/Vehicle.vue';
 import OfferAdmin from './pages/admin/Offer.vue';
 import UserAdmin from './pages/admin/User.vue';
 import LocationAdmin from './pages/admin/Location.vue';
+
 
 Vue.use(Router);
 
@@ -136,6 +140,23 @@ export default new Router({
             }
         },
         {
+            path: '/Offersbyproprio',
+            name: 'Offersbyproprio',
+            components: {default: OffersCreatedByProprio, header: MainNavbar, footer: MainFooter},
+            props: {
+                header: {colorOnScroll: 400},
+                footer: {backgroundColor: 'black'}
+            }
+        },
+        {
+            path: '/Vehiclesbyproprio',
+            name: 'Vehiclesbyproprio',
+            components: {default: VehiclesCreatedByProprio, header: MainNavbar, footer: MainFooter},
+            props: {
+                header: {colorOnScroll: 400},
+                footer: {backgroundColor: 'black'}
+            }
+        },
             path: '/admin',
             name: 'HomeAdmin',
             components: {default: HomeAdmin, header: MainNavbar, footer: MainFooter},
