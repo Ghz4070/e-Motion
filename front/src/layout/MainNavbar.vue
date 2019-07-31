@@ -68,12 +68,23 @@
                   <i class="now-ui-icons ui-1_simple-remove"></i> Déconnexion
                 </nav-link>
             </drop-down>
-            <li v-if="role.includes('ROLE_ADMIN')" class="nav-item">
-                <router-link class="nav-link" to="/signup">
-                    <a><i class="now-ui-icons users_circle-08"></i>
-                        <p>Espace Admin</p></a>
-                </router-link>
-            </li>
+            <drop-down v-if="role.includes('ROLE_ADMIN')" tag="li" title="Espace Admin" icon="now-ui-icons users_circle-08" class="nav-item">
+                <nav-link to="/admin">
+                   <!--  <i class="now-ui-icons users_single-02"></i> --> Accueil
+                </nav-link>
+                <nav-link to="/admin/offers">
+                   <!--  <i class="now-ui-icons users_single-02"></i> --> Les offres
+                </nav-link>
+                <nav-link to="/admin/locations">
+                   <!--  <i class="now-ui-icons shopping_basket"></i> --> Les locations
+                </nav-link>
+                <nav-link to="/admin/vehicles">
+                  <!-- <i class="now-ui-icons ui-1_simple-remove"></i> --> Les véhicules
+                </nav-link>
+                <nav-link to="/admin/users">
+                  <!-- <i class="now-ui-icons ui-1_simple-remove"></i> --> Les utilisateurs
+                </nav-link>
+            </drop-down>
         </template>
     </navbar>
 </template>
