@@ -40,7 +40,11 @@ export function allLocations() {
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
         if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
-            req.sql.query(' SELECT * FROM location LEFT JOIN offers ON location.offers_idoffers = offers.idoffers')
+            req.sql.query(' SELECT l.idlocation, l.startDate, l.endDate, l.status, o.title, u.firstname, u.lastname, l.finalPrice, v.brand, v.model '
+            +'FROM location l'
+            +' INNER JOIN offers o ON l.offers_idoffers = o.idoffers'
+            +' INNER JOIN users u ON l.users_idusers = u.idusers'
+            +' INNER JOIN vehicle v ON l.vehicle_idvehicle = v.idvehicle')
                 .then((result) => {
                     res.json(success(result));
                 })
@@ -67,5 +71,16 @@ export function getOneLocation() {
         } else {
             res.json(error(new Error("Can't not use this method").message));
         }
+    }
+}
+
+export function setStatus() {
+    return (req, res) => {
+            req.sql.query('UPDATE location SET status = "Annuler" WHERE idlocation = ?', req.body.id)
+                .then((result) => {
+                    res.json(result);
+                    console.log(result)
+                })
+                .catch((err) => res.json(err.message));
     }
 }

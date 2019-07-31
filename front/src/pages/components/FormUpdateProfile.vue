@@ -1,5 +1,10 @@
 <template>
 <div>
+  <n-button type="primary" @click.native="modals.classic = true">
+        Modifier mes informations
+    </n-button>
+     <modal :show.sync="modals.classic" headerClasses="justify-content-center">
+       <h4 slot="header" class="title title-up">Modifier mes informations</h4>
     <fg-input placeholder="Nom" v-model="lastname"></fg-input>
     <fg-input placeholder="Prenom" v-model="firstname"></fg-input>
     <fg-input placeholder="Adresse domicile" v-model="address"></fg-input>
@@ -9,13 +14,31 @@
       </fg-input>
     <fg-input placeholder="Numero de telephone" v-model="phone"></fg-input>
     <fg-input placeholder="Numero permis de conduire" v-model="drivernum"></fg-input>
-    <n-button v-on:click="UpdateInfo">Sauvegarder</n-button>
+    <n-button v-on:click="UpdateInfo" @click.native="modals.classic = false">Sauvegarder</n-button>
+     </modal>
   </div>
+  <!-- <div>
+      <n-button type="primary" @click.native="modals.classic = true">
+        Classic modal
+      </n-button>
+      <modal :show.sync="modals.classic" headerClasses="justify-content-center">
+        <h4 slot="header" class="title title-up">Modal title</h4>
+        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live
+          the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large
+          language ocean. A small river named Duden flows by their place and supplies it with the necessary
+          regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your
+          mouth.</p>
+        <template slot="footer">
+          <n-button>Nice Button</n-button>
+          <n-button type="danger" @click.native="modals.classic = false">Close</n-button>
+        </template>
+      </modal>
+    </div> -->
    
 </template>
 
 <script>
-import { Button, FormGroupInput as FgInput } from '@/components';
+import { Button, FormGroupInput as FgInput, Modal } from '@/components';
 import axios from "axios";
 import {DatePicker} from 'element-ui';
 import { setTimeout } from 'timers';
@@ -27,7 +50,8 @@ export default {
   },
   components: {
       [Button.name]: Button,
-      FgInput
+      FgInput,
+      Modal
   },
   data(){
         return {
@@ -39,12 +63,19 @@ export default {
           birthday: '',
           phone: '',
           modals: {
-            classic: false
+            classic: false,
           }
         }
   },
   mounted() {
-    axios({
+    this.getInfo()
+  },
+  updated() {
+   // this.getInfo()
+  },
+  methods: {
+    getInfo: function() {
+      axios({
       url: "http://localhost:3000/api/v1/admin/user",
       method: "get",
       headers: {
@@ -65,9 +96,9 @@ export default {
         (this.pointFidelity = response.data.result[0].pointFidelity)
       )
     );
-  },
-  methods: {
+    },
     UpdateInfo: function (){ 
+          this.getInfo();
             var d = new Date(this.birthday);
             const convertDatepicker = d.toISOString();
             const datePickerLessT = convertDatepicker.replace('T', ' ');
@@ -93,7 +124,7 @@ export default {
                   this.$router.go();
               }
             })
-            .catch((err) => console.log(err))        
+            .catch((err) => console.log(err))     
           }
   }
 };

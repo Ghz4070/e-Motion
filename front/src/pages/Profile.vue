@@ -50,14 +50,14 @@
                 </h5>
                 <div class="text-center">
                     <div>
-                        <n-button type="primary" @click.native="modals.classic = true">
+                        <!-- <n-button type="primary" @click.native="modals.classic = true">
                             Modifier mes informations
-                        </n-button>
-                        <modal :show.sync="modals.classic" headerClasses="justify-content-center">
-                            <h4 slot="header" class="title title-up">Modifier mes informations</h4>
+                        </n-button> -->
+                        <!-- <modal :show.sync="modals.classic" headerClasses="justify-content-center">
+                            <h4 slot="header" class="title title-up">Modifier mes informations</h4> -->
                             <UpdateProfile/>
 
-                        </modal>
+                       <!--  </modal> -->
                     </div>
                 </div>
             </div>
@@ -99,12 +99,22 @@
                 username: "",
                 pointFidelity: "",
                 modals: {
-                    classic: false
+                    classic: false,
                 }
             };
         },
         mounted() {
-            axios({
+            this.getInfo()
+        },
+        updated() {
+            this.getInfo()
+        },
+        beforeDestroy() {
+            this.getInfo()
+        },
+        methods: {
+            getInfo: function() {
+                axios({
                 url: "http://localhost:3000/api/v1/admin/user",
                 method: "get",
                 headers: {
@@ -125,6 +135,7 @@
                         (this.pointFidelity = response.data.result[0].pointFidelity)
                 )
             );
+            }
         }
     };
 </script>

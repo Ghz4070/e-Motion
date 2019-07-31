@@ -14,8 +14,15 @@ import ListOffers from './pages/ListOffers.vue';
 import UpdateProfile from './pages/UpdateProfile.vue';
 import Logout from './pages/Logout.vue';
 import Historic from './pages/Historic.vue';
+
 import OffersCreatedByProprio from './pages/OffersCreatedByProprio.vue';
 import VehiclesCreatedByProprio from './pages/VehiclesCreatedByProprio.vue';
+import HomeAdmin from './pages/admin/Home.vue';
+import VehicleAdmin from './pages/admin/Vehicle.vue';
+import OfferAdmin from './pages/admin/Offer.vue';
+import UserAdmin from './pages/admin/User.vue';
+import LocationAdmin from './pages/admin/Location.vue';
+
 
 Vue.use(Router);
 
@@ -149,7 +156,47 @@ export default new Router({
                 header: {colorOnScroll: 400},
                 footer: {backgroundColor: 'black'}
             }
-        }
+        },
+            path: '/admin',
+            name: 'HomeAdmin',
+            components: {default: HomeAdmin, header: MainNavbar, footer: MainFooter},
+            props: {
+                header: {colorOnScroll: 400}
+            }
+        },
+
+        {
+            path: '/admin/vehicles',
+            name: 'VehicleAdmin',
+            components: {default: VehicleAdmin, header: MainNavbar, footer: MainFooter},
+            props: {
+                header: {colorOnScroll: 400}
+            }
+        },
+        {
+            path: '/admin/offers',
+            name: 'OfferAdmin',
+            components: {default: OfferAdmin, header: MainNavbar, footer: MainFooter},
+            props: {
+                header: {colorOnScroll: 400}
+            }
+        },
+        {
+            path: '/admin/users',
+            name: 'UserAdmin',
+            components: {default: UserAdmin, header: MainNavbar, footer: MainFooter},
+            props: {
+                header: {colorOnScroll: 400}
+            }
+        },
+        {
+            path: '/admin/locations',
+            name: 'LocationAdmin',
+            components: {default: LocationAdmin, header: MainNavbar, footer: MainFooter},
+            props: {
+                header: {colorOnScroll: 400}
+            }
+        },
     ],
     scrollBehavior: to => {
         if (to.hash) {

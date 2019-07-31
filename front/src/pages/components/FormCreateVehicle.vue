@@ -72,10 +72,13 @@
                         <n-radio inline class="mb-3" v-model="typeVehicule" label="voiture">Voiture</n-radio>
                         <n-radio inline class="mb-3" v-model="typeVehicule" label="scooter">Scooter</n-radio>
 
-
                         <v-select :options="options" v-model="selected"
                                   :reduce="titleOffers => titleOffers.idOffers"
-                                  label="titleOffers"></v-select>
+                                  label="titleOffers">
+
+                        </v-select>
+
+                        <input class="mt-3" type="file"></input>
 
                     </template>
                     <div class="card-footer text-center">
