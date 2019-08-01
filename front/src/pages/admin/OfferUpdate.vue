@@ -113,9 +113,6 @@ export default {
         .then(result => {
           console.log(result);
           if (result.data.status == "success") {
-            this.account =
-              "Votre compte a été créé, vous allez être redirectionné dans moins de 5 secondes";
-            this.hideOrNot = "donthide";
             this.$router.push('/admin/offers');
           }
         })
