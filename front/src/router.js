@@ -64,7 +64,7 @@ export default new Router({
         {
             path: '/login',
             name: 'login',
-            components: { default: Login, header: MainNavbar, footer: MainFooter },
+            components: { default: Login, header: '', footer: MainFooter },
             props: {
                 header: { colorOnScroll: 400 }
             }

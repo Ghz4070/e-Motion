@@ -1,14 +1,16 @@
 <template>
     <div>
         <div class="page-header clear-filter" filter-color="orange">
-    <div
-      class="page-header-image"
-      style="background-image: url('img/login.jpg')"
-    ></div>
-    <div class="content">
+    <div class="">
+      <div style="position: relative;" class="text-center">
+        <router-link class="nav-link" to="/">
+        <n-button type="primary" >Accueil</n-button>
+        </router-link>
+        </div>
       <div class="container">
         <div class="col-md-5 ml-auto mr-auto">
           <card type="login" plain>
+            <h1>Connexion</h1>
             <div slot="header" class="logo-container">
               <img v-lazy="'img/now-logo.png'" alt="" />
             </div>

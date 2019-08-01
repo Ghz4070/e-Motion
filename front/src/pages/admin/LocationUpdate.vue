@@ -127,7 +127,6 @@ export default {
         .then(result => {
           console.log(result);
           if (result.data.status == "success") {
-            this.hideOrNot = "donthide";
             this.$router.push("/admin/locations");
           }
         })
