@@ -120,3 +120,13 @@ export function getOfferByPropio(){
         }
     }
 }
+
+export function getOfferByIdBody() {
+    return (req, res) => {
+        req.sql.query('SELECT * FROM offers WHERE idoffers = ?', req.body.id)
+            .then((result) => {
+                res.json(success(result));
+            })
+            .catch((err) => res.json(error(err.message)))
+    }
+}

@@ -43,7 +43,11 @@
           <td>{{ location.title }}</td>
           <td>{{ location.firstname }} {{ location.lastname }}</td>
           <td>{{ location.brand }} {{ location.model }}</td>
-          <td><n-button type="info" size="sm" v-on:click="setStatus(location.idlocation)">Modifier</n-button></td>
+          <td>
+            <router-link :to="{path: '/admin/location/update/'+(location.idlocation) }">
+                <n-button type="info" size="sm" >Modifier</n-button>
+                </router-link>
+          </td>
         </tr>
       </table>
     </div>

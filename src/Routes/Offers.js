@@ -4,7 +4,8 @@ import {
     postOffer,
     removeOffer,
     updateOffer,
-    getOfferByPropio
+    getOfferByPropio,
+    getOfferByIdBody
 } from '../Controller/Offers';
 
 import express from 'express';
@@ -23,7 +24,8 @@ anonymeRouteOffers.route('/')
 anonymeRouteOffers.route('/:id')
     .get(db,getOfferById());
 adminRouteOffers.route('/')
-    .post(db,checkToken,postOffer());
+    .post(db,checkToken,postOffer())
+    .get(db,checkToken,getOfferByIdBody());
 adminRouteOffers.route('/:id')
     .delete(db,checkToken,removeOffer())
     .patch(db,checkToken,updateOffer());

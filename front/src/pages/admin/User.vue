@@ -3,7 +3,7 @@
     <div class="page-header clear-filter" filter-color="orange">
       <div class="container">
         <h3 class="title">Admin</h3>
-        <p>Gérer les véhicules</p>
+        <p>Gérer les utilisateurs</p>
         <ul></ul>
       </div>
     </div>
@@ -44,7 +44,9 @@
               <td>{{ user.pointFidelity }}</td>
               <td>{{ (user.roles).replace('{"role":[','').replace(']}','') }}</td>
               <td>
-                <n-button type="info" size="sm" v-on:click="setStatus(location.idlocation)">Modifier</n-button>
+                <router-link :to="{path: '/admin/user/update/'+(user.idusers) }">
+                <n-button type="info" size="sm" >Modifier</n-button>
+                </router-link>
               </td>
             </tr>
           </table>
