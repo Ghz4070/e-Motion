@@ -90,7 +90,7 @@ export function outVehiclesOfList() { //Mettre un soft Delete et sauvergarder le
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
         if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
-            req.sql.query("DELETE FROM `vehicle` WHERE idvehicle = ?", req.params.id)
+            req.sql.query("DELETE FROM vehicle WHERE idvehicle = ?", req.params.id)
                 .then((result) => {
                     res.json(success(result))
                 })

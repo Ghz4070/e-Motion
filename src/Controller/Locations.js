@@ -96,3 +96,19 @@ export function updateLocation() {
                 .catch((err) => res.json(err.message));
     }
 }
+
+export function removeLocation() {
+    return (req, res) => {
+        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
+
+        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
+            req.sql.query('DELETE FROM location WHERE idlocation = ?', req.params.id)
+                .then((result) => {
+                    res.json(success(result));
+                })
+                .catch((err) => res.json(error(err.message)))
+        } else {
+            res.json(error(new Error("Can't not use this method").message));
+        }
+    }
+}

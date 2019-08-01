@@ -1,36 +1,26 @@
 <template>
   <div>
     <div class="page-header clear-filter" filter-color="orange">
-      <parallax
-        class="page-header-image"
-        style="background-image:url('img/header.jpg')"
-      >
-      </parallax>
+      <parallax class="page-header-image" style="background-image:url('image')"></parallax>
       <div class="container">
-        <div class="content-center brand">
-          <img class="n-logo" src="img/now-logo.png" alt="" />
+        <div class="content-center brand logo">
+          <img class="n-logo" src="img/now-logo.png" alt />
           <h1 class="h1-seo">Location Car Concept</h1>
           <h3>Louer votre voiture à prix défiant toute concurence.</h3>
+          <p>&nbsp; </p>
+            <div class="carImage">
+              <img :src="image" class />
+            </div>
         </div>
-        <h6 class="category category-absolute">
-          Designed by
-          <a href="http://invisionapp.com/" target="_blank">
-            <img src="img/invision-white-slim.png" class="invision-logo" /> </a
-          >. Coded by
-          <a href="https://www.creative-tim.com" target="_blank">
-            <img
-              src="img/creative-tim-white-slim2.png"
-              class="creative-tim-logo"
-            /> </a
-          >.
-        </h6>
       </div>
     </div>
+
     <div class="section">
       <div class="container text-center">
         <div class="row justify-content-md-center">
           <div class="col-md-12 col-lg-8">
             <h2 class="title">Les offres du moment</h2>
+
             <h5 class="description">
               <Offers />
             </h5>
@@ -56,17 +46,28 @@
   </div>
 </template>
 <script>
-import { Parallax } from '@/components';
-import Offers from '../components/Offers';
-
+import { Parallax } from "@/components";
+import Offers from "../components/Offers";
 
 export default {
-  name: 'index',
-  bodyClass: 'index-page',
+  name: "index",
+  bodyClass: "index-page",
   components: {
     Parallax,
     Offers
+  },
+  data() {
+    return {
+      image: require("@/assets/static/images/logo.png")
+    };
   }
 };
 </script>
-<style></style>
+<style>
+.logo {
+  margin-top:20px;
+}
+.carImage{
+  margin-top:50px;
+}
+</style>

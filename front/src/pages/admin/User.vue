@@ -3,8 +3,7 @@
     <div class="page-header clear-filter" filter-color="orange">
       <div class="container">
         <h3 class="title">Admin</h3>
-        <p>Gérer les utilisateurs</p>
-        <ul></ul>
+        <h1 class="title">Gérer les utilisateurs</h1>
       </div>
     </div>
     <div class="section">

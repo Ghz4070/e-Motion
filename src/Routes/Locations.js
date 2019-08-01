@@ -3,7 +3,8 @@ import {
     getOneLocation,
     addLocation,
     setStatus,
-    updateLocation
+    updateLocation,
+    removeLocation
 } from '../Controller/Locations';
 
 import {checkToken} from '../middleware';
@@ -23,7 +24,8 @@ adminRouteLocations.route('/all')
     .get(db, checkToken, allLocations());
 adminRouteLocations.route('/:id')
     .get(db, checkToken, getOneLocation())
-    .patch(db, checkToken, updateLocation());
+    .patch(db, checkToken, updateLocation())
+    .delete(db, checkToken, removeLocation());
 adminRouteLocations.route('/cancel')
     .patch(db, checkToken, setStatus())
     
