@@ -48,7 +48,9 @@
               <td>{{ vehicle.available }}</td>
               <td>{{ vehicle.createdBy }}</td>
               <td>
-                <n-button type="info" size="sm" v-on:click="setStatus(location.idlocation)">Modifier</n-button>
+                <router-link :to="{path: '/admin/vehicle/update/'+(vehicle.idvehicle) }">
+                <n-button type="info" size="sm" >Modifier</n-button>
+                </router-link>
               </td>
             </tr>
           </table>

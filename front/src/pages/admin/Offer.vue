@@ -44,7 +44,9 @@
               <td>{{ offer.hiddenOffers }}</td>
               <td>{{ offer.createdBy }}</td>
               <td>
-                <n-button type="info" size="sm" v-on:click="setStatus(location.idlocation)">Modifier</n-button>
+                <router-link :to="{path: '/admin/offers/update/'+(offer.idoffers) }">
+                <n-button type="info" size="sm" >Modifier</n-button>
+                </router-link>
               </td>
             </tr>
           </table>

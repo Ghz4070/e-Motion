@@ -60,9 +60,9 @@ export function getOneLocation() {
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
         if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
-            req.sql.query(' SELECT * FROM offers ' +
-                ' LEFT JOIN location ON offers.location_idlocation = location.idlocation ' +
-                ' WHERE offers.idoffers = ?', req.params.id)
+            req.sql.query(' SELECT l.idlocation, l.startDate, l.endDate, l.status, l.finalPrice, u.firstname, u.lastname ' +
+                ' FROM location l INNER JOIN users u ON l.vehicle_idvehicle = u.idusers ' +
+                ' WHERE idlocation = ?', req.params.id)
                 .then((result) => {
                     res.json(result);
                     console.log(result)
@@ -79,6 +79,18 @@ export function setStatus() {
             req.sql.query('UPDATE location SET status = "Annuler" WHERE idlocation = ?', req.body.id)
                 .then((result) => {
                     res.json(result);
+                    console.log(result)
+                })
+                .catch((err) => res.json(err.message));
+    }
+}
+
+export function updateLocation() {
+    return (req, res) => {
+            req.sql.query('UPDATE location SET startDate = ?, endDate = ?, status = ?, finalPrice = ? '+
+             'WHERE idlocation = ?', [req.body.startDate,req.body.endDate,req.body.status,req.body.finalPrice,req.params.id])
+                .then((result) => {
+                    res.json(success(result));
                     console.log(result)
                 })
                 .catch((err) => res.json(err.message));

@@ -39,10 +39,10 @@ export function editVehicles() { //
         if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
             req.sql.query("UPDATE vehicle SET brand = ?, model = ?, serialNumber = ?,color = ?" +
                 " ,licensePlate = ?, nbKm = ? , datePurchase = ?, price = ?" +
-                " ,available = ?, lising = ?, offers_idoffers = ? WHERE idvehicle = ?",
+                " ,available = ?, offers_idoffers = ? WHERE idvehicle = ?",
                 [req.body.brand, req.body.model, req.body.serialNumber, req.body.color, req.body.licensePlate,
                     req.body.nbKm, req.body.datePurchase, req.body.price, req.body.available,
-                    req.body.lising, req.body.offers_idoffers, req.params.id])
+                     req.body.offers_idoffers, req.params.id])
                 .then((result) => {
                     res.json(success(result))
                 })
