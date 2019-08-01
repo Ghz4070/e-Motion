@@ -3,14 +3,15 @@
     <div class="page-header clear-filter" filter-color="orange">
       <div class="container">
         <div class="photo-container"></div>
-        <h3 class="title">Utilsiateurs Update</h3>
-        <p></p>
-        <p class="category"></p>
+        <h1 class="title">Admin
+        </h1>
+        <p>Mise à jour informations utilisateur :</p>
+        <p class="category"> {{ lastname }} {{ firstname }}</p>
       </div>
     </div>
     <div class="section">
       <div class="container">
-        <h3 class="title">Gerer les utilsiateurs</h3>
+        <h3 class="title">Modification</h3>
         <hr />
         <div>
           <fg-input placeholder="Nom" v-model="firstname"></fg-input>

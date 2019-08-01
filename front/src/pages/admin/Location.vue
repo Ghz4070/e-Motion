@@ -3,10 +3,7 @@
     <div class="page-header clear-filter" filter-color="orange">
         <div class="container">
             <h3 class="title">Admin</h3>
-            <p>Gérer les locations</p>
-            <ul>
-                
-            </ul>
+            <h1 class="title">Gérer les locations</h1>
         </div>
     </div>
 <div class="section">
@@ -44,9 +41,17 @@
           <td>{{ location.firstname }} {{ location.lastname }}</td>
           <td>{{ location.brand }} {{ location.model }}</td>
           <td>
-            <router-link :to="{path: '/admin/location/update/'+(location.idlocation) }">
-                <n-button type="info" size="sm" >Modifier</n-button>
-                </router-link>
+                <drop-down class="btn-group">
+        <template slot="title">
+         <button type="button" class="btn btn-default"><i class="now-ui-icons ui-1_settings-gear-63"></i></button>
+        </template>
+        <router-link class="stl" :to="{path: '/admin/location/update/'+(location.idlocation) }">
+        <a class="dropdown-item" href="#"><b><i class="now-ui-icons ui-2_settings-90"></i> Modifier</b></a>
+        </router-link>
+        <router-link class="stl" :to="{path: '/admin/locations' }" @click.native="removeLocation(location.idlocation)" >
+        <a class="dropdown-item" ><b><i  v-on:click="removeLocation(location.idlocation)" class="now-ui-icons ui-1_simple-remove"></i> Supprimer</b></a>
+        </router-link>
+      </drop-down>
           </td>
         </tr>
       </table>
@@ -59,7 +64,7 @@
 </template>
 
 <script>
-import { Tabs, TabPane, Button, Modal, FormGroupInput as FgInput } from "@/components";
+import { Tabs, TabPane, Button, DropDown, FormGroupInput as FgInput } from "@/components";
 import axios from "axios";
 
 export default {
@@ -70,8 +75,8 @@ export default {
     Tabs,
     TabPane,
     [Button.name]: Button,
-    Modal,
-    FgInput
+    FgInput,
+    DropDown
   },
   data() {
     return {
@@ -111,8 +116,20 @@ export default {
           } else {
             tr[i].style.display = "none";
           }
+        }}
+        },
+    removeLocation: function(idOffer) {
+      axios({
+        url: "http://localhost:3000/api/v1/admin/location/"+idOffer,
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": localStorage.getItem("x-access-token")
         }
-      }
+      }).then(response => {
+      console.log(response);
+      this.$router.go('')}
+        );
     }
     }
 }

@@ -3,9 +3,9 @@
     <div class="page-header clear-filter" filter-color="orange">
       <div class="container">
         <div class="photo-container"></div>
-        <h3 class="title">Vehicule Update</h3>
-        <p></p>
-        <p class="category"></p>
+        <h3 class="title">Admin</h3>
+        <p>Mise à jour informations véhicule :</p>
+        <p class="category">{{ brand }} {{ model }}</p>
       </div>
     </div>
     <div class="section">

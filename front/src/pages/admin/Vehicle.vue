@@ -3,8 +3,7 @@
     <div class="page-header clear-filter" filter-color="orange">
       <div class="container">
         <h3 class="title">Admin</h3>
-        <p>Gérer les véhicules</p>
-        <ul></ul>
+        <h1 class="title">Gérer les véhicules</h1>
       </div>
     </div>
     <div class="section">
@@ -48,9 +47,37 @@
               <td>{{ vehicle.available }}</td>
               <td>{{ vehicle.createdBy }}</td>
               <td>
-                <router-link :to="{path: '/admin/vehicle/update/'+(vehicle.idvehicle) }">
-                <n-button type="info" size="sm" >Modifier</n-button>
-                </router-link>
+                <drop-down class="btn-group">
+                  <template slot="title">
+                    <button type="button" class="btn btn-default">
+                      <i class="now-ui-icons ui-1_settings-gear-63"></i>
+                    </button>
+                  </template>
+                  <router-link
+                    class="stl"
+                    :to="{path: '/admin/vehicle/update/'+(vehicle.idvehicle) }"
+                  >
+                    <a class="dropdown-item" href="#">
+                      <b>
+                        <i class="now-ui-icons ui-2_settings-90"></i> Modifier
+                      </b>
+                    </a>
+                  </router-link>
+                  <!-- <router-link
+                    class="stl"
+                    :to="{path: '/admin/vehicles' }"
+                    @click.native="removeVehicle(vehicle.idvehicle)"
+                  >
+                    <a class="dropdown-item">
+                      <b>
+                        <i
+                          v-on:click="removeVehicle(vehicle.idvehicle)"
+                          class="now-ui-icons ui-1_simple-remove"
+                        ></i> Supprimer
+                      </b>
+                    </a>
+                  </router-link> -->
+                </drop-down>
               </td>
             </tr>
           </table>
@@ -66,7 +93,7 @@ import {
   Tabs,
   TabPane,
   Button,
-  Modal,
+  DropDown,
   FormGroupInput as FgInput
 } from "@/components";
 import axios from "axios";
@@ -78,12 +105,13 @@ export default {
     Tabs,
     TabPane,
     [Button.name]: Button,
-    Modal,
-    FgInput
+    FgInput,
+    DropDown
   },
   data() {
     return {
-      vehicles: ""
+      vehicles: "",
+      idvehicle:""
     };
   },
   mounted() {
@@ -117,6 +145,16 @@ export default {
           }
         }
       }
+    },
+    removeVehicle: function(idvehicle) {
+      axios({
+        url: "http://localhost:3000/api/v1/admin/vehicle/delete/" + idvehicle,
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": localStorage.getItem("x-access-token")
+        }
+      }).then(response => console.log(response));
     }
   }
 };

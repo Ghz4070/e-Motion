@@ -3,7 +3,7 @@
     <div class="page-header clear-filter" filter-color="orange">
       <div class="container">
         <h3 class="title">Admin</h3>
-        <p>Gérer les offres</p>
+        <h1 class="title">Gérer les offres</h1>
         <ul></ul>
       </div>
     </div>
@@ -44,9 +44,25 @@
               <td>{{ offer.hiddenOffers }}</td>
               <td>{{ offer.createdBy }}</td>
               <td>
-                <router-link :to="{path: '/admin/offers/update/'+(offer.idoffers) }">
-                <n-button type="info" size="sm" >Modifier</n-button>
-                </router-link>
+                <drop-down class="btn-group">
+                  <template slot="title">
+                    <button type="button" class="btn btn-default">
+                      <i class="now-ui-icons ui-1_settings-gear-63"></i>
+                    </button>
+                  </template>
+                  <router-link class="stl" :to="{path: '/admin/offers/update/'+(offer.idoffers) }">
+                    <a class="dropdown-item" href="#">
+                      <b>
+                        <i class="now-ui-icons ui-2_settings-90"></i> Modifier
+                      </b>
+                    </a>
+                  </router-link>
+                  <a class="dropdown-item" v-on:click="removeOffer(offer.idoffers)">
+                    <b>
+                      <i class="now-ui-icons ui-1_simple-remove"></i> Supprimer
+                    </b>
+                  </a>
+                </drop-down>
               </td>
             </tr>
           </table>
@@ -63,7 +79,8 @@ import {
   TabPane,
   Button,
   Modal,
-  FormGroupInput as FgInput
+  FormGroupInput as FgInput,
+  DropDown
 } from "@/components";
 import axios from "axios";
 
@@ -75,11 +92,13 @@ export default {
     TabPane,
     [Button.name]: Button,
     Modal,
-    FgInput
+    FgInput,
+    DropDown
   },
   data() {
     return {
-      offers: ""
+      offers: "",
+      idOffer: ""
     };
   },
   mounted() {
@@ -113,6 +132,16 @@ export default {
           }
         }
       }
+    },
+    removeOffer: function(idOffer) {
+      axios({
+        url: "http://localhost:3000/api/v1/admin/offer/" + idOffer,
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": localStorage.getItem("x-access-token")
+        }
+      }).then(response => console.log(response));
     }
   }
 };
@@ -145,5 +174,9 @@ export default {
   text-align: left;
   background-color: slategray;
   color: white;
+}
+
+.stl {
+  color: black;
 }
 </style>
