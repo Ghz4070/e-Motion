@@ -53,4 +53,10 @@ export default {
   }
 };
 </script>
-<style></style>
+<style>
+.footer {
+  position: inherit;
+  bottom: 0;
+  width: 100%;
+}
+</style>
