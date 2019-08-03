@@ -9,6 +9,11 @@
     <div class="section">
       <div class="container">
         <h3 class="title">Liste des véhicules</h3>
+        <router-link to='/admin/createvehicle' class="text-right"> 
+        <n-button type="default">
+     Ajouter un nouveau véhicule
+          </n-button>
+        </router-link>
         <hr />
         <div>
           <div>
