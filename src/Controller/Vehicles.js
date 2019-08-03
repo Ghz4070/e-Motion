@@ -11,6 +11,19 @@ export function allListVehicles() { // getAllVehicles
     }
 }
 
+export function allVehiclesNotAvailable() {
+    return (req, res) => {
+            req.sql.query('SELECT * FROM vehicle WHERE available = FALSE')
+            .then((resultSelect) => {
+                if(resultSelect.length > 0){
+                    res.json(success(resultSelect))
+                }else{
+                    res.json(error('All available'))
+                }
+            })
+            .catch((err) => res.json(error(err.message)))
+    }
+}
 
 export function allListVehiclesAvailable() { // getAllVehiclesAvailable
     return (req, res) => {
@@ -179,24 +192,6 @@ export function setAvailable() {
                 .catch((err) => res.json(error(err.message)));
         } else {
             res.json(error(new Error("Can't not use this method").message));
-        }
-    }
-}
-
-export function allVehiclesNotAvailable() {
-    return (req, res) => {
-        const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
-
-        if(decodeTokenRole.indexOf('ROLE_ADMIN') !== -1){
-            req.sql.query('SELECT * FROM vehicle WHERE available = FALSE')
-            .then((resultSelect) => {
-                if(resultSelect.length > 0){
-                    res.json(success(resultSelect))
-                }else{
-                    res.json(error('All available'))
-                }
-            })
-            .catch((err) => res.json(error(err)))
         }
     }
 }

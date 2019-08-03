@@ -27,6 +27,8 @@ anonymeRouteVehicles.route('/all')
     .get(db,allListVehicles())
 anonymeRouteVehicles.route('/available')
     .get(db,allListVehiclesAvailable());
+anonymeRouteVehicles.route('/notavailable')
+    .get(db,allVehiclesNotAvailable())
 anonymeRouteVehicles.route('/:id')
     .get(db,getVehicleById())
 anonymeRouteVehicles.route('/findby')
@@ -42,8 +44,6 @@ adminRouteVehicles.route('/delete/:id')
     .delete(checkToken,db,outVehiclesOfList());
 adminRouteVehicles.route('/available/:id')
     .patch(checkToken,db,setAvailable());
-adminRouteVehicles.route('/notavailable')
-    .get(db,checkToken, allVehiclesNotAvailable())
 adminRouteVehicles.route('/vehicleByProprio')
     .get(db, checkToken, vehicleByOffers())
 
