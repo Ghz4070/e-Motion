@@ -72,7 +72,7 @@ const router = new Router({
             }
         },
         {
-            path: '/createVehicle',
+            path: '/admin/createvehicle',
             name: 'createVehicle',
             components: { default: CreateVehicle, header: MainNavbar, footer: MainFooter },
             props: {
@@ -262,7 +262,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
     var token = jwt.decode(localStorage.getItem("x-access-token"));
 
-    if ((to.fullPath).includes('admin') || (to.fullPath==='/profile')) {
+    if ((to.fullPath).includes('admin') || (to.fullPath==='/profile') || (to.fullPath==='/historic')) {
       if (!token) {
         next('/error');
       }

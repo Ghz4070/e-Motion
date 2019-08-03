@@ -27,14 +27,14 @@
                         <p>Accueil</p></a>
                 </router-link>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <router-link class="nav-link" to="/landing">
                     <a><i class="now-ui-icons design_bullet-list-67"></i>
                         <p>Les offres</p></a>
                 </router-link>
-            </li>
+            </li> -->
             <li class="nav-item">
-                <router-link class="nav-link" to="/landing">
+                <router-link class="nav-link" to="/vehicule">
                     <a><i class="now-ui-icons shopping_delivery-fast"></i>
                         <p>Les véhicules</p></a>
                 </router-link>

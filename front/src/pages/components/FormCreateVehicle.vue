@@ -1,6 +1,9 @@
 <template>
     <div class="page-header clear-filter" filter-color="orange">
         <div class="container">
+            <div class="text-left">
+            <n-button type="default" v-on:click="previousPage">Retour page précédente</n-button>
+            </div>
             <div class="row">
                 <card class="card-signup" header-classes="text-center" color="orange">
                     <template slot="header">
@@ -156,7 +159,10 @@
                     .then((response) => {
                         console.log(response)
                     })
-            }
+            },
+                    previousPage: function() {
+                        this.$router.go(-1)
+                    }
         },
         mounted() {
             axios
