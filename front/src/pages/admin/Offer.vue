@@ -83,11 +83,14 @@ import {
   DropDown
 } from "@/components";
 import axios from "axios";
+import jwt from 'jsonwebtoken';
+import dontLogin from "@/layout/dontLogin.vue";
 
 export default {
   name: "OfferAdmin",
   props: {},
   components: {
+    dontLogin,
     Tabs,
     TabPane,
     [Button.name]: Button,
@@ -98,7 +101,9 @@ export default {
   data() {
     return {
       offers: "",
-      idOffer: ""
+      idOffer: "",
+      token: jwt.decode(localStorage.getItem("x-access-token")),
+      checkToken: false
     };
   },
   mounted() {

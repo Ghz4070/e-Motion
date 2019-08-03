@@ -28,10 +28,12 @@ import LocationUpdate from './pages/admin/LocationUpdate.vue';
 import VehicleUpdate from './pages/admin/VehicleUpdate.vue';
 import UserUpdate from './pages/admin/UserUpdate.vue';
 
+import jwt from 'jsonwebtoken';
+import dontLogin from './layout/dontLogin.vue';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
     linkExactActiveClass: 'active',
     mode: 'history',
     routes: [
@@ -234,7 +236,19 @@ export default new Router({
             props: {
                 header: { colorOnScroll: 400 }
             }
-        }
+        },
+        {
+            path: '/error',
+            name: 'dontLogin',
+            components: { default: dontLogin, header: MainNavbar, footer: MainFooter },
+            props: {
+                header: { colorOnScroll: 400 }
+            }
+        },
+        {
+            path: '*',
+            redirect: '/'
+          }
     ],
     scrollBehavior: to => {
         if (to.hash) {
@@ -243,4 +257,21 @@ export default new Router({
             return { x: 0, y: 0 };
         }
     }
-});
+})
+
+router.beforeEach((to, from, next) => {
+    var token = jwt.decode(localStorage.getItem("x-access-token"));
+
+    if ((to.fullPath).includes('admin') || (to.fullPath==='/profile')) {
+      if (!token) {
+        next('/error');
+      }
+      else if(token.exp < new Date().getTime() / 1000){
+        localStorage.removeItem("x-access-token");
+        next('/error');
+      }
+    }
+    next();
+  });
+
+  export default router;
