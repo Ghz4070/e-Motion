@@ -40,7 +40,7 @@
                 </router-link>
             </li>
             <li v-if="isLogged()!=0" class="nav-item">
-                <router-link class="nav-link" to="/landing">
+                <router-link class="nav-link" to="/location">
                     <a><i class="now-ui-icons ui-1_calendar-60"></i>
                         <p>Louer un véhicules</p></a>
                 </router-link>
