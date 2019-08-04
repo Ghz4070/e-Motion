@@ -11,6 +11,7 @@ import {checkToken} from '../middleware';
 import express from 'express';
 
 export const adminRouteLocations = express.Router();
+export const anonymeRouteLocations = express.Router();
 
 const db = (req, res, next) => {
     req.sql = req.conn;
@@ -18,7 +19,7 @@ const db = (req, res, next) => {
 };
 
 
-adminRouteLocations.route('/add')
+anonymeRouteLocations.route('/add')
     .post(db, checkToken, addLocation());
 adminRouteLocations.route('/all')
     .get(db, checkToken, allLocations());
