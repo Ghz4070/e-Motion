@@ -19,9 +19,6 @@
      <li class="list-group-item">Prix : {{ offer.price }}€</li>
    </ul>
   </card>
-   <!-- <div slot="footer" class="card-footer text-muted mb-2">
-     2 days ago
-   </div> -->
   </card>
     </tab-pane>
   </tabs>
