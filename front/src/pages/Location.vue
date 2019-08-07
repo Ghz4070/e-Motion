@@ -49,9 +49,16 @@
             </card>
           </tab-pane>
         </tabs>
+        <div class="info">
+          <alert type="info">
+            {{ info.username }}, Vous disposez de {{ info.pointFidelity }} points de fidélité à utiliser dès aujourd'hui.
+            </alert>
+        </div>
       </div>
     </div>
     <div class="section section-contact-us text-center">
+      <div>
+      </div>
       <div class="container">
         <h2 class="title">Choisisez l'offres et le véhicule</h2>
         <p class="description">Location Car Concept.</p>
@@ -81,12 +88,6 @@
               v-model="pointFidelityUsed"
               addon-left-icon="now-ui-icons users_circle-08"
             ></fg-input>
-            <fg-input
-              class="input-lg"
-              placeholder="Prix final"
-              v-model="finalPrice"
-              addon-left-icon="now-ui-icons ui-1_email-85"
-            ></fg-input>
             <label>Choix de l'offre</label>
             <v-select
               @input="getVehicule"
@@ -105,6 +106,9 @@
               label="titleVehicles"
             ></v-select>
             <br />
+            <div v-if="price">
+            Le prix final est de : <b>{{ price }}</b> €.
+            </div>
             <br />
             <div class="send-button">
               <n-button
@@ -122,7 +126,7 @@
   </div>
 </template>
 <script>
-import { Button, FormGroupInput, Tabs, TabPane, Card } from "@/components";
+import { Button, FormGroupInput, Tabs, TabPane, Card, Alert } from "@/components";
 import { DatePicker } from "element-ui";
 import axios from "axios";
 import vSelect from "vue-select";
@@ -137,7 +141,8 @@ export default {
     vSelect,
     Tabs,
     TabPane,
-    Card
+    Card,
+    Alert
   },
   data() {
     return {
@@ -150,10 +155,13 @@ export default {
       vehicle_idvehicle: "",
       listOffer: [],
       listVehicule: [],
-      offers: ""
+      offers: "",
+      price :'',
+      info:''
     };
   },
   methods: {
+    
     getListOffer: function() {
       axios({
         url: "http://localhost:3000/api/v1/offer",
@@ -180,7 +188,7 @@ export default {
             endDate: finalDate2,
             pointFidelityUsed: this.pointFidelityUsed,
             status: this.status,
-            finalPrice: this.finalPrice,
+            finalPrice: this.price,
             offers_idoffers: this.offers_idoffers,
             vehicle_idvehicle: this.vehicle_idvehicle
           },
@@ -193,9 +201,6 @@ export default {
         .then(result => {
           console.log(result);
           if (result.data.status == "success") {
-            this.account =
-              "Votre compte a été créé, vous allez être redirectionné dans moins de 5 secondes";
-            this.hideOrNot = "donthide";
             setTimeout(() => {
               this.$router.push("/");
             }, 5000);
@@ -219,6 +224,7 @@ export default {
         .catch(error => console.log(error));
     },
     getVehicule: function() {
+      this.getPriceoffer()
       this.listVehicule = [];
       axios
         .get(
@@ -237,11 +243,38 @@ export default {
           }
         })
         .catch(error => console.log(error));
+    },
+    getPriceoffer: function() {
+      axios({
+        url: "http://localhost:3000/api/v1/offer/"+this.offers_idoffers,
+        method: "get",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": localStorage.getItem("x-access-token")
+        }
+      }).then(response => {
+        this.price = response.data.result[0].price
+        console.log(response);
+      });
+    },
+    getInfoUser: function() {
+      axios({
+        url: "http://localhost:3000/api/v1/admin/user",
+        method: "get",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": localStorage.getItem("x-access-token")
+        }
+      }).then(response => {
+        this.info = response.data.result[0]
+        console.log(response);
+      });
     }
   },
   mounted() {
     this.getOffer();
     this.getListOffer();
+    this.getInfoUser();
   }
 };
 </script>
@@ -250,5 +283,12 @@ export default {
   display:flex;
   justify-content:center;
   flex-direction:row
+}
+.info {
+  color: #9A9A9A;
+  font-size: large;
+}
+.section {
+  padding: 0px 0 !important;
 }
 </style>
