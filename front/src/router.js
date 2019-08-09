@@ -66,7 +66,7 @@ const router = new Router({
         {
             path: '/login',
             name: 'login',
-            components: { default: Login, header: '', footer: MainFooter },
+            components: { default: Login, header: MainNavbar, footer: MainFooter },
             props: {
                 header: { colorOnScroll: 400 }
             }
@@ -134,7 +134,11 @@ const router = new Router({
         {
             path: '/logout',
             name: 'logout',
-            components: { default: Logout },
+            components: { default: Logout, header: MainNavbar, footer: MainFooter  },
+            props: {
+                header: { colorOnScroll: 400 },
+                footer: { backgroundColor: 'black' }
+            }
 
         },
         {

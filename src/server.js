@@ -3,7 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import mariadb from 'mariadb';
-
+import cors from 'cors';
 //Module créer par nous
 import {rootApi, port, secret} from '../src/config';
 import {Host, User, Password, Database} from '../src/database';
@@ -29,7 +29,6 @@ async function asyncConnection() {
         console.log('hello');
 
         const app = express();
-        //const ProtectedRoutes = express.Router();
 
         app.use(function (req, res, next) {
             res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
@@ -42,9 +41,8 @@ async function asyncConnection() {
         //Middleware
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: true}));
-
         app.use(morgan('dev'));
-
+        app.use(cors());
         const mariadbConn = (req, res, next) => {
             req.conn = conn;
             next()

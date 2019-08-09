@@ -48,18 +48,24 @@ export function getVehicleById() { // get vehicle by id
 export function editVehicles() { //
     return (req, res) => {
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
-
-        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
-            req.sql.query("UPDATE vehicle SET brand = ?, model = ?, serialNumber = ?,color = ?" +
-                " ,licensePlate = ?, nbKm = ? , datePurchase = ?, price = ?" +
-                " ,available = ?, offers_idoffers = ? WHERE idvehicle = ?",
-                [req.body.brand, req.body.model, req.body.serialNumber, req.body.color, req.body.licensePlate,
-                    req.body.nbKm, req.body.datePurchase, req.body.price, req.body.available,
-                     req.body.offers_idoffers, req.params.id])
-                .then((result) => {
-                    res.json(success(result))
-                })
-                .catch((err) => res.json(error(err.message)));
+        console.log(req.files)
+        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_PROPRIO') !== -1) {
+            let img = req.files['imgVehicle'][0];
+                
+            if(img &&  img.size <= 3000000 && img.mimetype == "image/jpeg" || img.mimetype == "image/png" ){
+                req.sql.query("UPDATE vehicle SET brand = ?, model = ?, serialNumber = ?,color = ?" +
+                    " ,licensePlate = ?, nbKm = ? , datePurchase = ?, price = ?, imgVehicle = ?" +
+                    " ,available = ?, offers_idoffers = ?, typeVehicle = ? WHERE idvehicle = ?",
+                    [req.body.brand, req.body.model, req.body.serialNumber, req.body.color, req.body.licensePlate,
+                        req.body.nbKm, req.body.datePurchase, req.body.price, img.originalname ,req.body.available,
+                        req.body.offers_idoffers, req.body.typeVehicle ,req.params.id])
+                    .then((result) => {
+                        res.json(success(result))
+                    })
+                    .catch((err) => res.json(error(err.message)));
+            }else{
+                res.json(error('Cant upload this file'));
+            }
         } else {
             res.json(error(new Error("Can't not use this method").message));
         }
