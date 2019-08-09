@@ -14,6 +14,42 @@ export function getAllOffers() {
     }
 }
 
+export function getAllOffersAvailable() {
+    return (req, res) => {
+        req.sql.query('SELECT * FROM offers WHERE hiddenOffers = 1')
+            .then((result) => {
+                res.json(success(result));
+            })
+            .catch((err) => res.json(error(err.message)))
+    }
+}
+
+export function setHiddenOffers() {
+    let idoff = '';
+    return (req, res) => {
+        req.sql.query('SELECT hiddenOffers FROM offers WHERE idoffers = ?', req.body.id)
+            .then((id) => {
+                idoff = id[0].hiddenOffers;
+                if (idoff == 1) {
+                    req.sql.query('UPDATE offers SET hiddenOffers = 0 WHERE idoffers = ?', req.body.id)
+                        .then((result) => {
+                            res.json(result);
+                            console.log(result)
+                        })
+                        .catch((err) => res.json(err.message));
+                }
+                else {
+                    req.sql.query('UPDATE offers SET hiddenOffers = 1 WHERE idoffers = ?', req.body.id)
+                        .then((result) => {
+                            res.json(result);
+                            console.log(result)
+                        })
+                        .catch((err) => res.json(err.message));
+                }
+            })
+    }
+}
+
 export function getOfferById() {
     return (req, res) => {
         req.sql.query('SELECT * FROM offers WHERE idoffers = ?', req.params.id)
@@ -102,21 +138,21 @@ export function updateOffer() {
     }
 }
 
-export function getOfferByPropio(){
+export function getOfferByPropio() {
     return (req, res) => {
         const decodeTokenUser = jwt.decode(req.headers['x-access-token']);
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
-        if(decodeTokenRole.indexOf('ROLE_PROPRIO') != -1 || decodeTokenRole.indexOf('ROLE_ADMIN') != -1){
-            req.sql.query('SELECT *, u.email FROM offers o inner join users u on u.idusers = o.createdBy WHERE u.username = ?', [decodeTokenUser.username])  
-            .then((result) => {
-                if(result.length > 0){
-                    res.json(success(result));
-                }else{
-                    res.json(error('no offers'))
-                }
-            })
-            .catch((err) => res.json(error(err)))  
+        if (decodeTokenRole.indexOf('ROLE_PROPRIO') != -1 || decodeTokenRole.indexOf('ROLE_ADMIN') != -1) {
+            req.sql.query('SELECT *, u.email FROM offers o inner join users u on u.idusers = o.createdBy WHERE u.username = ?', [decodeTokenUser.username])
+                .then((result) => {
+                    if (result.length > 0) {
+                        res.json(success(result));
+                    } else {
+                        res.json(error('no offers'))
+                    }
+                })
+                .catch((err) => res.json(error(err)))
         }
     }
 }

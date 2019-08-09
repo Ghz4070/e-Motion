@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Index from './pages/Index.vue';
-import Landing from './pages/Landing.vue';
+import Location from './pages/Location.vue';
 import Login from './pages/Login.vue';
 import Vehicule from './pages/Vehicule.vue';
 import LocationVehicule from './pages/LocationVehicule.vue';
@@ -55,9 +55,9 @@ const router = new Router({
             }
         },
         {
-            path: '/landing',
-            name: 'landing',
-            components: { default: Landing, header: MainNavbar, footer: MainFooter },
+            path: '/location',
+            name: 'location',
+            components: { default: Location, header: MainNavbar, footer: MainFooter },
             props: {
                 header: { colorOnScroll: 400 },
                 footer: { backgroundColor: 'black' }

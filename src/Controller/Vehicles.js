@@ -45,6 +45,16 @@ export function getVehicleById() { // get vehicle by id
     }
 }
 
+export function getVehicleByOffer() { // get vehicle by offer
+    return (req, res) => {
+        req.sql.query('SELECT * FROM vehicle WHERE offers_idoffers = ?', req.params.id)
+            .then((result) => {
+                res.json(success(result));
+            })
+            .catch((err) => res.json(error(err.message)));
+    }
+}
+
 export function editVehicles() { //
     return (req, res) => {
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;

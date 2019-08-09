@@ -10,7 +10,7 @@ import {
     setAvailable,
     allVehiclesNotAvailable,
     vehicleByOffers,
-    updatetest
+    getVehicleByOffer
 } from '../Controller/Vehicles';
 import express from 'express';
 import {checkToken} from './../middleware'
@@ -60,6 +60,8 @@ anonymeRouteVehicles.route('/findby')
     .get(db,findVehicleByCriteria());
 anonymeRouteVehicles.route('/bookACar/:id')
     .put(db,bookACar());
+anonymeRouteVehicles.route('/available/:id')
+    .get(db,getVehicleByOffer());
 adminRouteVehicles.route('/add')
     .post(checkToken,db,addVehicles());
 adminRouteVehicles.route('/edit/:id')

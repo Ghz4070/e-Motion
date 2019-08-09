@@ -5,7 +5,9 @@ import {
     removeOffer,
     updateOffer,
     getOfferByPropio,
-    getOfferByIdBody
+    getOfferByIdBody,
+    getAllOffersAvailable,
+    setHiddenOffers
 } from '../Controller/Offers';
 
 import express from 'express';
@@ -20,7 +22,7 @@ export const anonymeRouteOffers = express.Router();
 export const adminRouteOffers = express.Router();
 
 anonymeRouteOffers.route('/')
-    .get(db,getAllOffers())
+    .get(db,getAllOffers());
 anonymeRouteOffers.route('/:id')
     .get(db,getOfferById());
 adminRouteOffers.route('/')
@@ -31,3 +33,8 @@ adminRouteOffers.route('/:id')
     .patch(db,checkToken,updateOffer());
 adminRouteOffers.route('/offersByProprio')
     .get(db, checkToken, getOfferByPropio());
+adminRouteOffers.route('/available')
+    .get(db, checkToken, getAllOffersAvailable());
+adminRouteOffers.route('/cancel')
+    .post(db, checkToken, setHiddenOffers());
+

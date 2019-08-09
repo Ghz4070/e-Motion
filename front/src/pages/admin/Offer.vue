@@ -57,6 +57,11 @@
                       </b>
                     </a>
                   </router-link>
+                  <a class="dropdown-item" href="#" v-on:click="hiddeOffer(offer.idoffers)">
+                    <b>
+                      <i class="now-ui-icons design-2_ruler-pencil"></i> Changer visibilité
+                    </b>
+                  </a>
                   <a class="dropdown-item" v-on:click="removeOffer(offer.idoffers)">
                     <b>
                       <i class="now-ui-icons ui-1_simple-remove"></i> Supprimer
@@ -83,7 +88,7 @@ import {
   DropDown
 } from "@/components";
 import axios from "axios";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 import dontLogin from "@/layout/dontLogin.vue";
 
 export default {
@@ -147,6 +152,21 @@ export default {
           "x-access-token": localStorage.getItem("x-access-token")
         }
       }).then(response => console.log(response));
+    },
+    hiddeOffer: function(theid) {
+      axios({
+        url: "http://localhost:3000/api/v1/admin/offer/cancel",
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": localStorage.getItem("x-access-token")
+        },
+        data: {
+          id: theid
+        }
+      }).then(response => {
+        console.log(response);
+      });
     }
   }
 };
