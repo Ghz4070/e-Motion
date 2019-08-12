@@ -88,7 +88,7 @@
             <br />
             <label>Choix de l'offre</label>
             <v-select
-              @input="getVehicule"
+              @input="getVehicule()"
               :options="listOffer"
               v-model="offers_idoffers"
               :reduce="titleOffers => titleOffers.idOffers"
