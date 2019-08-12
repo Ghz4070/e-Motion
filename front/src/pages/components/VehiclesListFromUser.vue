@@ -1,6 +1,7 @@
 <template>
     <div class="page-header clear-filter" filter-color="orange">
         <div class="container">
+            <h1>Les véhicules</h1>
            <table class="table table-bordeless">
                 <thead>
                     <tr>
@@ -28,11 +29,16 @@
                         <td>{{vehicle.serialNumber}}</td>
                         <td>{{vehicle.color}}</td>
                         <td>{{vehicle.licensePlate}}</td>
-                        <td>{{vehicle.nbKm}}</td>
+                        <td>{{vehicle.nbKm}} km</td>
                         <td>{{vehicle.datePurchase}}</td>
-                        <td>{{vehicle.price}}</td>
-                        <td>{{vehicle.available}}</td>
-                        <td>{{vehicle.offers_idoffers}}</td>
+                        <td>{{vehicle.price}}€</td>
+                        <td v-if="vehicle.available == 1">
+                            Oui
+                        </td>
+                        <td v-else>
+                            Non
+                        </td>
+                        <td>{{vehicle.title}}</td>
                         <td>{{vehicle.typeVehicle}}</td>
                         <td>{{vehicle.imgVehicle}}</td>
                         <td><n-button type="warning" @click.native="modals.classic = true" v-on:click="getVehicleById(vehicle.idvehicle)">Modifier</n-button></td>
@@ -81,12 +87,15 @@
                                     required
                                 ></fg-input>
                                 <label>Date d'achat</label>
-                                <fg-input
-                                    class="no-border"
-                                    type="input"
-                                    v-model="datePurchase"
-                                    required
-                                ></fg-input>
+                                <fg-input>
+                                    <el-date-picker v-model="datePurchase"
+                                                    popper-class="date-picker-primary"
+                                                    type="date"
+                                                    placeholder="Votre date de naissance"
+                                                    required
+                                    >
+                                    </el-date-picker>
+                                </fg-input>
                                 <label>Prix</label>
                                 <fg-input
                                     class="no-border"
@@ -95,28 +104,24 @@
                                     required
                                 ></fg-input>
                                 <label>Valide</label>
-                                <fg-input
-                                    class="no-border"
-                                    type="input"
+                                <v-select
+                                    :options="yesOrNo"
                                     v-model="available"
-                                    required
-                                ></fg-input>
+                                    label="available"
+                                ></v-select>
                                 <label>Offre</label>
-                                <fg-input
-                                    class="no-border"
-                                    type="input"
-                                    v-model="idoffers"
-                                    required
-                                ></fg-input>
+                                <v-select
+                                    :options="offersAll"
+                                    v-model="offersValue"
+                                ></v-select>
                                 <label>Type de véhicule</label>
-                                <fg-input
-                                    class="no-border"
-                                    type="input"
+                                <v-select
+                                    :options="motoOrVehicle"
                                     v-model="typeVehicle"
-                                    required
-                                ></fg-input>
+                                    label="available"
+                                ></v-select>
                                 <label>Image</label>
-                                <input type="file" id="imgVehicle" ref="imgVehicle" name="imgVehicle"  v-on:change="handleFileUpload">
+                                <input class="no-border" type="file" id="imgVehicle" ref="imgVehicle" name="imgVehicle"  v-on:change="handleFileUpload">
                                 <n-button type="success" @click.native="modals.classic = false" v-on:click="updateVehicle">Enregistrer</n-button>
                             </form>
                         </modal>
@@ -132,6 +137,9 @@
     import axios from 'axios';
     import {Button, Modal, FormGroupInput} from '@/components';
     import FormDataPost from '../../script/upload';
+    import {DatePicker} from 'element-ui';
+    import vSelect from 'vue-select';
+    import "vue-select/dist/vue-select.css";
 
     export default {
         name: 'VehiclesListFromUser',
@@ -139,6 +147,8 @@
             [Button.name]: Button,
             [Modal.name]: Modal,
             [FormGroupInput.name]: FormGroupInput,
+            [DatePicker.name]: DatePicker,
+            vSelect
         },
         data(){
             return {
@@ -159,6 +169,11 @@
                 modals: {
                     classic: false
                 },
+                yesOrNo:['Oui', 'Non'],
+                motoOrVehicle: ['Moto', 'Voiture'],
+                offersMap:'',
+                offersValue: '',
+                offersAll: ''
             }
         },
         mounted: function() {
@@ -170,12 +185,30 @@
             .then((result) => {
                 this.vehicles= result.data.result
                 console.log(result);
+                this.allOffers()
             })
-            .catch((err) => console.log(err.message))
+            .catch((err) => console.log(err.message))  
         },
         methods: {
-            updateVehicle: async function (){
-                const imgFormData = new FormData
+            updateVehicle: function (){
+                const imgFormData = new FormData;
+                
+                const instanceDate = new Date(this.datePurchase);
+                const convertDatepicker = instanceDate.toISOString();
+                const datePickerLessT = convertDatepicker.replace('T', ' ');
+                const finalDate = datePickerLessT.replace('Z', '');
+                this.datePurchase = finalDate
+                
+                this.available = this.available == "Oui" ? 1 : 0
+
+                for(const [keyOffers, valueOffer] of this.offersMap.entries()){
+                    if(valueOffer == this.offersValue){
+                        this.idoffers = keyOffers
+                    }
+                }
+
+                console.log(this.available)
+
                 const axiosHeaders = axios.create({
                         headers: {'x-access-token': localStorage.getItem('x-access-token'), "Content-Type": "multipart/form-data"}
                 })
@@ -204,18 +237,21 @@
                     .then((results) => {
                         this.vehicles= results.data.result
                         console.log(results);
+                        this.imgVehicle = '';
                     })
                     .catch((err) => console.log(err.message))
                     })
                 .catch((err) => console.log(err))
             },
             getVehicleById: function(id){
+                
                 axios({
                     method:'get',
                     url:'http://localhost:3000/api/v1/vehicle/'+id
                     })
                     .then((result) => {
                         console.log(result)
+ 
                         this.idvehicle = id;
                         this.brand= result.data.result[0].brand;
                         this.model= result.data.result[0].model;
@@ -225,14 +261,32 @@
                         this.nbKm= result.data.result[0].nbKm;
                         this.datePurchase= result.data.result[0].datePurchase;
                         this.price= result.data.result[0].price;
-                        this.available= result.data.result[0].available;
-                        this.idoffers= result.data.result[0].offers_idoffers;
+                        this.available= result.data.result[0].available == 1? "Oui": "Non";
                         this.typeVehicle= result.data.result[0].typeVehicle;
                         this.imgVehicle= result.data.result[0].imgVehicle;
+                        this.offersValue= result.data.result[0].title;     
                     })
             },
             handleFileUpload: function(){
                 this.imgVehicle = this.$refs.imgVehicle[3].files
+            },
+            allOffers: function(){
+                axios.get('http://localhost:3000/api/v1/offer')
+                .then((results) => {
+                    const arrayTitleOffers = [];
+                    const mapoffers= new Map()
+                  
+                    for(let result of results.data.result){
+                        arrayTitleOffers.push(result.title);
+                        mapoffers.set(result.idoffers, result.title)
+                    }
+  
+                    this.offersMap = mapoffers
+                    this.offersAll = arrayTitleOffers;
+                    console.log(this.offersAll)
+                    console.log(this.offersMap)
+                })
+                .catch((err) => console.log(err))
             }
         }
        
@@ -240,5 +294,4 @@
 </script>
 
 <style scoped>
-
 </style>
