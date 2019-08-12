@@ -82,12 +82,10 @@
                 required
               ></el-date-picker>
             </fg-input>
-            <fg-input
-              class="input-lg"
-              placeholder="Point de fidélité utiliser"
-              v-model="pointFidelityUsed"
-              addon-left-icon="now-ui-icons users_circle-08"
-            ></fg-input>
+            <br />
+            <label>Point de fidélité à utiliser</label>
+            <v-select  v-model="pointFidelityUsed" :options="pointTab"></v-select>
+            <br />
             <label>Choix de l'offre</label>
             <v-select
               @input="getVehicule"
@@ -157,11 +155,11 @@ export default {
       listVehicule: [],
       offers: "",
       price :'',
-      info:''
+      info:'',
+      pointTab:[]
     };
   },
   methods: {
-    
     getListOffer: function() {
       axios({
         url: "http://localhost:3000/api/v1/offer",
@@ -182,7 +180,7 @@ export default {
 
       axios
         .post(
-          "http://localhost:3000/api/v1/location/add",
+          "http://localhost:3000/api/v1/location/add?pointFidelity="+this.pointFidelityUsed+"&price="+this.price,
           {
             startDate: finalDate1,
             endDate: finalDate2,
@@ -268,9 +266,14 @@ export default {
           "x-access-token": localStorage.getItem("x-access-token")
         }
       }).then(response => {
-        this.info = response.data.result[0]
-        console.log(response);
+        this.info = response.data.result[0];
+        this.setPoint()
       });
+    },
+    setPoint: function() {
+      for(var i = 0; i< this.info.pointFidelity; i+=100) {
+        this.pointTab.push(i)
+      }
     }
   },
   mounted() {

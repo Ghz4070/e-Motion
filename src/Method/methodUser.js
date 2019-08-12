@@ -8,6 +8,8 @@ export function reduc (pointFidelity ,priceOffers) {
         return priceOffers -(priceOffers*0.15) 
     }else if(pointFidelity >= 1000){
         return priceOffers -(priceOffers*0.20) 
+    }else if(pointFidelity<100) {
+        return priceOffers
     }else{
         return false
     }
