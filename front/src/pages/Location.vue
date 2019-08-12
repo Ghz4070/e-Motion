@@ -106,7 +106,7 @@
               label="titleVehicles"
             ></v-select>
             <br />
-            <div v-if="price">
+            <div v-if="price && listVehicule.length>0">
             Le prix final est de : <b>{{ price }}</b> €.
             </div>
             <br />
@@ -253,7 +253,9 @@ export default {
           "x-access-token": localStorage.getItem("x-access-token")
         }
       }).then(response => {
+        if(this.listVehicule.length>0) {
         this.price = response.data.result[0].price
+        }
         console.log(response);
       });
     },
