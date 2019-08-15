@@ -1,5 +1,5 @@
 <template>
-<div v-if="!offers">
+<div v-if="offers">
 <tabs type="primary" tabContentClasses="tab-subcategories"
         square centered class="row">
     <tab-pane v-for="offer in offers" :key="offer.ifoffers">
@@ -26,7 +26,7 @@
 </div>
 <div v-else>
   <p>Aucune offre de disponnible pour le moment.</p>
-  <p>Ne craignez rien, nous vous concoctons de très bonne surprises.</p>
+  <p>Ne craignez rien, nous vous concoctons de très bonne surprises.🎁 🎁 🎁</p>
 </div>
 </template>
   
