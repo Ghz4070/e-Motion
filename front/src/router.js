@@ -151,7 +151,7 @@ const router = new Router({
             }
         },
         {
-            path: '/Offersbyproprio',
+            path: '/proprio/offersbyproprio',
             name: 'Offersbyproprio',
             components: { default: OffersCreatedByProprio, header: MainNavbar, footer: MainFooter },
             props: {
@@ -160,7 +160,7 @@ const router = new Router({
             }
         },
         {
-            path: '/Vehiclesbyproprio',
+            path: '/proprio/vehiclesbyproprio',
             name: 'Vehiclesbyproprio',
             components: { default: VehiclesCreatedByProprio, header: MainNavbar, footer: MainFooter },
             props: {
@@ -266,7 +266,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
     var token = jwt.decode(localStorage.getItem("x-access-token"));
 
-    if ((to.fullPath).includes('admin') || (to.fullPath==='/profile') || (to.fullPath==='/historic')) {
+    if ((to.fullPath).includes('admin') || (to.fullPath==='/profile') || (to.fullPath==='/historic') || (to.fullPath).includes('proprio')) {
       if (!token) {
         next('/error');
       }
