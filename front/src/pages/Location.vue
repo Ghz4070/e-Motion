@@ -65,7 +65,7 @@
     <div class="section section-contact-us text-center">
       <div></div>
       <div class="container">
-        <h2 class="title">Choisisez l'offres et le véhicule</h2>
+        <h2 class="title">Choisisez l'offres et le véhicule  </h2>
         <p class="description">Location Car Concept.</p>
         <div class="row">
           <div class="col-lg-6 text-center ml-auto mr-auto col-md-8">
@@ -120,6 +120,14 @@
                   <i class="now-ui-icons travel_info"></i>
                 </div>
                 <strong>Attention!</strong> Vous avez oublier de compléter un champs.
+              </alert>
+            </div>
+            <div v-on:click="cancel" v-if="dateAlert==true" class="alert">
+              <alert type="danger" dismissible>
+                <div class="alert-icon">
+                  <i class="now-ui-icons travel_info"></i>
+                </div>
+                <strong>Attention!</strong> Vérifier les dates choisis ne sont sont pas compatible. La date de début ne peut être supérieur à la date de fin.
               </alert>
             </div>
             <div v-if="locationSuccess==true" class="alert">
@@ -188,12 +196,14 @@ export default {
       pointTab: [],
       alert: false,
       locationSuccess: false,
+      dateAlert: false,
     };
   },
   methods: {
     cancel: function() {
       this.alert = false,
-      this.locationSuccess = false
+      this.locationSuccess = false,
+      this.dateAlert = false
     },
     getListOffer: function() {
       axios({
@@ -205,7 +215,8 @@ export default {
       }).then(response => (this.offers = response.data.result));
     },
     setLocation: function() {
-      if(this.startDate && this.endDate && this.pointFidelityUsed && this.offers_idoffers && this.vehicle_idvehicle) {
+      if(this.startDate && this.endDate && this.offers_idoffers && this.vehicle_idvehicle) {
+        if(this.startDate.getTime() < this.endDate.getTime()) {
       const convertDatepicker1 = this.startDate.toISOString();
       const datePickerLessT1 = convertDatepicker1.replace("T", " ");
       const finalDate1 = datePickerLessT1.replace("Z", "");
@@ -245,6 +256,10 @@ export default {
           }
         })
         .catch(err => console.log(err));
+        }
+        else{
+          this.dateAlert = true;
+        }
       }
       else {
         this.alert = true;
