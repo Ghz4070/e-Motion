@@ -45,6 +45,9 @@
               >Modifier</n-button>
             </td>
             <modal :show.sync="modals.classic" headerClasses="justify-content-center">
+              <p v-if="errors.length">
+                       <Alert type="danger">Des champs non pas étaient remplis, il vous reste <span class="alert-link">{{errors.length}}</span> à remplir</Alert>
+                    </p>     
               <form enctype="multipart/form-data">
                 <label>Marque</label>
                 <fg-input class="no-border" type="input" v-model="brand" required></fg-input>
@@ -140,7 +143,8 @@
         offersMap:'',
         offersValue: '',
         offersAll: [],
-        lengthVehicle: ''
+        lengthVehicle: '',
+        errors:[]
       }
     },
     mounted: function() {
@@ -159,6 +163,12 @@
     },
     methods: {
       updateVehicle: function (){
+        const form = this.checkForm();
+
+        if(form != true){
+          return e.preventDefault();            
+        }
+
         const imgFormData = new FormData;
          
         const instanceDate = new Date(this.datePurchase);
@@ -256,7 +266,50 @@
           console.log(this.offersMap)
         })
         .catch((err) => console.log(err))
-      }
+      },
+      checkForm: function (){
+                if(this.brand && this.model && this.serialNumber  && this.licensePlate && this.nbKm &&
+                this.datePurchase && this.price && this.available && this.offersValue && this.typeVehicle){
+                    return true
+                }
+                
+                this.errors =[]
+                
+                if(!this.brand){
+                    this.errors.push('La marque est obligatoire');
+                }
+
+                if(!this.model){
+                    this.errors.push('Le modèle est obligatoire');
+                }
+                if(!this.serialNumber){
+                    this.errors.push('Le numéro de série est obligatoire');
+                }
+                if(!this.licensePlate){
+                    this.errors.push('La plaque d\'immatriculation est obligatoire');
+                }
+                if(!this.nbKm){
+                    this.errors.push('Le nombre de km est obligatoire')
+                }
+                if(!this.datePurchase){
+                    this.errors.push('La date est obligatoire');
+                }
+                if(!this.price){
+                    this.errors.push('Le prix est obligatoire');
+                }
+                if(!this.available){
+                    this.errors.push('La validitée est obligatoire');
+                }
+                if(!this.offersValue){
+                    this.errors.push('L\'offre est obligatoire');
+                }
+                if(!this.typeVehicle){
+                    this.errors.push('Le type du véhicule est obligatoire');
+                }
+                console.log(this.errors)
+                return this.errors
+            }
+
     }
     
   }
