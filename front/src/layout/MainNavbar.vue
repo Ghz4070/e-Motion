@@ -85,6 +85,14 @@
                    Les utilisateurs
                 </nav-link>
             </drop-down>
+            <drop-down v-if="isLogged()==2" tag="li" title="Espace Proprio" icon="now-ui-icons users_circle-08" class="nav-item">
+                <nav-link to="/proprio/vehiclesbyproprio">
+                    Mes véhicules enregistrés
+                </nav-link>
+                <nav-link to="/proprio/offersbyproprio">
+                    Mes offres enregistrés
+                </nav-link>
+            </drop-down>
         </template>
     </navbar>
 </template>

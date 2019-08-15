@@ -46,8 +46,8 @@
             </td>
             <modal :show.sync="modals.classic" headerClasses="justify-content-center">
               <p v-if="errors.length">
-                       <Alert type="danger">Des champs non pas étaient remplis, il vous reste <span class="alert-link">{{errors.length}}</span> à remplir</Alert>
-                    </p>     
+                  <Alert type="danger">Des champs non pas étaient remplis, il vous reste <span class="alert-link">{{errors.length}}</span> à remplir</Alert>
+              </p>     
               <form enctype="multipart/form-data">
                 <label>Marque</label>
                 <fg-input class="no-border" type="input" v-model="brand" required></fg-input>
@@ -88,7 +88,9 @@
                   name="imgVehicle"
                   v-on:change="handleFileUpload"
                 />
+                <n-button v-on:click="checkForm">Check champs</n-button>
                 <n-button
+                  v-if="check != false"
                   type="success"
                   @click.native="modals.classic = false"
                   v-on:click="updateVehicle"
@@ -104,7 +106,7 @@
 
 <script>
   import axios from 'axios';
-  import {Button, Modal, FormGroupInput} from '@/components';
+  import {Button, Modal, FormGroupInput, Alert} from '@/components';
   import FormDataPost from '../../script/upload';
   import {DatePicker} from 'element-ui';
   import vSelect from 'vue-select';
@@ -114,6 +116,7 @@
     name: 'VehiclesListFromUser',
     components:{
       [Button.name]: Button,
+      [Alert.name]: Alert,
       [Modal.name]: Modal,
       [FormGroupInput.name]: FormGroupInput,
       [DatePicker.name]: DatePicker,
@@ -144,7 +147,8 @@
         offersValue: '',
         offersAll: [],
         lengthVehicle: '',
-        errors:[]
+        errors:[],
+        check: false
       }
     },
     mounted: function() {
@@ -206,19 +210,10 @@
            
                 axiosHeaders.patch('http://localhost:3000/api/v1/admin/vehicle/edit/'+this.idvehicle,imgFormData)
         .then((result) => {
-          console.log(result)
-          axios({
-            method: 'get',
-                        url:'http://localhost:3000/api/v1/admin/vehicle/vehicleByProprio',
-            headers: {'x-access-token': localStorage.getItem('x-access-token'), "Content-Type": "multipart/form-data" }
-            })
-          .then((results) => {
-            this.vehicles= results.data.result
-            console.log(results);
             this.imgVehicle = [];
+            location.reload(true);
           })
-          .catch((err) => console.log(err.message))
-          })
+          
         .catch((err) => console.log(err))
       },
       getVehicleById: function(id){
@@ -268,9 +263,10 @@
         .catch((err) => console.log(err))
       },
       checkForm: function (){
-                if(this.brand && this.model && this.serialNumber  && this.licensePlate && this.nbKm &&
+                if(this.brand && this.model && this.color && this.serialNumber  && this.licensePlate && this.nbKm &&
                 this.datePurchase && this.price && this.available && this.offersValue && this.typeVehicle){
-                    return true
+                    this.check=true;
+                    return true;
                 }
                 
                 this.errors =[]
@@ -278,7 +274,9 @@
                 if(!this.brand){
                     this.errors.push('La marque est obligatoire');
                 }
-
+                if(!this.color){
+                  this.errors.push('La couleur est obligatoire');
+                }
                 if(!this.model){
                     this.errors.push('Le modèle est obligatoire');
                 }
@@ -306,11 +304,12 @@
                 if(!this.typeVehicle){
                     this.errors.push('Le type du véhicule est obligatoire');
                 }
-                console.log(this.errors)
+                
+                this.check = false;
                 return this.errors
             }
-
-    }
+        }
+        
     
   }
 </script>
