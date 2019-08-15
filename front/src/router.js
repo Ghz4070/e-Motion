@@ -265,8 +265,12 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
     var token = jwt.decode(localStorage.getItem("x-access-token"));
+    var role = (jwt.decode(localStorage.getItem("x-access-token"))) ? (jwt.decode(localStorage.getItem("x-access-token")).role) : []
 
-    if ((to.fullPath).includes('admin') || (to.fullPath==='/profile') || (to.fullPath==='/historic') || (to.fullPath).includes('proprio')) {
+    /**
+     * REDIRECTION IF NOT LOGGED
+     */
+    if ((to.fullPath).includes('admin') || to.fullPath.includes('/profile') || to.fullPath.includes('/historic') || to.fullPath.includes('/proprio')) {
       if (!token) {
         next('/error');
       }
@@ -275,6 +279,15 @@ router.beforeEach((to, from, next) => {
         next('/error');
       }
     }
+
+    /**
+     * REDIRECTION IF HAVENT LEVEL
+     */
+    if(((to.fullPath).includes('admin') && !role.includes('ROLE_ADMIN')) || ((to.fullPath).includes('proprio') && !role.includes('ROLE_PROPRIO')) ) {
+        next('/');
+    }
+
+    
     next();
   });
 
