@@ -22,7 +22,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="vehicle in vehicles">
+          <tr v-for="vehicle in vehicles" :key="vehicle.idvehicle">
             <td>{{vehicle.idvehicle}}</td>
             <td>{{vehicle.brand}}</td>
             <td>{{vehicle.model}}</td>
@@ -246,6 +246,7 @@
           })
       },
       handleFileUpload: function(){
+        console.log(this.$refs.imgVehicle[this.lengthVehicle].files)
         this.imgVehicle = this.$refs.imgVehicle[this.lengthVehicle].files
       },
       allOffers: function(){
