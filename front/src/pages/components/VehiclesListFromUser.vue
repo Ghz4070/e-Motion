@@ -246,10 +246,8 @@
           })
       },
       handleFileUpload: function(){
-<<<<<<< HEAD
-=======
+
         console.log(this.$refs.imgVehicle[this.lengthVehicle].files)
->>>>>>> bc73640ccdadea5be6c9c8a7191ee1ceb12e7f8b
         this.imgVehicle = this.$refs.imgVehicle[this.lengthVehicle].files
       },
       allOffers: function(){
