@@ -22,7 +22,13 @@
     <div class="section section-team text-center">
       <div class="container">
         <h2 class="title">Récapitulatif de nos offres</h2>
-        <tabs type="primary" tabContentClasses="tab-subcategories" square centered class="row layout">
+        <tabs
+          type="primary"
+          tabContentClasses="tab-subcategories"
+          square
+          centered
+          class="row layout"
+        >
           <tab-pane v-for="offer in offers" :key="offer.ifoffers">
             <span slot="label">
               <i class="now-ui-icons objects_umbrella-13"></i>
@@ -50,15 +56,14 @@
           </tab-pane>
         </tabs>
         <div class="info">
-          <alert type="info">
-            {{ info.username }}, Vous disposez de {{ info.pointFidelity }} points de fidélité à utiliser dès aujourd'hui.
-            </alert>
+          <alert
+            type="info"
+          >{{ info.username }}, Vous disposez de {{ info.pointFidelity }} points de fidélité à utiliser dès aujourd'hui.</alert>
         </div>
       </div>
     </div>
     <div class="section section-contact-us text-center">
-      <div>
-      </div>
+      <div></div>
       <div class="container">
         <h2 class="title">Choisisez l'offres et le véhicule</h2>
         <p class="description">Location Car Concept.</p>
@@ -84,7 +89,7 @@
             </fg-input>
             <br />
             <label>Point de fidélité à utiliser</label>
-            <v-select  v-model="pointFidelityUsed" :options="pointTab"></v-select>
+            <v-select v-model="pointFidelityUsed" :options="pointTab"></v-select>
             <br />
             <label>Choix de l'offre</label>
             <v-select
@@ -105,9 +110,26 @@
             ></v-select>
             <br />
             <div v-if="price && listVehicule.length>0">
-            Le prix final est de : <b>{{ price }}</b> €.
+              Le prix final est de :
+              <b>{{ price }}</b> €.
             </div>
             <br />
+            <div v-on:click="cancel" v-if="alert==true" class="alert">
+              <alert type="danger" dismissible>
+                <div class="alert-icon">
+                  <i class="now-ui-icons travel_info"></i>
+                </div>
+                <strong>Attention!</strong> Vous avez oublier de compléter un champs.
+              </alert>
+            </div>
+            <div v-if="locationSuccess==true" class="alert">
+              <alert type="success" dismissible>
+                <div class="alert-icon">
+                  <i class="now-ui-icons travel_info"></i>
+                </div>
+                <strong>Location réaliser avec succès!</strong> Votre demande de location à bien été pris en compte.
+              </alert>
+            </div>
             <div class="send-button">
               <n-button
                 v-on:click="setLocation"
@@ -124,7 +146,14 @@
   </div>
 </template>
 <script>
-import { Button, FormGroupInput, Tabs, TabPane, Card, Alert } from "@/components";
+import {
+  Button,
+  FormGroupInput,
+  Tabs,
+  TabPane,
+  Card,
+  Alert
+} from "@/components";
 import { DatePicker } from "element-ui";
 import axios from "axios";
 import vSelect from "vue-select";
@@ -154,12 +183,18 @@ export default {
       listOffer: [],
       listVehicule: [],
       offers: "",
-      price :'',
-      info:'',
-      pointTab:[]
+      price: "",
+      info: "",
+      pointTab: [],
+      alert: false,
+      locationSuccess: false,
     };
   },
   methods: {
+    cancel: function() {
+      this.alert = false,
+      this.locationSuccess = false
+    },
     getListOffer: function() {
       axios({
         url: "http://localhost:3000/api/v1/offer",
@@ -170,6 +205,7 @@ export default {
       }).then(response => (this.offers = response.data.result));
     },
     setLocation: function() {
+      if(this.startDate && this.endDate && this.pointFidelityUsed && this.offers_idoffers && this.vehicle_idvehicle) {
       const convertDatepicker1 = this.startDate.toISOString();
       const datePickerLessT1 = convertDatepicker1.replace("T", " ");
       const finalDate1 = datePickerLessT1.replace("Z", "");
@@ -180,7 +216,10 @@ export default {
 
       axios
         .post(
-          "http://localhost:3000/api/v1/location/add?pointFidelity="+this.pointFidelityUsed+"&price="+this.price,
+          "http://localhost:3000/api/v1/location/add?pointFidelity=" +
+            this.pointFidelityUsed +
+            "&price=" +
+            this.price,
           {
             startDate: finalDate1,
             endDate: finalDate2,
@@ -198,6 +237,7 @@ export default {
         )
         .then(result => {
           console.log(result);
+          this.locationSuccess = true;
           if (result.data.status == "success") {
             setTimeout(() => {
               this.$router.push("/");
@@ -205,6 +245,10 @@ export default {
           }
         })
         .catch(err => console.log(err));
+      }
+      else {
+        this.alert = true;
+      }
     },
     getOffer: function() {
       axios
@@ -222,7 +266,7 @@ export default {
         .catch(error => console.log(error));
     },
     getVehicule: function() {
-      this.getPriceoffer()
+      this.getPriceoffer();
       this.listVehicule = [];
       axios
         .get(
@@ -244,15 +288,15 @@ export default {
     },
     getPriceoffer: function() {
       axios({
-        url: "http://localhost:3000/api/v1/offer/"+this.offers_idoffers,
+        url: "http://localhost:3000/api/v1/offer/" + this.offers_idoffers,
         method: "get",
         headers: {
           "Content-Type": "application/json",
           "x-access-token": localStorage.getItem("x-access-token")
         }
       }).then(response => {
-        if(this.listVehicule.length>0) {
-        this.price = response.data.result[0].price
+        if (this.listVehicule.length > 0) {
+          this.price = response.data.result[0].price;
         }
         console.log(response);
       });
@@ -267,12 +311,12 @@ export default {
         }
       }).then(response => {
         this.info = response.data.result[0];
-        this.setPoint()
+        this.setPoint();
       });
     },
     setPoint: function() {
-      for(var i = 0; i< this.info.pointFidelity; i+=100) {
-        this.pointTab.push(i)
+      for (var i = 0; i < this.info.pointFidelity; i += 100) {
+        this.pointTab.push(i);
       }
     }
   },
@@ -285,12 +329,12 @@ export default {
 </script>
 <style>
 .layout {
-  display:flex;
-  justify-content:center;
-  flex-direction:row
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
 }
 .info {
-  color: #9A9A9A;
+  color: #9a9a9a;
   font-size: large;
 }
 .section {
