@@ -241,7 +241,6 @@
           })
       },
       handleFileUpload: function(){
-
         console.log(this.$refs.imgVehicle[this.lengthVehicle].files)
         this.imgVehicle = this.$refs.imgVehicle[this.lengthVehicle].files
       },
