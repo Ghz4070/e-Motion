@@ -43,7 +43,6 @@
                             <li>Prix neuve : {{ vehicule.price }} €</li>
                         </ul>
                       </p>
-                      <n-button type="primary">Go somewhere</n-button>
                     </div>
                   </card>
                 </tab-pane>
@@ -68,7 +67,7 @@
                             <li>Prix neuve : {{ vehicule.price }} €</li>
                         </ul>
                       </p>
-                      <n-button type="primary">Go somewhere</n-button>
+                      
                     </div>
                   </card>
                 </tab-pane>
@@ -154,4 +153,11 @@ export default {
   }
 };
 </script>
-<style></style>
+<style>
+.card-img-top {
+    width: 500px;
+    border-top-left-radius: calc(0.25rem - 1px);
+    border-top-right-radius: calc(0.25rem - 1px);
+    height: 200px;
+}
+</style>
