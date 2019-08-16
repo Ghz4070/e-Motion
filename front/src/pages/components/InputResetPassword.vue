@@ -2,10 +2,10 @@
     <div class="page-header clear-filter" filter-color="orange">
         <div class="container">
             <p v-if="error == false">
-                  <Alert type="danger">Veuillez renseigner les mots de passes</Alert>
+                  <Alert type="danger">Les mots de passes sont incorrectes ou pas renseignés </Alert>
             </p>
             <p v-else-if="error == true">
-                <Alert type="success">Un mail vous a été envoyé pour réinistiallisé votre mot de passe</Alert>
+                <Alert type="success">Félication vous avez réinistiallisé votre mot de passe, un mail sera envoyé pour le confirmer</Alert>
             </p>
             <fg-input
                 class="no-border input-lg"
@@ -60,7 +60,10 @@ import { setTimeout } from 'timers';
                         }})
                     .then((result)=> {
                         this.error = true;
-                        
+                        console.log(result)
+                        setTimeout(()=> {
+                            this.$router.push('/');
+                        }, 3000)  
                     })
                     .catch((err)=>console.log(err))
                 }else{
