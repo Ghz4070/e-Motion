@@ -101,28 +101,27 @@ export function addVehicles() { //
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
 
         if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
-
-            let brand = req.body.brand;
-            let model = req.body.model;
-            let serialNumber = req.body.serialNumber;
-            let color = req.body.color;
-            let licensePlate = req.body.licensePlate;
-            let nbKm = req.body.nbKm;
-            let datePurchase = req.body.datePurchase;
-            let price = req.body.price;
-            let available = req.body.available;
-            let imgVehicle = req.body.imgVehicle;
-            let typeVehicle = req.body.typeVehicle;
-            let offers_idoffers = req.body.offers_idoffers;
-
-            req.sql.query("INSERT INTO vehicle (brand, model, serialNumber, color, licensePlate, nbKm, " +
-                "datePurchase, price, available, imgVehicle, typeVehicle, offers_idoffers) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
-                , [brand, model, serialNumber, color, licensePlate, nbKm, datePurchase, price, available, imgVehicle, typeVehicle, offers_idoffers])
-                .then((result) => {
-                    res.json(success(result))
-                })
-                .catch((err) => res.json(error(err.message)));
-        } else {
+            
+            let img = req.files['imgVehicle'] ? req.files['imgVehicle'][0] : 'default.jpg';
+        
+            if(img){
+                if(img === 'default.jpg' || img.size <= 3000000 && img.mimetype == "image/jpeg" || img.mimetype == "image/png"){
+                    img = img != 'default.jpg' ?  req.files['imgVehicle'][0].originalname : 'default.jpg';
+                    req.sql.query("INSERT INTO vehicle (brand, model, serialNumber, color, licensePlate, nbKm, " +
+                        "datePurchase, price, available, imgVehicle, typeVehicle, offers_idoffers) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+                        , [req.body.brand, req.body.model, req.body.serialNumber, req.body.color, req.body.licensePlate, req.body.nbKm, 
+                            req.body.datePurchase, req.body.price, req.body.available, img, req.body.typeVehicle, req.body.offers_idoffers])
+                        .then((result) => {
+                            res.json(success(result))
+                        })
+                        .catch((err) => res.json(error(err.message)));
+                }else{
+                    res.json(error(new Error('Error size or format').message))
+                }
+            } else{
+                res.json(error(new Error('no img').message))
+            }
+        }else {
             res.json(error(new Error("Can't not use this method").message));
         }
     }

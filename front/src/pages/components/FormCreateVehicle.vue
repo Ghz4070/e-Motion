@@ -9,6 +9,12 @@
                     <template slot="header">
                         <h3 class="card-title title-up">formulaire vehicule</h3>
                     </template>
+                    <p v-if="errors.length">
+                        <Alert type="danger">Des champs non pas étaient remplis, il vous reste <span class="alert-link">{{errors.length}}</span> à remplir</Alert>
+                    </p>
+                    <p v-if="status">
+                        <alert type="success">Le véhicule a été ajouté avec succès, vous allez être redirectionné vers les véhicules</alert>
+                    </p>
                     <template>
 
                         <fg-input
@@ -75,13 +81,10 @@
                         <n-radio inline class="mb-3" v-model="typeVehicule" label="voiture">Voiture</n-radio>
                         <n-radio inline class="mb-3" v-model="typeVehicule" label="scooter">Scooter</n-radio>
 
-                        <v-select :options="options" v-model="selected"
-                                  :reduce="titleOffers => titleOffers.idOffers"
-                                  label="titleOffers">
-
+                        <v-select :options="offersAll" v-model="offerValue" label="titleOffers">
                         </v-select>
 
-                        <input class="mt-3" type="file"></input>
+                        <input class="mt-3" ref="imgVehicle" id="imgVehicle" name="imgVehicle" v-on:change="handleFileUpload" type="file">
 
                     </template>
                     <div class="card-footer text-center">
@@ -93,10 +96,10 @@
     </div>
 </template>
 <script>
-    import {Card, FormGroupInput, Button, Radio} from '@/components';
+    import {Card, FormGroupInput, Button, Radio, Alert} from '@/components';
     import {DatePicker} from 'element-ui';
     import axios from 'axios';
-
+    
     import vSelect from 'vue-select';
     import 'vue-select/dist/vue-select.css';
 
@@ -107,12 +110,13 @@
             vSelect,
             [DatePicker.name]: DatePicker,
             [Button.name]: Button,
+            Alert,
             [FormGroupInput.name]: FormGroupInput,
             [Radio.name]: Radio,
         },
         data() {
             return {
-                img: 'default.jpg',
+                imgVehicle: '',
                 typeVehicule: '',
                 datePurchase: '',
                 price: '',
@@ -122,60 +126,133 @@
                 numerSerie: '',
                 model: '',
                 brand: '',
-                selected: null,
-                options: [],
-                titleOffers: '',
+                offerValue: '',
+                offersAll: [],
+                offersMap: '',
                 idOffers: '',
+                errors: [],
+                status: false,
             }
         },
         methods: {
-            createVehicle: function () {
+            createVehicle: function (e) {
+                const form = this.checkForm();
+
+                if(form != true){
+                    return e.preventDefault();            
+                }
+                       
                 const convertDatepicker = this.datePurchase.toISOString();
                 const datePickerLessT = convertDatepicker.replace('T', ' ');
                 const finalDate = datePickerLessT.replace('Z', '');
+                this.datePurchase = finalDate;
 
-                axios({
-                    url: 'http://localhost:3000/api/v1/admin/vehicle/add',
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-access-token': localStorage.getItem('x-access-token')
-                    },
-                    data: {
-                        imgVehicle: this.img,
-                        typeVehicle: this.typeVehicule,
-                        available: '1', //true
-                        datePurchase: finalDate,
-                        price: this.price,
-                        nbKm: this.nbKm,
-                        licensePlate: this.licensePlate,
-                        color: this.color,
-                        serialNumber: this.numerSerie,
-                        model: this.model,
-                        brand: this.brand,
-                        offers_idoffers: this.selected,
+                for(const [keyOffer, valueOffer] of this.offersMap.entries()){
+                    if(valueOffer == this.offerValue){
+                        this.idOffers = keyOffer;
                     }
+                }
+
+                const axiosHeaders = axios.create({
+                    headers: {'x-access-token': localStorage.getItem('x-access-token'), "Content-Type": "multipart/form-data"}
+                });
+
+                const imgFormData = new FormData;
+
+                imgFormData.append('imgVehicle', this.imgVehicle[0]);
+                imgFormData.append('typeVehicle', this.typeVehicule);
+                imgFormData.append('available', 1);
+                imgFormData.append('datePurchase', this.datePurchase);
+                imgFormData.append('price', this.price);
+                imgFormData.append('nbKm', this.nbKm);
+                imgFormData.append('licensePlate', this.licensePlate);
+                imgFormData.append('color', this.color);
+                imgFormData.append('serialNumber', this.numerSerie);
+                imgFormData.append('model', this.model);
+                imgFormData.append('brand',this.brand);
+                imgFormData.append('offers_idoffers', this.idOffers);
+
+                axiosHeaders.post('http://localhost:3000/api/v1/admin/vehicle/add', imgFormData)
+                .then((result) => {
+                    this.status = true;
+                    setTimeout(()=> {
+                        this.$router.push('/vehicule');
+                    }, 3000);
+                    console.log(result)
                 })
-                    .then((response) => {
-                        console.log(response)
-                    })
+                .catch((err) => console.log(err))
             },
-                    previousPage: function() {
-                        this.$router.go(-1)
-                    }
+            previousPage: function() {
+                this.$router.go(-1)
+            },
+            handleFileUpload: function(){
+                if(this.$refs.imgVehicle.files[0].size <= 3000000 && 
+                this.$refs.imgVehicle.files[0].type == 'image/png' ||
+                this.$refs.imgVehicle.files[0].type == 'image/jpeg' 
+                ){
+                    this.imgVehicle = this.$refs.imgVehicle.files
+                }else{
+                    alert('bad format or size');
+                    this.imgVehicle = false
+                }
+            },
+            checkForm: function (){
+                if(this.brand && this.model && this.color && this.numerSerie  && this.licensePlate && this.nbKm &&
+                this.datePurchase && this.price && this.offerValue && this.typeVehicule){
+                    this.check=true;
+                    return true;
+                }
+                
+                this.errors =[]
+                
+                if(!this.brand){
+                    this.errors.push('La marque est obligatoire');
+                }
+                if(!this.color){
+                  this.errors.push('La couleur est obligatoire');
+                }
+                if(!this.model){
+                    this.errors.push('Le modèle est obligatoire');
+                }
+                if(!this.numerSerie){
+                    this.errors.push('Le numéro de série est obligatoire');
+                }
+                if(!this.licensePlate){
+                    this.errors.push('La plaque d\'immatriculation est obligatoire');
+                }
+                if(!this.nbKm){
+                    this.errors.push('Le nombre de km est obligatoire')
+                }
+                if(!this.datePurchase){
+                    this.errors.push('La date est obligatoire');
+                }
+                if(!this.price){
+                    this.errors.push('Le prix est obligatoire');
+                }
+                if(!this.offerValue){
+                    this.errors.push('L\'offre est obligatoire');
+                }
+                if(!this.typeVehicule){
+                    this.errors.push('Le type du véhicule est obligatoire');
+                }
+                
+                return this.errors
+            }
         },
         mounted() {
             axios
                 .get('http://localhost:3000/api/v1/offer') //recup all offers
                 .then(response => {
-                    for (let i in response.data.result) {
-                        this.idOffers = response.data.result[i].idoffers;
-                        this.titleOffers = response.data.result[i].title;
-                        this.options.push({
-                            'idOffers': this.idOffers,
-                            'titleOffers': this.titleOffers,
-                        });
+                    const arrayTitlesOffers = [];
+                    const mapOffers= new Map();
+
+                    for(let result of response.data.result){
+                        arrayTitlesOffers.push(result.title);
+                        mapOffers.set(result.idoffers, result.title);
                     }
+
+                    this.offersMap = mapOffers;
+                    this.offersAll = arrayTitlesOffers;
                 })
                 .catch(error => console.log(error))
         }

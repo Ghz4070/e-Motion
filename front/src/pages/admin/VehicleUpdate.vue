@@ -159,7 +159,7 @@ export default {
           console.log(result)
           axios({
             method: 'get',
-                        url:'http://localhost:3000/api/v1/admin/vehicle/vehicleByProprio',
+            url:'http://localhost:3000/api/v1/admin/vehicle/vehicleByProprio',
             headers: {'x-access-token': localStorage.getItem('x-access-token'), "Content-Type": "multipart/form-data" }
             })
           .then((results) => {
@@ -170,44 +170,18 @@ export default {
           .catch((err) => console.log(err.message))
           })
         .catch((err) => console.log(err))
-
-      /* axios
-        .patch(
-          "http://localhost:3000/api/v1/admin/vehicle/edit/" + idVehicle,
-          {
-            brand: this.brand,
-            model: this.model,
-            serialNumber: this.serialNumber,
-            color: this.color,
-            licensePlate: this.licensePlate,
-            nbKm: this.nbKm,
-            offers_idoffers: this.offers_idoffers,
-            datePurchase: finalDate1,
-            price: this.price,
-            available: this.available,
-            typeVehicle: this.typeVehicle,
-            imgVehicle: this.imgVehicle[0],
-            createdBy: this.createdBy
-          },
-          {
-            headers: {
-              "x-access-token": localStorage.getItem("x-access-token")
-            }
-          }
-        )
-        .then(result => {
-          console.log(result);
-          if (result.data.status == "success") {
-            this.$router.push("/admin/vehicles");
-          }
-          this.imgVehicle = [];
-        })
-        .catch(err => console.log(err)); */
     },
     handleFileUpload: function(){
-        console.log(this.$refs.imgVehicle.files)
-        this.imgVehicle = this.$refs.imgVehicle.files
+      if(this.$refs.imgVehicle.files[0].size <= 3000000 && 
+      this.$refs.imgVehicle.files[0].type == 'image/png' ||
+      this.$refs.imgVehicle.files[0].type == 'image/jpeg' 
+      ){
+          this.imgVehicle = this.$refs.imgVehicle.files
+      }else{
+        alert('bad format or size');
+        this.imgVehicle = false
       }
+    }
   }
 };
 </script>

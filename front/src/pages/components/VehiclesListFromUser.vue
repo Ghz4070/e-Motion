@@ -50,35 +50,36 @@
               </p>     
               <form enctype="multipart/form-data">
                 <label>Marque</label>
-                <fg-input class="no-border" type="input" v-model="brand" required></fg-input>
+                <fg-input class="no-border" type="input" v-on:change='onChange' v-model="brand" required></fg-input>
                 <label>Modèle</label>
-                <fg-input class="no-border" type="input" v-model="model" required></fg-input>
+                <fg-input class="no-border" type="input" v-on:change='onChange' v-model="model" required></fg-input>
                 <label>Numéro de série</label>
-                <fg-input class="no-border" type="input" v-model="serialNumber" required></fg-input>
+                <fg-input class="no-border" type="input" v-on:change='onChange' v-model="serialNumber" required></fg-input>
                 <label>Couleur</label>
-                <fg-input class="no-border" type="input" v-model="color" required></fg-input>
+                <fg-input class="no-border" type="input" v-on:change='onChange' v-model="color" required></fg-input>
                 <label>Plaque d'immatriculation</label>
-                <fg-input class="no-border" type="input" v-model="licensePlate" required></fg-input>
+                <fg-input class="no-border" type="input" v-on:change='onChange' v-model="licensePlate" required></fg-input>
                 <label>Nombre de km</label>
-                <fg-input class="no-border" type="input" v-model="nbKm" required></fg-input>
+                <fg-input class="no-border" type="input" v-on:change='onChange' v-model="nbKm" required></fg-input>
                 <label>Date d'achat</label>
                 <fg-input>
                   <el-date-picker
                     v-model="datePurchase"
                     popper-class="date-picker-primary"
                     type="date"
+                    v-on:change='onChange'
                     placeholder="Votre date de naissance"
                     required
                   ></el-date-picker>
                 </fg-input>
                 <label>Prix</label>
-                <fg-input class="no-border" type="input" v-model="price" required></fg-input>
+                <fg-input class="no-border" type="input" v-on:change='onChange' v-model="price" required></fg-input>
                 <label>Valide</label>
-                <v-select :options="yesOrNo" v-model="available" label="available"></v-select>
+                <v-select :options="yesOrNo" v-on:change='onChange' v-model="available" label="available"></v-select>
                 <label>Offre</label>
-                <v-select :options="offersAll" v-model="offersValue"></v-select>
+                <v-select :options="offersAll" v-on:change='onChange' v-model="offersValue"></v-select>
                 <label>Type de véhicule</label>
-                <v-select :options="motoOrVehicle" v-model="typeVehicle" label="available"></v-select>
+                <v-select :options="motoOrVehicle" v-on:change='onChange' v-model="typeVehicle" label="available"></v-select>
                 <label>Image</label>
                 <input
                   class="no-border"
@@ -116,7 +117,7 @@
     name: 'VehiclesListFromUser',
     components:{
       [Button.name]: Button,
-      [Alert.name]: Alert,
+      Alert,
       [Modal.name]: Modal,
       [FormGroupInput.name]: FormGroupInput,
       [DatePicker.name]: DatePicker,
@@ -154,19 +155,19 @@
     mounted: function() {
       axios({
         method: 'get',
-                url:'http://localhost:3000/api/v1/admin/vehicle/vehicleByProprio',
+        url:'http://localhost:3000/api/v1/admin/vehicle/vehicleByProprio',
         headers: {'x-access-token': localStorage.getItem('x-access-token'), "Content-Type": "application/x-www-form-urlencoded" }
       })
       .then((result) => {
         this.vehicles= result.data.result,
         this.lengthVehicle = (result.data.result.length)-1
         console.log(result);
-        this.allOffers()
+        this.allOffers();
       })
       .catch((err) => console.log(err.message))  
     },
     methods: {
-      updateVehicle: function (){
+      updateVehicle: function (e){
         const form = this.checkForm();
 
         if(form != true){
@@ -175,17 +176,17 @@
 
         const imgFormData = new FormData;
          
-        const instanceDate = new Date(this.datePurchase);
+        const instanceDate = new  Date(this.datePurchase);
         const convertDatepicker = instanceDate.toISOString();
         const datePickerLessT = convertDatepicker.replace('T', ' ');
         const finalDate = datePickerLessT.replace('Z', '');
-        this.datePurchase = finalDate
+        this.datePurchase = finalDate;
          
         this.available = this.available == "Oui" ? 1 : 0
 
         for(const [keyOffers, valueOffer] of this.offersMap.entries()){
           if(valueOffer == this.offersValue){
-            this.idoffers = keyOffers
+            this.idoffers = keyOffers;
           }
         }
 
@@ -195,20 +196,20 @@
             headers: {'x-access-token': localStorage.getItem('x-access-token'), "Content-Type": "multipart/form-data"}
         })
 
-        imgFormData.append('imgVehicle', this.imgVehicle[0])
-        imgFormData.append('brand', this.brand)
-        imgFormData.append('model', this.model)
-        imgFormData.append('serialNumber', this.serialNumber)
-        imgFormData.append('color', this.color)
-        imgFormData.append('licensePlate', this.licensePlate)
-        imgFormData.append('nbKm', this.nbKm)
-        imgFormData.append('datePurchase', this.datePurchase)
-        imgFormData.append('price', this.price)
-        imgFormData.append('available', this.available)
-        imgFormData.append('offers_idoffers', this.idoffers)
-        imgFormData.append('typeVehicle', this.typeVehicle)
+        imgFormData.append('imgVehicle', this.imgVehicle[0]);
+        imgFormData.append('brand', this.brand);
+        imgFormData.append('model', this.model);
+        imgFormData.append('serialNumber', this.serialNumber);
+        imgFormData.append('color', this.color);
+        imgFormData.append('licensePlate', this.licensePlate);
+        imgFormData.append('nbKm', this.nbKm);
+        imgFormData.append('datePurchase', this.datePurchase);
+        imgFormData.append('price', this.price);
+        imgFormData.append('available', this.available);
+        imgFormData.append('offers_idoffers', this.idoffers);
+        imgFormData.append('typeVehicle', this.typeVehicle);
            
-                axiosHeaders.patch('http://localhost:3000/api/v1/admin/vehicle/edit/'+this.idvehicle,imgFormData)
+        axiosHeaders.patch('http://localhost:3000/api/v1/admin/vehicle/edit/'+this.idvehicle,imgFormData)
         .then((result) => {
             this.imgVehicle = [];
             location.reload(true);
@@ -242,7 +243,16 @@
       },
       handleFileUpload: function(){
         console.log(this.$refs.imgVehicle[this.lengthVehicle].files)
-        this.imgVehicle = this.$refs.imgVehicle[this.lengthVehicle].files
+        if(this.$refs.imgVehicle[this.lengthVehicle].files[0].size <= 3000000 && 
+        this.$refs.imgVehicle[this.lengthVehicle].files[0].type == 'image/png' ||
+        this.$refs.imgVehicle[this.lengthVehicle].files[0].type == 'image/jpeg' 
+        ){
+          this.imgVehicle = this.$refs.imgVehicle[this.lengthVehicle].files
+        }else{
+          alert('bad format or size');
+          this.imgVehicle = false
+        }
+        
       },
       allOffers: function(){
                 axios.get('http://localhost:3000/api/v1/offer')
@@ -307,8 +317,11 @@
                 
                 this.check = false;
                 return this.errors
-            }
-        }
+            },
+      onChange: function(){
+        this.check=false;
+      }
+    }
         
     
   }

@@ -14,7 +14,8 @@ import ListOffers from './pages/ListOffers.vue';
 import UpdateProfile from './pages/UpdateProfile.vue';
 import Logout from './pages/Logout.vue';
 import Historic from './pages/Historic.vue';
-
+import forgotPassword from './pages/forgotPassword.vue';
+import ResetPassword from './pages/ResetPassword.vue';
 import OffersCreatedByProprio from './pages/OffersCreatedByProprio.vue';
 import VehiclesCreatedByProprio from './pages/VehiclesCreatedByProprio.vue';
 import HomeAdmin from './pages/admin/Home.vue';
@@ -30,6 +31,7 @@ import UserUpdate from './pages/admin/UserUpdate.vue';
 
 import jwt from 'jsonwebtoken';
 import dontLogin from './layout/dontLogin.vue';
+
 
 Vue.use(Router);
 
@@ -250,9 +252,25 @@ const router = new Router({
             }
         },
         {
+            path: '/forgotPassword',
+            name: 'forgotPassword',
+            components: { default: forgotPassword, header: MainNavbar, footer: MainFooter },
+            props: {
+                header: { colorOnScroll: 400 }
+            }
+        },
+        {
+            path: '/reset_password',
+            name: 'resetPassword',
+            components: { default: ResetPassword, header: MainNavbar, footer: MainFooter },
+            props: {
+                header: { colorOnScroll: 400 }
+            }
+        },
+        {
             path: '*',
             redirect: '/'
-          }
+        }
     ],
     scrollBehavior: to => {
         if (to.hash) {
