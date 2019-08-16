@@ -297,7 +297,7 @@ export function forgotPassword() {
                                     subject: 'Réinistialisation du mot de passe',
                                     context: {
 
-                                        url: 'http://localhost:3000/api/v1/user/reset_password?token=' + token,
+                                        url: 'http://localhost:8080/reset_password?token=' + token,
                                         name: resultSelect[0].firstname
                                     }
                                 }

@@ -45,7 +45,7 @@
               </div>
               <div class="pull-right">
                 <h6>
-                  <a href="#pablo" class="link footer-link">Need Help?</a>
+                  <a href="/forgotPassword" class="link footer-link">Mot de passe oublié ?</a>
                 </h6>
               </div>
             </template>

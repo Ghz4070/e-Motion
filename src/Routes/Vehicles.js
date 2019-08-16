@@ -15,7 +15,7 @@ import {
 import express from 'express';
 import {checkToken} from './../middleware'
 import multer from 'multer';
-
+import path from 'path';
 export const adminRouteVehicles = express.Router();
 export const anonymeRouteVehicles = express.Router();
 
@@ -33,7 +33,18 @@ const storage = multer.diskStorage({
     },
     
 });
-const upload = multer({storage}).fields([
+const upload = multer({
+    storage, 
+    fileFilter: function (req, file, callback) {
+        const ext = path.extname(file.originalname);
+        if(ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
+            return callback(new Error('Only images are allowed'));
+        }
+        callback(null, true)
+    }, limits:{
+        fileSize: 2048*2048
+    } 
+    }).fields([
     {name:'imgVehicle', maxCount:1}, 
     {name:'brand', maxCount:1},
     {name:'model', maxCount:1},
@@ -63,7 +74,7 @@ anonymeRouteVehicles.route('/bookACar/:id')
 anonymeRouteVehicles.route('/available/:id')
     .get(db,getVehicleByOffer());
 adminRouteVehicles.route('/add')
-    .post(checkToken,db,addVehicles());
+    .post(checkToken,db,upload,addVehicles());
 adminRouteVehicles.route('/edit/:id')
     .patch(checkToken,db, upload,editVehicles());
 
