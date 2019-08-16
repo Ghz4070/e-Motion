@@ -20,13 +20,13 @@ const db = (req, res, next) => {
 
 
 anonymeRouteLocations.route('/add')
-    .post(db, checkToken, addLocation());
+    .post(db, checkToken, addLocation())
 adminRouteLocations.route('/all')
     .get(db, checkToken, allLocations());
 adminRouteLocations.route('/:id')
     .get(db, checkToken, getOneLocation())
     .patch(db, checkToken, updateLocation())
     .delete(db, checkToken, removeLocation());
-adminRouteLocations.route('/cancel')
+anonymeRouteLocations.route('/cancel')
     .patch(db, checkToken, setStatus())
     
