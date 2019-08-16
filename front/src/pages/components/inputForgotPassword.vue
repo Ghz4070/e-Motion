@@ -2,10 +2,10 @@
     <div class="page-header clear-filter" filter-color="orange">
         <div class="container">
             <p v-if="error == false">
-                  <Alert type="danger">Veuillez renseigner l'adresse mail</Alert>
+                  <Alert type="danger">Vous avez oublié de renseigner l'adresse mail ou elle est inexistante</Alert>
             </p>
             <p v-if="success == true">
-                <Alert type="success">Un mail vous a été envoyé pour réinistiallisé votre mot de passe</Alert>
+                <Alert type="success">Un mail vous a été envoyé pour réinistiallisé votre mot de passe, vous allez être redirectionné dans 3sec</Alert>
             </p>
             <fg-input
                 class="no-border input-lg"
@@ -22,6 +22,7 @@
 <script>
     import axios from 'axios';
     import { Button, FormGroupInput, Alert } from '@/components';
+    import {setTimeout}from 'timers';
 
     export default {
         name: 'inputForgotPassword',
@@ -34,21 +35,30 @@
            return {
                email:'',
                error:'oui',
-               success:'oui'
+               success:''
            }
         },
         methods:{
             resetPasswordMail: function(){
-                if(this.email){
+                if(this.email != ''){
                     axios.get('http://localhost:3000/api/v1/user/forgot_password?email='+this.email)
                     .then((result)=>{
-                        console.log(email)
-                        
-                        this.error= 'oui';
-                        this.success = true;
-                    
+                        if(result.data.status == "success"){
+                            this.error= 'oui';
+                            this.success = true;
+                            setTimeout(() => {
+                                this.$router.push('/');
+                            },3000)
+                        }else{
+                            this.error= false;
+                            this.success = 'oui';
+                        }
+                        console.log(result);                    
                     })
-                    .catch((err) => {this.error = false; this.success ='oui';})
+                    .catch((err) => {
+                        this.error = false; this.success ='oui';
+                        console.log(err)
+                    })
                 }else{
                     this.error = false;
                     this.success = 'oui';
