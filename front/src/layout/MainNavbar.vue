@@ -95,6 +95,9 @@
                 <nav-link to="/proprio/createvehicle">
                     Ajouter un véhicule
                 </nav-link>
+                <nav-link to="/proprio/createoffer">
+                    Ajouter une nouvelle offre
+                </nav-link>
             </drop-down>
         </template>
     </navbar>

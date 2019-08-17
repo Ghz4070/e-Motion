@@ -10,6 +10,11 @@
     <div class="section">
       <div class="container">
         <h3 class="title">Liste des offres</h3>
+        <router-link to='/admin/createoffer' class="text-left"> 
+        <n-button type="default">
+     Ajouter une nouvelle offre
+          </n-button>
+        </router-link>
         <hr />
         <div>
           <div>
@@ -57,7 +62,7 @@
                       </b>
                     </a>
                   </router-link>
-                  <a class="dropdown-item" href="#" v-on:click="hiddeOffer(offer.idoffers)">
+                  <a class="dropdown-item" v-on:click="hiddeOffer(offer.idoffers)">
                     <b>
                       <i class="now-ui-icons design-2_ruler-pencil"></i> Changer visibilité
                     </b>
@@ -166,6 +171,7 @@ export default {
         }
       }).then(response => {
         console.log(response);
+        this.requestInfo();
       });
     }
   }

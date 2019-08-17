@@ -63,17 +63,26 @@ export function getOfferById() {
 export function postOffer() {
     return (req, res) => {
         const decodeTokenRole = JSON.parse(jwt.decode(req.headers['x-access-token']).role).role;
+        const decodeTokenUsername = jwt.decode(req.headers['x-access-token']);
 
-        if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
-            req.sql.query('INSERT INTO offers (title, price, description, penality, nbKm, pointFidelityOffers) VALUES (?,?,?,?,?,?)',
-                [req.body.title, req.body.price, req.body.description, req.body.penality, req.body.nbKm, req.body.pointFidelityOffers])
-                .then((result) => {
-                    res.json(success(result));
-                })
-                .catch((err) => res.json(error(err.message)))
-        } else {
-            res.json(error(new Error("Can't not use this method").message));
-        }
+
+        req.sql.query('SELECT idusers FROM users WHERE username = ?', [decodeTokenUsername.username])
+            .then((resultSelect) => {
+                if (decodeTokenRole.indexOf('ROLE_ADMIN') !== -1 || decodeTokenRole.indexOf('ROLE_POPRIO') !== -1) {
+                    req.sql.query('INSERT INTO offers (title, price, description, penality, nbKm, pointFidelityOffers, hiddenOffers, createdBy) VALUES (?,?,?,?,?,?,?,?)',
+                        [req.body.title, req.body.price, req.body.description, req.body.penality, req.body.nbKm, req.body.pointFidelityOffers, req.body.hiddenOffers ,resultSelect[0].idusers])
+                        .then((result) => {
+                            res.json(success(result));
+                        })
+                        .catch((err) => res.json(error(err.message)))
+                } else {
+                    res.json(error(new Error("Can't not use this method").message));
+                }
+            })
+
+
+
+        
     }
 }
 
