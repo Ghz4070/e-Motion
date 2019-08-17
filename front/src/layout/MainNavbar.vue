@@ -92,6 +92,9 @@
                 <nav-link to="/proprio/offersbyproprio">
                     Mes offres enregistrés
                 </nav-link>
+                <nav-link to="/proprio/createvehicle">
+                    Ajouter un véhicule
+                </nav-link>
             </drop-down>
         </template>
     </navbar>
