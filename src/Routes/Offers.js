@@ -34,7 +34,7 @@ adminRouteOffers.route('/:id')
 adminRouteOffers.route('/offersByProprio')
     .get(db, checkToken, getOfferByPropio());
 adminRouteOffers.route('/available')
-    .get(db, checkToken, getAllOffersAvailable());
+    .get(db, getAllOffersAvailable());
 adminRouteOffers.route('/cancel')
     .post(db, checkToken, setHiddenOffers());
 

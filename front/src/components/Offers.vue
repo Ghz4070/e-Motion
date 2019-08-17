@@ -50,7 +50,7 @@ export default {
   },
   mounted() {
     axios({
-      url: "http://localhost:3000/api/v1/offer",
+      url: "http://localhost:3000/api/v1/admin/offer/available",
       method: "get",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
