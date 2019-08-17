@@ -23,6 +23,7 @@ import VehicleAdmin from './pages/admin/Vehicle.vue';
 import OfferAdmin from './pages/admin/Offer.vue';
 import UserAdmin from './pages/admin/User.vue';
 import LocationAdmin from './pages/admin/Location.vue';
+import OfferCreate from './pages/admin/OfferCreate';
 
 import OfferUpdate from './pages/admin/OfferUpdate.vue';
 import LocationUpdate from './pages/admin/LocationUpdate.vue';
@@ -78,6 +79,16 @@ const router = new Router({
             alias: '/proprio/createvehicle',
             name: 'createVehicle',
             components: { default: CreateVehicle, header: MainNavbar, footer: MainFooter },
+            props: {
+                header: { colorOnScroll: 400 },
+                footer: { backgroundColor: 'black' }
+            }
+        },
+        {
+            path: '/admin/createoffer',
+            alias: '/proprio/createoffer',
+            name: 'OfferCreate',
+            components: { default: OfferCreate, header: MainNavbar, footer: MainFooter },
             props: {
                 header: { colorOnScroll: 400 },
                 footer: { backgroundColor: 'black' }
