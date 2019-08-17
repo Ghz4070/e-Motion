@@ -75,6 +75,7 @@ const router = new Router({
         },
         {
             path: '/admin/createvehicle',
+            alias: '/proprio/createvehicle',
             name: 'createVehicle',
             components: { default: CreateVehicle, header: MainNavbar, footer: MainFooter },
             props: {
@@ -301,10 +302,10 @@ router.beforeEach((to, from, next) => {
     /**
      * REDIRECTION IF HAVENT LEVEL
      */
-    if(((to.fullPath).includes('admin') && !role.includes('ROLE_ADMIN')) || ((to.fullPath).includes('proprio') && !role.includes('ROLE_PROPRIO')) ) {
+    if(((to.fullPath).includes('/admin') && !(role.includes('ROLE_ADMIN'))) || ((to.fullPath).includes('/proprio') && !(role.includes('ROLE_PROPRIO'))) ) {
         next('/');
     }
-
+    
     
     next();
   });
