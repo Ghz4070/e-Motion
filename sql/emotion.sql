@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `emotion`.`vehicle` (
   `offers_idoffers` INT NULL,
   `typeVehicle` VARCHAR(45) NOT NULL,
   `imgVehicle` VARCHAR(45) NULL DEFAULT 'default.jpg',
-  `createdBy` INT NULL,
+  `createdBy` INT NOT NULL,
   PRIMARY KEY (`idvehicle`),
   INDEX `fk_vehicle_offers1` (`offers_idoffers` ASC),
   CONSTRAINT `fk_vehicle_offers1`
