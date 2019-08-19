@@ -8,6 +8,9 @@
                 <card class="card-signup mt-5" style="background-color: transparent">
                     <p v-if="errors.length">
                        <Alert type="danger">Des champs non pas étaient remplis, il vous reste <span class="alert-link">{{errors.length}}</span> à remplir</Alert>
+                    </p>
+                    <p v-if="differentPassword">
+                       <Alert type="danger">Le mot de passe n'est pas le même que la confirmation</Alert>
                     </p>                    
                     <template slot="header">
                         <h3 class="card-title title-up">Créé votre compte</h3>
@@ -259,14 +262,17 @@
                 passwordChecked: '',
                 account: '',
                 hideOrNot: 'hide',
-                errors: []
+                errors: [],
+                differentPassword:'',
             }
         },
         methods: {
             checkPassword: function () {
                 if (this.password == this.passwords) {
+                    this.differentPassword = false;
                     return this.passwordChecked = this.password
                 } else {
+                    this.differentPassword = true;
                     return 'Erreur'
                 }
             },
