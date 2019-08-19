@@ -65,7 +65,7 @@
     <div class="section section-contact-us text-center">
       <div></div>
       <div class="container">
-        <h2 class="title">Choisisez l'offres et le véhicule  </h2>
+        <h2 class="title">Choisisez l'offres et le véhicule</h2>
         <p class="description">Location Car Concept.</p>
         <div class="row">
           <div class="col-lg-6 text-center ml-auto mr-auto col-md-8">
@@ -89,7 +89,7 @@
             </fg-input>
             <br />
             <label>Point de fidélité à utiliser</label>
-            <v-select v-model="pointFidelityUsed" :options="pointTab"></v-select>
+            <v-select @input="getPriceoffer()" v-model="pointFidelityUsed" :options="pointTab"></v-select>
             <br />
             <label>Choix de l'offre</label>
             <v-select
@@ -99,7 +99,6 @@
               :reduce="titleOffers => titleOffers.idOffers"
               label="titleOffers"
             ></v-select>
-            {{ listOffer }}
             <br />
             <label>Choix de la voiture</label>
             <v-select
@@ -110,9 +109,9 @@
               label="titleVehicles"
             ></v-select>
             <br />
-            <div v-if="price && listVehicule.length>0">
+            <div v-if="amount && listVehicule.length>0">
               Le prix final est de :
-              <b>{{ amount }}</b> €.
+              <b>{{ price }}</b> €.
             </div>
             <br />
             <div v-on:click="cancel" v-if="alert==true" class="alert">
@@ -148,20 +147,21 @@
                   @opened="opened"
                   @closed="closed"
                   @canceled="canceled"
-                ></vue-stripe-checkout> -->
-                <vue-stripe-checkout
-                  ref="checkoutRef"
-                  :amount="amount"
-                ></vue-stripe-checkout>
-                
-                <n-button type="danger" @click="checkout">Payer</n-button>
-                <n-button
-                  v-on:click="checkout"
-                  type="primary"
-                  round
-                  block
-                  size="lg"
-                >Soumettre la demande de location</n-button>
+              ></vue-stripe-checkout>-->
+              <vue-stripe-checkout
+                ref="checkoutRef"
+                @done="done"
+                :amount="amount"
+                currency="EUR"
+                name="Finalisation de la location"
+              ></vue-stripe-checkout>              
+              <n-button
+                @click="checkout"
+                type="primary"
+                round
+                block
+                size="lg"
+              >Procéder au paiement</n-button>
             </div>
           </div>
         </div>
@@ -218,15 +218,19 @@ export default {
       modals: {
         classic: false
       },
-      name:"Paiement",
-      amount: ''
+      name: "Paiement",
+      amount: null,
+      currency: "EUR"
     };
   },
   methods: {
+    done ({token, args}) {
+      this.setLocation();
+    },
     cancel: function() {
-      this.alert = false,
-      this.locationSuccess = false,
-      this.dateAlert = false
+      (this.alert = false),
+        (this.locationSuccess = false),
+        (this.dateAlert = false);
     },
     getListOffer: function() {
       axios({
@@ -238,8 +242,13 @@ export default {
       }).then(response => (this.offers = response.data.result));
     },
     setLocation: function() {
-      if(this.startDate && this.endDate && this.offers_idoffers && this.vehicle_idvehicle) {
-        if(this.startDate.getTime() < this.endDate.getTime()) {
+      if (
+        this.startDate &&
+        this.endDate &&
+        this.offers_idoffers &&
+        this.vehicle_idvehicle
+      ) {
+        if (this.startDate.getTime() < this.endDate.getTime()) {
           const convertDatepicker1 = this.startDate.toISOString();
           const datePickerLessT1 = convertDatepicker1.replace("T", " ");
           const finalDate1 = datePickerLessT1.replace("Z", "");
@@ -248,43 +257,41 @@ export default {
           const datePickerLessT2 = convertDatepicker2.replace("T", " ");
           const finalDate2 = datePickerLessT2.replace("Z", "");
 
-      axios
-        .post(
-          "http://localhost:3000/api/v1/location/add?pointFidelity=" +
-            this.pointFidelityUsed +
-            "&price=" +
-            this.price,
-          {
-            startDate: finalDate1,
-            endDate: finalDate2,
-            pointFidelityUsed: this.pointFidelityUsed,
-            status: this.status,
-            finalPrice: this.price,
-            offers_idoffers: this.offers_idoffers,
-            vehicle_idvehicle: this.vehicle_idvehicle
-          },
-          {
-            headers: {
-              "x-access-token": localStorage.getItem("x-access-token")
-            }
-          }
-        )
-        .then(result => {
-          console.log(result);
-          this.locationSuccess = true;
-          if (result.data.status == "success") {
-            setTimeout(() => {
-              this.$router.push("/");
-            }, 5000);
-          }
-        })
-        .catch(err => console.log(err));
-        }
-        else{
+          axios
+            .post(
+              "http://localhost:3000/api/v1/admin/location/add?pointFidelity=" +
+                this.pointFidelityUsed +
+                "&price=" +
+                this.price,
+              {
+                startDate: finalDate1,
+                endDate: finalDate2,
+                pointFidelityUsed: this.pointFidelityUsed,
+                status: this.status,
+                finalPrice: this.price,
+                offers_idoffers: this.offers_idoffers,
+                vehicle_idvehicle: this.vehicle_idvehicle
+              },
+              {
+                headers: {
+                  "x-access-token": localStorage.getItem("x-access-token")
+                }
+              }
+            )
+            .then(result => {
+              console.log(result);
+              this.locationSuccess = true;
+              if (result.data.status == "success") {
+                setTimeout(() => {
+                  this.$router.push("/");
+                }, 5000);
+              }
+            })
+            .catch(err => console.log(err));
+        } else {
           this.dateAlert = true;
         }
-      }
-      else {
+      } else {
         this.alert = true;
       }
     },
@@ -305,7 +312,6 @@ export default {
     },
     getVehicule: function() {
       this.getPriceoffer();
-      this.updatePrice();
       this.listVehicule = [];
       axios
         .get(
@@ -336,7 +342,9 @@ export default {
       }).then(response => {
         if (this.listVehicule.length > 0) {
           this.price = response.data.result[0].price;
-         }
+          this.updatePrice();
+          this.amount = this.price * 100;
+        }
         console.log(response);
       });
     },
@@ -358,30 +366,42 @@ export default {
         this.pointTab.push(i);
       }
     },
-    checkout: async function(){
-      const {token, args} = await this.$refs.checkoutRef.open()
-      console.log({token, args})
+    checkout: async function() {
+      const { token, args } = await this.$refs.checkoutRef.open();
+      console.log({ token, args });
     },
-    updatePrice: function(){
-      if(this.pointFidelityUsed > 0 ){
-        axios({
-          url: "http://localhost:3000/api/v1/admin/location/updatePrice?price="+this.price+"&pointFidelity="+this.pointFidelityUsed,
-          method:"get",
-          headers: {
-            "Content-Type": "application/json",
-            "x-access-token": localStorage.getItem("x-access-token")
-          }
-        })
-        .then((result)=> {
-          console.log(result)
-          this.amount = result.data.result
-        })
-        .catch((err) => console.log(err))
-      }else{
-        this.amount = this.price;
+    updatePrice: function() {
+      if (this.price && this.pointFidelityUsed) {
+        if (this.pointFidelityUsed >= 100 && this.pointFidelityUsed <= 199) {
+          this.price = this.price - this.price * 0.05;
+        } else if (
+          this.pointFidelityUsed >= 200 &&
+          this.pointFidelityUsed <= 299
+        ) {
+          this.price = this.price - this.price * 0.1;
+        } else if (
+          this.pointFidelityUsed >= 300 &&
+          this.pointFidelityUsed <= 399
+        ) {
+          this.price = this.price - this.price * 0.15;
+        } else if (
+          this.pointFidelityUsed >= 400 &&
+          this.pointFidelityUsed <= 499
+        ) {
+          this.price = this.price - this.price * 0.2;
+        } else if (
+          this.pointFidelityUsed >= 500 &&
+          this.pointFidelityUsed <= 599
+        ) {
+          this.price = this.price - this.price * 0.25;
+        } else if (this.pointFidelityUsed > 600) {
+          this.price = this.price - this.price * 0.3;
+        } else if (this.pointFidelityUsed < 100) {
+          this.price = this.price;
+        } else {
+          this.price = this.price;
+        }
       }
-      console.log("this.price")
-      console.log(this.price)
     }
   },
   mounted() {
