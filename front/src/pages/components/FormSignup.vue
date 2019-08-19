@@ -357,7 +357,6 @@
         components: {
             Card,
             Alert,
-            [DatePicker.name]: DatePicker,
             [Button.name]: Button,
             [FormGroupInput.name]: FormGroupInput
         }
