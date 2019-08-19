@@ -2,15 +2,43 @@ import {success, error} from '../returnjson';
 import jwt from "jsonwebtoken";
 import { reduc } from '../Method/methodUser';
 
+
+export function finalPrice() {
+    return (req, res) => {
+            const finalPrice = reduc(req.query.pointFidelity,req.query.price)
+            res.json(success(finalPrice))
+    }
+}
+
 export function addLocation() {
     return (req, res) => {
         const decodeTokenUsername = jwt.decode(req.headers['x-access-token']);
         
         if(decodeTokenUsername){
-            req.sql.query('SELECT pointFidelity, idusers FROM users WHERE username = ?', [decodeTokenUsername.username])
+            req.sql.query('SELECT pointFidelity, idusers, email FROM users WHERE username = ?', [decodeTokenUsername.username])
             .then((resultSelect) => {
                 if(req.body.pointFidelityUsed <= resultSelect[0].pointFidelity){
                     const finalPrice = reduc(req.query.pointFidelity,req.query.price)
+                    
+                    
+                    req.stripe.customers.create({
+                        email: resultSelect[0].email
+                    })
+                    .then((customer) => {
+                        //console.log(customer)
+                        return req.stripe.customers.createSource(customer.id, {
+                           source: 'tok_visa' 
+                        });
+                    })
+                    .then((source) =>{
+                        //console.log(source)
+                        return req.stripe.charges.create({
+                            amount: finalPrice * 100,
+                            currency:'eur',
+                            customer: source.customer
+                        });
+                    })
+                    .catch((err) => console.log(err))
                     
                     req.sql.query(' INSERT INTO location (startDate, endDate, users_idusers, pointFidelityUsed, status, finalPrice, offers_idoffers, vehicle_idvehicle) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)',
                     [req.body.startDate, req.body.endDate, resultSelect[0].idusers, req.body.pointFidelityUsed, req.body.status, finalPrice, req.body.offers_idoffers, req.body.vehicle_idvehicle]) 

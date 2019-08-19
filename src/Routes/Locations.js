@@ -4,22 +4,27 @@ import {
     addLocation,
     setStatus,
     updateLocation,
-    removeLocation
+    removeLocation,
+    finalPrice
 } from '../Controller/Locations';
 
 import {checkToken} from '../middleware';
 import express from 'express';
+import Stripe from 'stripe';
 
+const stripe = Stripe('sk_test_lMNxFZljdsOJ1bhaedX7OWat00Em1PhI3O');
 export const adminRouteLocations = express.Router();
 export const anonymeRouteLocations = express.Router();
 
 const db = (req, res, next) => {
     req.sql = req.conn;
+    req.stripe = stripe;
     next();
 };
 
-
-anonymeRouteLocations.route('/add')
+adminRouteLocations.route('/updatePrice')
+    .get(db,checkToken, finalPrice())
+adminRouteLocations.route('/add')
     .post(db, checkToken, addLocation())
 adminRouteLocations.route('/all')
     .get(db, checkToken, allLocations());
