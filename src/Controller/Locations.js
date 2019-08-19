@@ -27,7 +27,7 @@ export function addLocation() {
                     .then((customer) => {
                         //console.log(customer)
                         return req.stripe.customers.createSource(customer.id, {
-                           source: 'tok_visa' 
+                           source: req.query.token
                         });
                     })
                     .then((source) =>{
