@@ -4,9 +4,11 @@ import App from './App.vue';
 import router from './router';
 import NowUiKit from './plugins/now-ui-kit';
 import {DatePicker, Table} from 'element-ui';
+import VueStripeCheckout from 'vue-stripe-checkout';
 
 Vue.use(DatePicker)
 Vue.use(Table)
+Vue.use(VueStripeCheckout, 'pk_test_VUggmdO8yUVOFHUUYCUcKKbZ00FLUG97fh');
 
 Vue.config.productionTip = false;
 

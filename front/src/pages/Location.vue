@@ -99,6 +99,7 @@
               :reduce="titleOffers => titleOffers.idOffers"
               label="titleOffers"
             ></v-select>
+            {{ listOffer }}
             <br />
             <label>Choix de la voiture</label>
             <v-select
@@ -111,7 +112,7 @@
             <br />
             <div v-if="price && listVehicule.length>0">
               Le prix final est de :
-              <b>{{ price }}</b> €.
+              <b>{{ amount }}</b> €.
             </div>
             <br />
             <div v-on:click="cancel" v-if="alert==true" class="alert">
@@ -139,13 +140,28 @@
               </alert>
             </div>
             <div class="send-button">
-              <n-button
-                v-on:click="setLocation"
-                type="primary"
-                round
-                block
-                size="lg"
-              >Soumettre la demande de location</n-button>
+              <!-- <vue-stripe-checkout
+                  ref="checkoutRef"
+                  :amount="amount"
+                  :name="name"
+                  @done="done"
+                  @opened="opened"
+                  @closed="closed"
+                  @canceled="canceled"
+                ></vue-stripe-checkout> -->
+                <vue-stripe-checkout
+                  ref="checkoutRef"
+                  :amount="amount"
+                ></vue-stripe-checkout>
+                
+                <n-button type="danger" @click="checkout">Payer</n-button>
+                <n-button
+                  v-on:click="checkout"
+                  type="primary"
+                  round
+                  block
+                  size="lg"
+                >Soumettre la demande de location</n-button>
             </div>
           </div>
         </div>
@@ -160,7 +176,8 @@ import {
   Tabs,
   TabPane,
   Card,
-  Alert
+  Alert,
+  Modal
 } from "@/components";
 import { DatePicker } from "element-ui";
 import axios from "axios";
@@ -174,6 +191,7 @@ export default {
     [Button.name]: Button,
     [FormGroupInput.name]: FormGroupInput,
     vSelect,
+    [Modal.name]: Modal,
     Tabs,
     TabPane,
     Card,
@@ -197,6 +215,11 @@ export default {
       alert: false,
       locationSuccess: false,
       dateAlert: false,
+      modals: {
+        classic: false
+      },
+      name:"Paiement",
+      amount: ''
     };
   },
   methods: {
@@ -217,13 +240,13 @@ export default {
     setLocation: function() {
       if(this.startDate && this.endDate && this.offers_idoffers && this.vehicle_idvehicle) {
         if(this.startDate.getTime() < this.endDate.getTime()) {
-      const convertDatepicker1 = this.startDate.toISOString();
-      const datePickerLessT1 = convertDatepicker1.replace("T", " ");
-      const finalDate1 = datePickerLessT1.replace("Z", "");
+          const convertDatepicker1 = this.startDate.toISOString();
+          const datePickerLessT1 = convertDatepicker1.replace("T", " ");
+          const finalDate1 = datePickerLessT1.replace("Z", "");
 
-      const convertDatepicker2 = this.endDate.toISOString();
-      const datePickerLessT2 = convertDatepicker2.replace("T", " ");
-      const finalDate2 = datePickerLessT2.replace("Z", "");
+          const convertDatepicker2 = this.endDate.toISOString();
+          const datePickerLessT2 = convertDatepicker2.replace("T", " ");
+          const finalDate2 = datePickerLessT2.replace("Z", "");
 
       axios
         .post(
@@ -282,6 +305,7 @@ export default {
     },
     getVehicule: function() {
       this.getPriceoffer();
+      this.updatePrice();
       this.listVehicule = [];
       axios
         .get(
@@ -312,7 +336,7 @@ export default {
       }).then(response => {
         if (this.listVehicule.length > 0) {
           this.price = response.data.result[0].price;
-        }
+         }
         console.log(response);
       });
     },
@@ -333,6 +357,31 @@ export default {
       for (var i = 0; i < this.info.pointFidelity; i += 100) {
         this.pointTab.push(i);
       }
+    },
+    checkout: async function(){
+      const {token, args} = await this.$refs.checkoutRef.open()
+      console.log({token, args})
+    },
+    updatePrice: function(){
+      if(this.pointFidelityUsed > 0 ){
+        axios({
+          url: "http://localhost:3000/api/v1/admin/location/updatePrice?price="+this.price+"&pointFidelity="+this.pointFidelityUsed,
+          method:"get",
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("x-access-token")
+          }
+        })
+        .then((result)=> {
+          console.log(result)
+          this.amount = result.data.result
+        })
+        .catch((err) => console.log(err))
+      }else{
+        this.amount = this.price;
+      }
+      console.log("this.price")
+      console.log(this.price)
     }
   },
   mounted() {
