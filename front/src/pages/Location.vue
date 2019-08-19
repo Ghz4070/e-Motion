@@ -220,11 +220,13 @@ export default {
       },
       name: "Paiement",
       amount: null,
-      currency: "EUR"
+      currency: "EUR",
+      token:''
     };
   },
   methods: {
     done ({token, args}) {
+      this.token = token.id;
       this.setLocation();
     },
     cancel: function() {
@@ -262,7 +264,9 @@ export default {
               "http://localhost:3000/api/v1/admin/location/add?pointFidelity=" +
                 this.pointFidelityUsed +
                 "&price=" +
-                this.price,
+                this.price+
+                "&token="+
+                this.token,
               {
                 startDate: finalDate1,
                 endDate: finalDate2,
