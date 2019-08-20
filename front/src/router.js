@@ -32,6 +32,7 @@ import UserUpdate from './pages/admin/UserUpdate.vue';
 
 import jwt from 'jsonwebtoken';
 import dontLogin from './layout/dontLogin.vue';
+import mention from './layout/mention.vue';
 
 
 Vue.use(Router);
@@ -275,6 +276,14 @@ const router = new Router({
             path: '/reset_password',
             name: 'resetPassword',
             components: { default: ResetPassword, header: MainNavbar, footer: MainFooter },
+            props: {
+                header: { colorOnScroll: 400 }
+            }
+        },
+        {
+            path: '/mention',
+            name: 'mention',
+            components: { default: mention, header: MainNavbar, footer: MainFooter },
             props: {
                 header: { colorOnScroll: 400 }
             }
