@@ -7,10 +7,10 @@
           <img class="n-logo" src="img/now-logo.png" alt />
           <h1 class="h1-seo">Location Car Concept</h1>
           <h3>Louer votre voiture à prix défiant toute concurence.</h3>
-          <p>&nbsp; </p>
-            <div class="carImage">
-              <img :src="image" class />
-            </div>
+          <p>&nbsp;</p>
+          <div class="carImage">
+            <img :src="image" class />
+          </div>
         </div>
       </div>
     </div>
@@ -32,13 +32,16 @@
       <div class="container text-center">
         <div class="row justify-content-md-center">
           <div class="col-md-12 col-lg-8">
-            <h2 class="title">Completed with examples</h2>
-            <h5 class="description">
-              The kit comes with three pre-built pages to help you get started
-              faster. You can change the text and images and you're good to go.
-              More importantly, looking at them will give you a picture of what
-              you can built with this powerful Bootstrap 4 ui kit.
-            </h5>
+            <h2 class="title">Explorez Paris à bord d'une voiture de Location Car Concept</h2>
+            <h5
+              class="description"
+            >Afin de répondre au mieux aux attentes de nos clients, notre société dispose d'un large éventail de véhicules issus des ateliers 
+            de constructeurs réputés : BMW, Audi, Peugeot, Maserati, Mercedes, Renault etc. Que vous souhaitiez louer une voiture de sport 
+            dernier cri, une voiture de tourisme ou encore un utilitaire pour votre déménagement, notre outil de réservation en ligne vous 
+            permet de comparer les prix et de choisir la catégorie de voiture de votre choix. Nous vous donnons également la possibilité 
+            d'effectuer votre réservation par téléphone. Louez une voiture à Paris en profitant de l'une de nos offres flexibles : que vous 
+            prévoyiez une balade de quelques heures, que vous ayez besoin d'un véhicule pas cher pour le week-end ou même plusieurs semaines, 
+            notre société a pour volonté de s'adapter à vos besoins et de vous offrir l'expérience de location la plus confortable possible.</h5>
           </div>
         </div>
       </div>
@@ -65,9 +68,9 @@ export default {
 </script>
 <style>
 .logo {
-  margin-top:20px;
+  margin-top: 20px;
 }
-.carImage{
-  margin-top:50px;
+.carImage {
+  margin-top: 50px;
 }
 </style>
