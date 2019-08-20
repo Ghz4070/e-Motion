@@ -5,11 +5,11 @@ import morgan from 'morgan';
 import mariadb from 'mariadb';
 import cors from 'cors';
 //Module créer par nous
-import {rootApi, port, secret} from '../src/config';
-import {Host, User, Password, Database} from '../src/database';
+import {rootApi, port, secret} from './config';
+import {Host, User, Password, Database} from './database';
 
 //Routes import
-import {anonymeRouteUsers, adminRouteUsers} from '../src/Routes/Users'
+import {anonymeRouteUsers, adminRouteUsers} from './Routes/Users'
 import {anonymeRouteVehicles, adminRouteVehicles} from "./Routes/Vehicles";
 import {anonymeRouteOffers, adminRouteOffers} from './Routes/Offers';
 import {adminRouteLocations, anonymeRouteLocations} from "./Routes/Locations";
